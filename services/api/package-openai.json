@@ -1,0 +1,11 @@
+{
+  "name": "openai-integration",
+  "description": "OpenAI dependencies for AI Proposal Builder",
+  "dependencies": {
+    "openai": "^4.67.3",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5"
+  }
+}
