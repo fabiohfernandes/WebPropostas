@@ -1,8 +1,8 @@
 # WebPropostas - AI-Driven Commercial Proposal Platform
 
-**Domain:** [infigital.net](https://infigital.net)
-**Status:** Development Phase - Strategic Planning Complete
-**Version:** 1.0 (Beta Target: Q2 2025)
+**Domain:** [webpropostas.com.br](https://www.webpropostas.com.br)
+**Status:** V1 Production Live | V2 Planning Complete
+**Version:** 1.0 (Live on Railway) | 2.0 (20-week development plan ready)
 **Market:** Brazil-first with global expansion
 
 ---
@@ -22,35 +22,92 @@ WebPropostas revolutionizes the commercial proposal process through intelligent 
 
 ## 🎯 Core Features
 
-### 🎨 Seamless Design Import
+### ✅ V1 Features (Production - Live on Railway)
+
+#### 🎨 Complete Proposal Management
+- **Multi-tenant Architecture**: Organization-scoped data isolation
+- **Four-State Workflow**: Aberta | Alterações Solicitadas | Fechada | Rejeitada
+- **Client Interaction**: Three-option review system (Accept | Request Changes | Reject)
+- **Comment System**: Section-specific comments with resolution tracking
+- **Real-time Dashboard**: Live statistics, conversion rates, proposal tracking
+
+#### 🔐 Authentication & Security
+- **JWT-based Authentication**: Access/refresh tokens with Zustand state management
+- **Professional Access Pages**: Dedicated proposal-specific authentication
+- **LGPD Compliance**: Complete Brazilian data privacy framework
+- **Token Isolation**: Secure cross-proposal access prevention
+
+#### 📊 Reports & Analytics
+- **Month-over-Month Analysis**: Proposals sent vs deals closed tracking
+- **Growth Indicators**: Visual arrows and percentage calculations
+- **Real API Integration**: Live data from dashboard stats and clients endpoints
+
+#### 🎨 Modern UI/UX
+- **Glassmorphism Design**: Modern frosted glass effects throughout
+- **Responsive Layout**: Mobile-optimized interface
+- **Interactive Navigation**: Clickable cards and seamless routing
+
+---
+
+### 🚀 V2 Features (23-Week Development Plan Ready)
+
+**⭐ PRIORIDADE #1 - EM DESENVOLVIMENTO:**
+
+#### 🤖 AI Proposal Builder (Semanas 1-3) - NOVO!
+- **Assistente Conversacional:** Wizard interativo guiado por IA
+- **ChatGPT-4o + GPT-o1:** Geração inteligente com raciocínio profundo
+- **Chat de Ajustes:** Revise e modifique em múltiplas iterações
+- **Pesquisa Web:** IA busca dados de mercado automaticamente
+- **80% Mais Rápido:** De 3 horas para 30 minutos criando propostas
+- **Impacto:** Corretor preenche formulário → IA escreve proposta completa profissional
+
+**Recursos Originais V2 (resequenciados):**
+
+#### 🎨 Visual Template Designer (Semanas 8-11)
+- **Canva-like Editor**: Drag-and-drop canvas with Fabric.js
+- **AI Content Boxes**: GPT-4 powered text generation for 5+ content types
+- **Design Assets**: 10K+ icons, 100K+ stock photos (Unsplash/Pexels)
+- **Template Library**: Save, reuse, and share professional templates
+- **Brand Kit**: Logo, colors, fonts auto-applied (Premium)
+
+#### 💳 Three-Tier Subscription System (Weeks 3-4)
+- **Freemium**: 3 active proposals, 3 pre-built templates
+- **Standard (R$79/mo)**: 50 proposals, 10K AI tokens/month, template designer
+- **Premium (R$199/mo)**: Unlimited proposals, 50K tokens, save templates, team collaboration
+
+#### 🪙 AI Token Marketplace (Weeks 13-14)
+- **Token Packages**: R$15 (5K) to R$300 (200K) with volume discounts
+- **Auto-Refill**: Automatic token purchase when balance drops
+- **Usage Analytics**: Track token consumption per proposal
+- **Rollover Policy**: Purchased tokens never expire
+
+#### 🎯 Advanced Features (Weeks 15-16)
+- **Export to PPTX**: PowerPoint export (Premium)
+- **Custom Subdomain**: client.webpropostas.com.br (Premium)
+- **Real-time Collaboration**: Multi-user editing (Premium)
+- **White-label**: Remove branding (Premium)
+
+---
+
+### 📋 V1 Roadmap (Original - Deferred)
+
+#### 🎨 Seamless Design Import
 - **Third-Party Integration**: Direct import from Canva and Gamma with high visual fidelity
 - **AI-Powered Analysis**: Automatic content categorization and structure recognition
 - **Fallback Handling**: Graceful degradation for unsupported elements with manual fix guidance
 
-### 🤖 AI-Enhanced Editing
-- **Content Assistant**: OpenAI GPT-4 integration for content improvement and optimization
-- **Media Generation**: Nano Banana API for AI-powered image and video editing
-- **Multi-Language Support**: Portuguese, English, and Spanish with real-time translation
-- **Smart Suggestions**: Context-aware recommendations for tone, style, and formatting
-
-### 🌐 Dynamic Hosting
-- **Auto-Subdomains**: Each proposal gets `proposal-{id}.infigital.net` with automatic SSL
+#### 🌐 Dynamic Hosting
+- **Auto-Subdomains**: Each proposal gets `proposal-{id}.webpropostas.com.br` with automatic SSL
 - **Secure Access**: Password-protected sharing with magic link and OTP options
-- **Global Performance**: AWS CloudFront CDN with sub-3-second load times worldwide
+- **Global Performance**: Cloudflare CDN with sub-3-second load times worldwide
 
-### 👥 Client Collaboration
-- **Real-Time Comments**: Section-specific feedback with instant notifications
-- **Approval Workflows**: Granular approval system with version control
-- **Mobile Optimized**: Responsive design for client review on any device
-- **Privacy First**: LGPD-compliant client data handling and protection
-
-### 📄 Contract Automation
+#### 📄 Contract Automation
 - **Template System**: Legally compliant Brazilian contract templates with customization
 - **Auto-Generation**: Seamless proposal-to-contract data mapping and PDF creation
 - **Digital Signatures**: DocuSign and Clicksign integration for Brazilian market
 - **Legal Validity**: Full compliance with Brazilian contract law and electronic signature standards
 
-### 📱 Multi-Channel Notifications
+#### 📱 Multi-Channel Notifications
 - **Email Integration**: Amazon SES with advanced delivery tracking
 - **WhatsApp Business**: Automated status updates and client communications
 - **Telegram Bots**: Real-time notifications for internal teams
@@ -92,7 +149,92 @@ Security: LGPD Compliant + SOC 2 Framework
 
 ## 📋 Development Phases
 
-### Phase 1: Foundation Architecture (Weeks 1-6)
+### ✅ V1 Completed (September 2025)
+**Production Deployment on Railway - All Services Live**
+- ✅ Railway deployment (PostgreSQL, Redis, Backend API, Frontend)
+- ✅ JWT authentication with multi-tenant organizations
+- ✅ Complete proposal management (CRUD + four-state workflow)
+- ✅ Client interaction system (comments, approval, rejection)
+- ✅ Real-time dashboard with live statistics
+- ✅ Reports system with month-over-month analytics
+- ✅ LGPD compliance framework
+- ✅ Modern glassmorphism UI with responsive design
+
+### 🚀 V2 Development Plan (October 2025 - March 2026)
+**23-Week Implementation Roadmap - Comprehensive Plan Ready**
+
+#### ⭐ Phase 0: AI Proposal Builder (Weeks 1-3) - NOVA PRIORIDADE
+- [ ] Wizard de 4 passos (informações client, tipo proposta, contexto, configurações)
+- [ ] Integração ChatGPT-4o (rápido) e GPT-o1 (raciocínio profundo)
+- [ ] Editor split-view com preview Markdown em tempo real
+- [ ] Chat interativo para ajustes e revisões ilimitadas
+- [ ] Pesquisa web automática para dados de mercado (Tavily/SerpAPI)
+- [ ] Geração de 12 seções padrão (resumo executivo, dor/oportunidade, proposta valor, etc)
+- [ ] Sistema de versionamento (snapshots antes de cada ajuste)
+- [ ] Publicação com link público + envio automático por email
+- [ ] Tracking de tokens IA e custos por proposta
+
+#### Phase 1: Infrastructure & Subscriptions (Weeks 4-7) - AJUSTADO
+- [ ] Database schema (10 new tables: subscriptions, tokens, templates)
+- [ ] Stripe integration (international subscriptions)
+- [ ] Mercado Pago integration (Brazilian PIX/boleto)
+- [ ] Subscription management system
+- [ ] Feature gating middleware
+- [ ] Usage tracking and billing dashboard
+
+#### Phase 2: Template Designer MVP (Weeks 8-11) - AJUSTADO
+- [ ] Fabric.js canvas editor integration
+- [ ] Drag-and-drop elements (text, shapes, images)
+- [ ] AI content boxes with GPT-4 integration
+- [ ] Token consumption tracking
+- [ ] Save/load canvas state (JSON)
+
+#### Phase 3: Template Library & Assets (Weeks 12-15) - AJUSTADO
+- [ ] Template management system (save, categorize, tag)
+- [ ] Template library (grid view, search, filter)
+- [ ] Icon library integration (10K+ icons)
+- [ ] Stock photo API (Unsplash/Pexels)
+- [ ] Brand Kit (Premium feature)
+
+#### Phase 4: Token Marketplace (Weeks 16-17) - AJUSTADO
+- [ ] Token package definition (4 tiers: R$15-300)
+- [ ] Marketplace UI and purchase flow
+- [ ] Auto-refill configuration
+- [ ] Token usage analytics
+- [ ] Low balance alerts
+
+#### Phase 5: Advanced Features (Weeks 18-19) - AJUSTADO
+- [ ] Export to PPTX (Premium)
+- [ ] Custom subdomain provisioning (Premium)
+- [ ] Real-time collaboration (Premium)
+- [ ] White-label option (Premium)
+- [ ] API access (Premium)
+
+#### Phase 6: Testing & Refinement (Weeks 20-21) - AJUSTADO
+- [ ] End-to-end testing (all user flows)
+- [ ] Load testing (1,000 concurrent users)
+- [ ] Security audit (OWASP Top 10)
+- [ ] Accessibility audit (WCAG 2.1 AA)
+- [ ] Performance optimization
+
+#### Phase 7: Beta Launch (Week 22) - AJUSTADO
+- [ ] Invite 100 beta users
+- [ ] Collect feedback and iterate
+- [ ] Monitor metrics (activation, engagement)
+- [ ] Fix critical issues
+
+#### Phase 8: Public Launch (Week 23) - AJUSTADO
+- [ ] Email announcement to all users
+- [ ] Blog post & press release
+- [ ] Social media campaign
+- [ ] Paid ads (Google, Facebook)
+- [ ] 24/7 support coverage
+
+---
+
+### 📋 Original V1 Roadmap (Deferred - Long-term)
+
+#### Phase 1: Foundation Architecture (Weeks 1-6)
 **Core Infrastructure + Basic Import + LGPD Compliance**
 - [ ] AWS infrastructure and security framework
 - [ ] Authentication system with multi-tenant support
@@ -100,7 +242,7 @@ Security: LGPD Compliant + SOC 2 Framework
 - [ ] Block-based proposal editor foundation
 - [ ] Complete LGPD compliance implementation
 
-### Phase 2: AI Enhancement & Collaboration (Weeks 7-12)
+#### Phase 2: AI Enhancement & Collaboration (Weeks 7-12)
 **AI Integration + Client Platform + Dynamic Hosting**
 - [ ] OpenAI content assistance integration
 - [ ] Nano Banana media processing system
@@ -108,7 +250,7 @@ Security: LGPD Compliant + SOC 2 Framework
 - [ ] Automatic subdomain provisioning
 - [ ] Advanced analytics and tracking
 
-### Phase 3: Contract Automation & Integration (Weeks 13-18)
+#### Phase 3: Contract Automation & Integration (Weeks 13-18)
 **Legal Framework + Digital Signatures + Notifications**
 - [ ] Automated contract generation system
 - [ ] Brazilian legal compliance validation
@@ -116,7 +258,7 @@ Security: LGPD Compliant + SOC 2 Framework
 - [ ] Multi-channel notification system
 - [ ] End-to-end workflow validation
 
-### Phase 4: Optimization & Launch (Weeks 19-23)
+#### Phase 4: Optimization & Launch (Weeks 19-23)
 **Performance + Security + Beta Testing**
 - [ ] Performance optimization (sub-3s global load times)
 - [ ] Comprehensive security audit and hardening
@@ -235,17 +377,21 @@ Security: LGPD Compliant + SOC 2 Framework
 - **Technical Contact**: [Your Technical Email]
 
 ### Development Status
-- **Current Phase**: Strategic Planning Complete
-- **Next Milestone**: Phase 1 Foundation Architecture Initiation
-- **Timeline**: 23 weeks to General Availability
-- **Beta Program**: Q1 2025 with selected users
+- **Current Phase**: V1 Production Live | V2 Planning Complete
+- **V1 Status**: All services deployed on Railway with full functionality
+- **V2 Next Steps**: Week 1 begins with database schema implementation
+- **V2 Timeline**: 20 weeks to public launch (October 2025 - February 2026)
+- **Beta Program**: Week 19 (100 beta users) | Week 20 (Public launch)
 
 ### Documentation Resources
-- **Complete Planning**: [planning.md](./planning.md) - Comprehensive development strategy
-- **Detailed Roadmap**: [roadmap.md](./roadmap.md) - Phased timeline with milestones
-- **Agent Tasks**: [tasks.md](./tasks.md) - Multi-agent coordination and assignments
+- **V2 Implementation Plan**: `WEBPROPOSTAS-V2-IMPLEMENTATION-PLAN.md` - Complete 20-week development strategy
+- **V2 PRD (English)**: `webpropostas-v2.md` - Comprehensive product requirements
+- **V2 PRD (Portuguese)**: `webpropostas-v2_BR.md` - Complete Brazilian market documentation
+- **Complete Planning**: [planning.md](./planning.md) - Original V1 comprehensive development strategy
+- **Detailed Roadmap**: [roadmap.md](./roadmap.md) - Original V1 phased timeline with milestones
 - **Development Progress**: [development.md](./development.md) - Real-time progress tracking
 - **Technical Guidelines**: [CLAUDE.md](./CLAUDE.md) - Development standards and requirements
+- **Railway Deployment**: `RAILWAY-DEPLOYMENT.md` - Complete Railway deployment guide
 
 ---
 
@@ -257,9 +403,10 @@ WebPropostas represents the future of commercial proposal management—where AI 
 
 ---
 
-*Last Updated: September 25, 2025*
-*Next Update: Upon Phase 1 Initiation*
-*Development Tracking: See development.md for real-time progress*
+*Last Updated: October 2, 2025*
+*V1 Status: Production Live on Railway*
+*V2 Status: 20-Week Implementation Plan Complete - Ready for Week 1 Execution*
+*Next Update: Upon V2 Week 1 Completion (Database Schema Implementation)*
 
 ---
 

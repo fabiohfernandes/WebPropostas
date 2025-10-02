@@ -26,7 +26,8 @@
       "Bash(fi)",
       "Bash(mkdir:*)",
       "Bash(gh:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []
