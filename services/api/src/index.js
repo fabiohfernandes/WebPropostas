@@ -199,7 +199,7 @@ app.use('/api/v1', proposalPlatformRouter);
 app.use('/api/v1/client', clientAuthRouter);
 
 // Mount AI proposals routes (V2 - Phase 0)
-app.use('/api/v1/ai/proposals', authenticate, aiProposalsRouter);
+app.use('/api/v1/ai/proposals', authenticateToken, aiProposalsRouter);
 
 // Simple test endpoint
 app.get('/api/v1/test', (req, res) => {
