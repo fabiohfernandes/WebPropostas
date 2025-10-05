@@ -17,11 +17,11 @@ const getAuthToken = () => {
 
   // Then try auth store localStorage format (correct key)
   try {
-    const authData = localStorage.getItem('orcamentos_auth_tokens');
+    const authData = localStorage.getItem('webpropostas_auth_tokens');
     if (authData) {
       const { state } = JSON.parse(authData);
       if (state?.tokens?.accessToken && state?.isAuthenticated) {
-        console.log('🔑 Using orcamentos_auth_tokens format');
+        console.log('🔑 Using webpropostas_auth_tokens format');
         return state.tokens.accessToken;
       }
     }
