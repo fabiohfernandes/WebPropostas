@@ -5,54 +5,134 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MagnifyingGlassIcon, FunnelIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import { PublicLayout } from '@/components/Layout/PublicLayout';
 import { Button, Card, Badge } from '@/components/UI';
 import { InDevelopmentInline } from '@/components/Development';
+import { api } from '@/lib/api';
+
+interface Template {
+  id: string;
+  name: string;
+  category: string;
+  sector: string;
+  description: string;
+  thumbnail: string;
+  fields: any[];
+  content_template: any;
+  created_at?: string;
+}
 
 export default function TemplatesPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedSector, setSelectedSector] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [templates, setTemplates] = useState<Template[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [sectors, setSectors] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const categories = [
-    { id: 'all', name: 'Todos', count: 24 },
-    { id: 'services', name: 'Serviços', count: 8 },
-    { id: 'products', name: 'Produtos', count: 6 },
-    { id: 'consulting', name: 'Consultoria', count: 5 },
-    { id: 'projects', name: 'Projetos', count: 5 },
-  ];
+  // Fetch templates on mount
+  useEffect(() => {
+    fetchTemplates();
+    fetchCategories();
+    fetchSectors();
+  }, []);
 
-  const sectors = [
-    { id: 'all', name: 'Todos os Setores' },
-    { id: 'tech', name: 'Tecnologia' },
-    { id: 'marketing', name: 'Marketing' },
-    { id: 'construction', name: 'Construção' },
-    { id: 'design', name: 'Design' },
-    { id: 'consulting', name: 'Consultoria' },
-    { id: 'education', name: 'Educação' },
-  ];
+  const fetchTemplates = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await api.get('/templates');
 
-  const templates = [
-    { id: 1, name: 'Desenvolvimento de Software', category: 'services', sector: 'tech', style: 'modern', color: 'from-blue-500 to-cyan-500', featured: true },
-    { id: 2, name: 'Campanha de Marketing Digital', category: 'services', sector: 'marketing', style: 'creative', color: 'from-purple-500 to-pink-500', featured: true },
-    { id: 3, name: 'Consultoria Empresarial', category: 'consulting', sector: 'consulting', style: 'classic', color: 'from-green-500 to-emerald-500', featured: false },
-    { id: 4, name: 'Design de Identidade Visual', category: 'services', sector: 'design', style: 'minimal', color: 'from-orange-500 to-red-500', featured: true },
-    { id: 5, name: 'Plataforma E-commerce', category: 'products', sector: 'tech', style: 'modern', color: 'from-indigo-500 to-blue-500', featured: false },
-    { id: 6, name: 'Projeto de Construção', category: 'projects', sector: 'construction', style: 'classic', color: 'from-yellow-500 to-orange-500', featured: false },
-    { id: 7, name: 'App Mobile', category: 'products', sector: 'tech', style: 'modern', color: 'from-teal-500 to-green-500', featured: false },
-    { id: 8, name: 'Curso Online', category: 'services', sector: 'education', style: 'minimal', color: 'from-pink-500 to-rose-500', featured: false },
-    { id: 9, name: 'Reforma Residencial', category: 'projects', sector: 'construction', style: 'classic', color: 'from-amber-500 to-yellow-500', featured: false },
-    { id: 10, name: 'SEO e Analytics', category: 'services', sector: 'marketing', style: 'modern', color: 'from-violet-500 to-purple-500', featured: true },
-    { id: 11, name: 'Website Corporativo', category: 'products', sector: 'tech', style: 'minimal', color: 'from-sky-500 to-blue-500', featured: false },
-    { id: 12, name: 'Consultoria Financeira', category: 'consulting', sector: 'consulting', style: 'classic', color: 'from-emerald-500 to-teal-500', featured: false },
-  ];
+      if (response.data.success) {
+        setTemplates(response.data.data.templates || []);
+      }
+    } catch (err: any) {
+      console.error('Error fetching templates:', err);
+      setError(err.response?.data?.message || 'Erro ao carregar templates');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await api.get('/templates/categories');
+      if (response.data.success) {
+        const cats = response.data.data.categories || [];
+        // Add "all" option and count templates per category
+        const categoriesWithCount = cats.map((cat: string) => ({
+          id: cat,
+          name: cat,
+          count: 0 // Will be calculated from templates
+        }));
+        setCategories([
+          { id: 'all', name: 'Todos', count: 0 },
+          ...categoriesWithCount
+        ]);
+      }
+    } catch (err) {
+      console.error('Error fetching categories:', err);
+    }
+  };
+
+  const fetchSectors = async () => {
+    try {
+      const response = await api.get('/templates/sectors');
+      if (response.data.success) {
+        const sects = response.data.data.sectors || [];
+        setSectors([
+          { id: 'all', name: 'Todos os Setores' },
+          ...sects.map((s: string) => ({ id: s, name: s }))
+        ]);
+      }
+    } catch (err) {
+      console.error('Error fetching sectors:', err);
+    }
+  };
+
+  // Calculate category counts
+  useEffect(() => {
+    if (templates.length > 0 && categories.length > 0) {
+      const updatedCategories = categories.map(cat => {
+        if (cat.id === 'all') {
+          return { ...cat, count: templates.length };
+        }
+        return {
+          ...cat,
+          count: templates.filter(t => t.category === cat.id).length
+        };
+      });
+      setCategories(updatedCategories);
+    }
+  }, [templates]);
 
   const filteredTemplates = templates.filter((template) => {
     const categoryMatch = selectedCategory === 'all' || template.category === selectedCategory;
     const sectorMatch = selectedSector === 'all' || template.sector === selectedSector;
-    return categoryMatch && sectorMatch;
+    const searchMatch = searchTerm === '' ||
+      template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      template.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return categoryMatch && sectorMatch && searchMatch;
   });
+
+  // Color mapping for template cards
+  const getTemplateColor = (category: string) => {
+    const colorMap: { [key: string]: string } = {
+      'Tecnologia': 'from-blue-500 to-cyan-500',
+      'Marketing': 'from-purple-500 to-pink-500',
+      'Imóveis': 'from-green-500 to-emerald-500',
+      'Veículos': 'from-orange-500 to-red-500',
+      'Serviços Profissionais': 'from-indigo-500 to-blue-500',
+      'Serviços Residenciais': 'from-yellow-500 to-orange-500',
+      'Serviços Pessoais': 'from-teal-500 to-green-500',
+      'Educação': 'from-pink-500 to-rose-500',
+    };
+    return colorMap[category] || 'from-gray-500 to-slate-500';
+  };
 
   return (
     <PublicLayout>
@@ -74,6 +154,8 @@ export default function TemplatesPage() {
               <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Buscar templates..."
                 className="w-full pl-12 pr-4 py-4 rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
               />
@@ -148,7 +230,7 @@ export default function TemplatesPage() {
             <div className="flex-1">
               <div className="flex items-center justify-between mb-6">
                 <p className="text-gray-600">
-                  {filteredTemplates.length} templates encontrados
+                  {loading ? 'Carregando...' : `${filteredTemplates.length} templates encontrados`}
                 </p>
                 <select className="px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 outline-none">
                   <option>Mais Recentes</option>
@@ -157,34 +239,64 @@ export default function TemplatesPage() {
                 </select>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredTemplates.map((template) => (
-                  <div
-                    key={template.id}
-                    className="group cursor-pointer"
-                  >
-                    <div className={`relative aspect-[4/5] rounded-xl bg-gradient-to-br ${template.color} p-1 overflow-hidden transition-transform group-hover:scale-105`}>
-                      {template.featured && (
+              {/* Loading State */}
+              {loading && (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+                  <p className="text-gray-600 mt-4">Carregando templates...</p>
+                </div>
+              )}
+
+              {/* Error State */}
+              {error && !loading && (
+                <Card variant="glass" className="p-6">
+                  <p className="text-red-600 text-center">{error}</p>
+                  <Button variant="outline" onClick={fetchTemplates} className="mt-4 mx-auto">
+                    Tentar Novamente
+                  </Button>
+                </Card>
+              )}
+
+              {/* Templates Grid */}
+              {!loading && !error && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredTemplates.map((template) => (
+                    <div
+                      key={template.id}
+                      className="group cursor-pointer"
+                    >
+                      <div className={`relative aspect-[4/5] rounded-xl bg-gradient-to-br ${getTemplateColor(template.category)} p-1 overflow-hidden transition-transform group-hover:scale-105`}>
                         <div className="absolute top-4 right-4 z-10">
-                          <Badge variant="warning" size="sm">
-                            ⭐ Destaque
+                          <Badge variant="default" size="sm">
+                            {template.sector}
                           </Badge>
                         </div>
-                      )}
-                      <div className="absolute inset-0 bg-white/10 backdrop-blur-sm group-hover:bg-white/20 transition-colors" />
-                      <div className="relative h-full flex flex-col items-center justify-center text-white p-6">
-                        <DocumentTextIcon className="w-16 h-16 mb-4 opacity-80" />
-                        <h3 className="text-xl font-semibold text-center">{template.name}</h3>
+                        <div className="absolute inset-0 bg-white/10 backdrop-blur-sm group-hover:bg-white/20 transition-colors" />
+                        <div className="relative h-full flex flex-col items-center justify-center text-white p-6">
+                          <DocumentTextIcon className="w-16 h-16 mb-4 opacity-80" />
+                          <h3 className="text-xl font-semibold text-center mb-2">{template.name}</h3>
+                          <p className="text-sm text-white/80 text-center line-clamp-2">{template.description}</p>
+                        </div>
+                      </div>
+                      <div className="mt-3 space-y-2">
+                        <Button variant="outline" size="sm" fullWidth>
+                          Visualizar Template
+                        </Button>
+                        <p className="text-xs text-gray-500 text-center">{template.category}</p>
                       </div>
                     </div>
-                    <div className="mt-3">
-                      <Button variant="outline" size="sm" fullWidth>
-                        Visualizar Template
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Empty State */}
+              {!loading && !error && filteredTemplates.length === 0 && (
+                <Card variant="glass" className="p-12 text-center">
+                  <DocumentTextIcon className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+                  <p className="text-gray-600 text-lg font-medium mb-2">Nenhum template encontrado</p>
+                  <p className="text-gray-500">Tente ajustar os filtros ou buscar por outros termos</p>
+                </Card>
+              )}
             </div>
           </div>
         </div>
