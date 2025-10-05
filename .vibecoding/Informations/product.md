@@ -4,29 +4,130 @@
 **Product:** WebPropostas
 **Domain:** infigital.net
 **Owner:** Fabio Hartmann Fernandes (Metamentes / In-Digital World)
-**Version:** 2.0 (Consolidated & Updated)
+**Version:** 3.0 (Multi-Tier SaaS - Major Realignment)
 **Date:** October 5, 2025
-**Status:** Production Live - Enhancement Planning
+**Status:** Production Live - Multi-Tier Transformation In Progress
 
 ---
 
 ## 0. Context & Current Status
 
 ### Platform Vision
-A **secure, AI-powered web platform** that streamlines the commercial proposal lifecycle from creation to contract signature. The platform enables businesses to import designs from third-party tools (Canva, Gamma), collaborate with clients in real-time, edit with AI assistance, and automatically generate contracts upon approval.
+A **multi-tier SaaS platform** that democratizes professional proposal creation through three pricing tiers (Freemium, Standard, Professional). The platform combines a **visual template builder**, **AI-powered content assistance**, and **client collaboration** to streamline the commercial proposal lifecycle from template creation to contract signature.
+
+### Business Model Evolution
+**Current (Phases 1-19):** Single-tier unlimited access platform
+**Target (Phases 26-42):** Multi-tier SaaS with freemium growth model
+
+**Key Transformation:**
+- 🎯 **Freemium Tier**: Free entry point with PDF-only exports (3 proposals, 1 client)
+- 🎯 **Standard Tier**: R$ 97/month - AI editing + hosted proposals (100/month, 10 clients)
+- 🎯 **Professional Tier**: R$ 247/month - Unlimited + template builder + advanced AI + custom branding
 
 ### Current Implementation Status (October 2025)
+**Phase 1-19 Complete (Foundation Platform):**
 - ✅ **Production Deployment**: Live on Railway infrastructure
 - ✅ **Core Proposal Platform**: Creation, editing, client access operational
 - ✅ **Authentication**: Multi-tenant JWT-based system
 - ✅ **Client Collaboration**: Interactive review with comments and approvals
 - ✅ **Analytics**: Real-time dashboard with conversion tracking
-- 🚧 **AI Features**: OpenAI GPT-4 integration planned (Phase 20)
-- 🚧 **Design Import**: Canva/Gamma pipeline planned (Phase 21)
-- 🚧 **Contract Automation**: Generation and e-signature planned (Phase 23)
 
-### North Star Metric
-**Proposal → Signed Contract conversion rate** and **time-to-close reduction**
+**Phase 26-42 Planned (Multi-Tier Transformation):**
+- 🚧 **Pricing Tiers**: Three-tier SaaS model (Phase 27 - 3 weeks)
+- 🚧 **Payment Integration**: Stripe + Mercado Pago (Phase 28 - 4 weeks)
+- 🚧 **Template Builder**: Visual structured editor (Phase 33-35 - 16 weeks)
+- 🚧 **AI Integration**: GPT-4 with token limits (Phase 36-37 - 6 weeks)
+- 🚧 **Four Dashboards**: Clients, Proposals, Templates, Analytics (Phase 40-41 - 4 weeks)
+
+### North Star Metrics
+**Primary:** Freemium → Paid conversion rate (target: 5-8%)
+**Secondary:** Proposal → Signed Contract conversion rate (target: 40%+)
+**Tertiary:** Monthly Recurring Revenue (MRR) growth
+
+---
+
+## 0.5 Pricing Tiers & Feature Matrix
+
+### Three-Tier SaaS Model
+
+| Feature Category | Freemium (R$ 0) | Standard (R$ 97/mo) | Professional (R$ 247/mo) |
+|------------------|-----------------|---------------------|--------------------------|
+| **Proposals/Month** | 3 total | 100 per month | Unlimited |
+| **Clients** | 1 (name only) | 10 (name + contact) | Unlimited (+ logo) |
+| **Templates** | 3 pre-built (use only) | 10 pre-built + create | Unlimited + save/load |
+| **Template Builder** | ❌ View only | ❌ Create, no save | ✅ Full access + library |
+| **AI Content Editing** | ❌ No | ✅ Basic (50K tokens/mo) | ✅ Advanced (200K tokens/mo) |
+| **Hosting** | ❌ PDF download only (10/mo) | ✅ WebPropostas branding | ✅ Custom branding |
+| **Analytics Dashboard** | ❌ No | ✅ Basic (general + client) | ✅ Advanced (+ product + AI insights) |
+| **Rich Media** | Text only | Text + Images | Text + Images + Videos + Charts |
+| **Client Collaboration** | ❌ No | ✅ Comments + approval | ✅ Full collaboration |
+| **Contract Generation** | ❌ No | ❌ No | ✅ Automated (future) |
+| **Support** | Community | Email (48h) | Priority (24h) + Chat |
+| **2FA Security** | ✅ Yes | ✅ Yes | ✅ Yes |
+| **LGPD Compliance** | ✅ Yes | ✅ Yes | ✅ Yes |
+
+### Pricing Strategy Rationale
+
+**Freemium Tier (R$ 0/month):**
+- **Purpose:** User acquisition, market penetration, viral growth
+- **Target:** Freelancers, students, occasional users
+- **Conversion Goal:** 5-8% to Standard tier within 3 months
+- **Limitations:** PDF-only export forces upgrade for professional hosting
+
+**Standard Tier (R$ 97/month):**
+- **Purpose:** Core revenue generator, small business focus
+- **Target:** Small agencies, consultants, B2B service providers
+- **Value Proposition:** AI editing + hosted proposals + client collaboration
+- **Competitive Position:** 30% cheaper than international competitors (Proposify $49 USD, PandaDoc $49 USD)
+
+**Professional Tier (R$ 247/month):**
+- **Purpose:** Premium features, enterprise capabilities
+- **Target:** Marketing agencies, large consultancies, enterprises
+- **Value Proposition:** Unlimited proposals + template builder + custom branding + advanced AI
+- **Upsell Path:** Template saving is killer feature for agencies with reusable templates
+
+### Annual Pricing (17% Discount)
+- **Standard Annual:** R$ 970/year (save R$ 194 vs monthly)
+- **Professional Annual:** R$ 2,470/year (save R$ 494 vs monthly)
+
+### Revenue Projections (Conservative)
+
+**Year 1 (12 months post-launch):**
+- 1,000 Freemium users (0% revenue, 100% acquisition)
+- 80 Standard annual (R$ 77,600) + 20 Standard monthly (R$ 23,280)
+- 15 Professional annual (R$ 37,050) + 5 Professional monthly (R$ 14,820)
+- **Total Year 1 Revenue:** R$ 152,750 (~$30,750 USD)
+- **MRR by Month 12:** R$ 13,405 (~$2,700 USD)
+
+**Year 2:**
+- 5,000 Freemium users
+- 400 Standard annual + 100 Standard monthly
+- 80 Professional annual + 20 Professional monthly
+- **Total Year 2 Revenue:** R$ 819,120 (~$165,000 USD)
+- **MRR by Month 24:** R$ 68,260 (~$13,750 USD)
+
+**Year 3:**
+- 15,000 Freemium users
+- 1,200 Standard annual + 300 Standard monthly
+- 240 Professional annual + 60 Professional monthly
+- **Total Year 3 Revenue:** R$ 2,487,000 (~$501,000 USD)
+- **MRR by Month 36:** R$ 207,250 (~$41,750 USD)
+
+### Operational Costs (Monthly)
+- Infrastructure (Railway): $57/month
+- AI APIs (OpenAI GPT-4): $300-800/month (scales with usage)
+- Media Storage (Cloudflare R2): $2-20/month
+- Email (Amazon SES): $5-15/month
+- Payment Processing (Stripe): 3.4% + R$ 0.40 per transaction
+- DNS/CDN (Cloudflare): $0-20/month
+- **Total:** ~$557/month average (~R$ 2,785)
+
+**Net Profit Trajectory:**
+- **Year 1:** R$ 10,620/month by Month 12 (79% margin)
+- **Year 2:** R$ 65,475/month by Month 24 (96% margin)
+- **Year 3:** R$ 204,465/month by Month 36 (99% margin)
+
+**Break-Even:** ~175 paid subscribers (mix of Standard/Professional) = Month 3-4 post-launch
 
 ---
 
