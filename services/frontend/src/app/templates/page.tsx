@@ -37,7 +37,6 @@ export default function TemplatesPage() {
   // Fetch templates on mount
   useEffect(() => {
     fetchTemplates();
-    fetchCategories();
     fetchSectors();
   }, []);
 
@@ -58,27 +57,6 @@ export default function TemplatesPage() {
     }
   };
 
-  const fetchCategories = async () => {
-    try {
-      const response = await api.get('/templates/categories');
-      if (response.data.success) {
-        const cats = response.data.data.categories || [];
-        // Add "all" option and count templates per category
-        const categoriesWithCount = cats.map((cat: string) => ({
-          id: cat,
-          name: cat,
-          count: 0 // Will be calculated from templates
-        }));
-        setCategories([
-          { id: 'all', name: 'Todos', count: 0 },
-          ...categoriesWithCount
-        ]);
-      }
-    } catch (err) {
-      console.error('Error fetching categories:', err);
-    }
-  };
-
   const fetchSectors = async () => {
     try {
       const response = await api.get('/templates/sectors');
@@ -94,19 +72,22 @@ export default function TemplatesPage() {
     }
   };
 
-  // Calculate category counts
+  // Calculate category counts when templates change
   useEffect(() => {
-    if (templates.length > 0 && categories.length > 0) {
-      const updatedCategories = categories.map(cat => {
-        if (cat.id === 'all') {
-          return { ...cat, count: templates.length };
-        }
-        return {
-          ...cat,
-          count: templates.filter(t => t.category === cat.id).length
-        };
-      });
-      setCategories(updatedCategories);
+    if (templates.length > 0) {
+      // Get unique categories from templates
+      const uniqueCategories = [...new Set(templates.map(t => t.category))];
+
+      const categoriesWithCount = uniqueCategories.map((cat) => ({
+        id: cat,
+        name: cat,
+        count: templates.filter(t => t.category === cat).length
+      }));
+
+      setCategories([
+        { id: 'all', name: 'Todos', count: templates.length },
+        ...categoriesWithCount
+      ]);
     }
   }, [templates]);
 
