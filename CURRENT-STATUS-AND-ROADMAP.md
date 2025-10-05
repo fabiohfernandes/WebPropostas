@@ -485,159 +485,171 @@
 
 ---
 
-### 📋 PHASE 21: DESIGN IMPORT PIPELINE (6 weeks)
+### 📋 PHASE 21: PROPRIETARY VISUAL EDITOR (6 weeks)
 **Status:** Planned
-**Operational Cost:** $800-1,500/month
-**Lead Agents:** RESEARCHER + VULCAN (Performance)
+**Operational Cost:** $300-800/month
+**Lead Agents:** AURELIA (Design System) + PHOENIX (Interaction Designer) + CANVAS (Visual Editor)
 
-#### Week 1: Canva API Research & Setup
-
-**Day 1-3: API Documentation Analysis**
-- [ ] Review Canva API documentation
-- [ ] Analyze export capabilities and limitations
-- [ ] Design OAuth 2.0 authentication flow
-- [ ] Map API endpoints for design export
-- [ ] Identify supported design elements
-
-**Day 4-5: Authentication Implementation**
-- [ ] Implement Canva OAuth 2.0 flow
-- [ ] Create Canva authentication endpoints
-- [ ] Store Canva tokens securely
-- [ ] Test authentication workflow
-- [ ] Error handling and token refresh
-
-**Success Criteria:**
-- Canva API fully understood
-- Authentication working correctly
-- Token management operational
+**Goal:** Build an in-platform Canva/Gamma-style visual editor for creating proposals without third-party dependencies.
 
 ---
 
-#### Week 2: Gamma API Research & Setup
+#### Week 1: Canvas Foundation & Architecture
 
-**Day 1-3: API Documentation Analysis**
-- [ ] Review Gamma API documentation
-- [ ] Analyze HTML/JSON export options
-- [ ] Design API authentication (key or OAuth)
-- [ ] Map endpoints for slide export
-- [ ] Identify content structure
+**Day 1-2: Canvas Engine Selection**
+- [ ] Evaluate canvas libraries (Fabric.js, Konva.js, Paper.js)
+- [ ] Select optimal library for proposal design
+- [ ] Set up canvas workspace infrastructure
+- [ ] Design layer system architecture
+- [ ] Plan object model (text, shapes, images, groups)
 
-**Day 4-5: Authentication Implementation**
-- [ ] Implement Gamma authentication
-- [ ] Create Gamma export endpoints
-- [ ] Test export workflows
-- [ ] Handle various presentation formats
-- [ ] Error handling implementation
+**Day 3-5: Basic Canvas Implementation**
+- [ ] Initialize canvas component in React
+- [ ] Implement zoom and pan controls
+- [ ] Add canvas grid and rulers
+- [ ] Create layer management system
+- [ ] Implement undo/redo with history stack
 
 **Success Criteria:**
-- Gamma API fully understood
-- Export capability functional
-- Format handling working
+- Canvas library integrated
+- Basic workspace operational
+- Layer system functional
+- Undo/redo working
 
 ---
 
-#### Week 3: Import Pipeline Development
+#### Week 2: Core Design Tools
 
-**Day 1-2: Headless Browser Setup**
-- [ ] Install Puppeteer/Playwright for browser automation
-- [ ] Create fallback import service
-- [ ] Implement design capture system
-- [ ] Screenshot and content extraction
-- [ ] Asset download pipeline
+**Day 1-2: Text Tools**
+- [ ] Text box creation and editing
+- [ ] Rich text formatting (bold, italic, underline, colors)
+- [ ] Font family selector (Google Fonts integration)
+- [ ] Font size and alignment controls
+- [ ] Text effects (shadow, outline, gradient)
 
-**Day 3-5: Visual Fidelity Framework**
-- [ ] Design fidelity validation algorithm (95%+ target)
-- [ ] Layout analysis and comparison
-- [ ] Color and font preservation validation
-- [ ] Image resolution and positioning checks
-- [ ] Create import quality report
+**Day 3-5: Shape & Drawing Tools**
+- [ ] Basic shapes (rectangle, circle, triangle, line)
+- [ ] Shape fill and stroke controls
+- [ ] Shape transformation (resize, rotate, skew)
+- [ ] Custom shapes and vector paths
+- [ ] Shape grouping and alignment tools
 
 **Success Criteria:**
-- Headless browser automation working
-- Visual fidelity validation ≥95%
-- Import quality reporting functional
+- Text editing fully functional
+- Shape tools operational
+- Transformation controls working
+- Alignment guides active
 
 ---
 
-#### Week 4: Asset Processing & Storage
+#### Week 3: Asset Management & Templates
 
-**Day 1-2: S3-Compatible Storage**
-- [ ] Set up S3-compatible storage (Railway or AWS)
-- [ ] Implement asset upload pipeline
-- [ ] Create CDN integration for assets
-- [ ] Image optimization (compression, formats)
-- [ ] Video processing if needed
+**Day 1-2: Image & Media Handling**
+- [ ] Image upload and insertion
+- [ ] Image cropping and filters
+- [ ] Image effects (blur, brightness, contrast)
+- [ ] Video embedding support
+- [ ] Icon library integration (10K+ icons)
 
-**Day 3-5: Asset Management**
-- [ ] Asset versioning system
-- [ ] Duplicate detection and deduplication
-- [ ] Asset library organization
-- [ ] Automatic cleanup for unused assets
-- [ ] CDN cache optimization
+**Day 3-5: Template System**
+- [ ] Template database table and schema
+- [ ] Pre-built template library (15+ templates)
+- [ ] Template categories (presentation, commercial, proposal, report)
+- [ ] Template preview and quick-start
+- [ ] Save custom templates functionality
 
 **Success Criteria:**
-- Storage operational and optimized
-- CDN delivering assets efficiently
-- Asset management system working
+- Media handling operational
+- Template library functional
+- Custom template saving working
+- Template categorization complete
 
 ---
 
-#### Week 5: Editor Integration
+#### Week 4: Advanced Features & Interactivity
 
-**Day 1-3: Import Workflow UI**
-- [ ] Import button in proposal creation
-- [ ] Canva/Gamma selection modal
-- [ ] Authentication flow UI
-- [ ] Design selection interface
-- [ ] Import progress tracking
+**Day 1-2: Smart Elements**
+- [ ] Dynamic text variables ({client_name}, {company}, {value})
+- [ ] Auto-layout and smart spacing
+- [ ] Responsive element positioning
+- [ ] Section templates (header, content, footer)
+- [ ] Style presets and theme system
 
-**Day 4-5: Content Conversion**
-- [ ] Convert imported design to proposal blocks
-- [ ] Map design sections to proposal sections
-- [ ] Preserve formatting and styling
-- [ ] Handle unsupported elements gracefully
-- [ ] Create manual override tools
+**Day 3-5: Collaboration Features**
+- [ ] Real-time collaborative editing (WebSocket)
+- [ ] Cursor presence indicators
+- [ ] Comment annotations on canvas
+- [ ] Version history with visual diff
+- [ ] Share and export options
 
 **Success Criteria:**
-- Import workflow user-friendly
-- Design-to-proposal conversion working
-- Formatting preserved accurately
+- Smart elements working
+- Auto-layout functional
+- Real-time collaboration operational
+- Version control active
 
 ---
 
-#### Week 6: Testing & Optimization
+#### Week 5: Export & Integration
 
-**Day 1-2: Comprehensive Testing**
-- [ ] Test various Canva design types
-- [ ] Test various Gamma presentations
-- [ ] Fidelity validation across designs
-- [ ] Performance testing (import time <30s)
-- [ ] Error scenario handling
+**Day 1-2: Export System**
+- [ ] Export to PNG/JPG (high-resolution)
+- [ ] Export to PDF with vector support
+- [ ] Export to JSON (editable format)
+- [ ] Export to proposal blocks (conversion)
+- [ ] Batch export multiple artboards
 
-**Day 3-4: Optimization**
-- [ ] Reduce import time
-- [ ] Optimize asset processing
-- [ ] Improve visual fidelity algorithms
-- [ ] Enhance error messages
-- [ ] User experience improvements
+**Day 3-5: Proposal Integration**
+- [ ] "Design Mode" toggle in proposal editor
+- [ ] Canvas-to-proposal conversion
+- [ ] Preserve design in proposal sections
+- [ ] Edit canvas from proposal view
+- [ ] Sync changes between canvas and proposal
+
+**Success Criteria:**
+- Export formats working
+- High-quality output achieved
+- Proposal integration seamless
+- Design preserved accurately
+
+---
+
+#### Week 6: Polish, Testing & Launch
+
+**Day 1-2: Performance Optimization**
+- [ ] Canvas rendering optimization
+- [ ] Large file handling (100+ objects)
+- [ ] Memory management and cleanup
+- [ ] Lazy loading for templates and assets
+- [ ] Progressive loading for images
+
+**Day 3-4: User Experience & Testing**
+- [ ] Keyboard shortcuts (Ctrl+C, Ctrl+V, Delete, etc.)
+- [ ] Touch and gesture support (mobile/tablet)
+- [ ] Accessibility features (screen reader, keyboard nav)
+- [ ] Cross-browser compatibility testing
+- [ ] Performance benchmarking
 
 **Day 5: Documentation & Launch**
-- [ ] User guide for import feature
-- [ ] Video tutorials creation
-- [ ] Beta testing with 20 users
+- [ ] User guide and tutorials
+- [ ] Video walkthroughs for editor features
+- [ ] Beta testing with 25 users
 - [ ] Feedback collection and iteration
-- [ ] Production launch preparation
+- [ ] Production deployment
 
 **Success Criteria:**
-- Import time <30 seconds average
-- Visual fidelity ≥95% achieved
-- User satisfaction high
+- Performance targets met (<3s load time)
+- User experience smooth and intuitive
+- Cross-browser compatibility verified
 - Documentation complete
+
+---
 
 **Phase 21 Investment:**
 - Development Time: 6 weeks
-- Operational Cost: $800-1,500/month (ongoing)
-- Team: 20+ integration specialists
+- Operational Cost: $300-800/month (ongoing - storage & CDN)
+- Team: 20+ design and frontend specialists
+- Key Technologies: Fabric.js/Konva.js, React, WebSocket, S3/CDN
 
 ---
 
@@ -913,15 +925,15 @@
 | Phase | Development | Operational Cost (Monthly) |
 |-------|-------------|---------------------------|
 | Phase 20 | 4 weeks | $500-1,000 |
-| Phase 21 | 6 weeks | $800-1,500 |
+| Phase 21 | 6 weeks | $300-800 |
 | Phase 22 | 4 weeks | $1,000-2,000 |
 | Phase 23 | 6 weeks | $200-500 |
 | Phase 24 | 4 weeks | $300-800 |
 | Phase 25 | 3 weeks | $100-300 |
-| **TOTAL** | **27 weeks** | **$2,900-6,100/month** |
+| **TOTAL** | **27 weeks** | **$2,400-5,400/month** |
 
 **Current Operational Cost:** $20/month (Railway base)
-**Future Total Cost:** $2,920-6,120/month
+**Future Total Cost:** $2,420-5,420/month
 
 ---
 
