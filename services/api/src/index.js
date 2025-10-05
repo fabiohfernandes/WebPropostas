@@ -265,6 +265,20 @@ app.post('/api/v1/auth/login', async (req, res) => {
       });
     }
 
+    // First check if there are ANY users in the database
+    const userCountQuery = await pool.query('SELECT COUNT(*) as count FROM users');
+    const totalUsers = parseInt(userCountQuery.rows[0].count);
+
+    if (totalUsers === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No users registered yet',
+        errors: ['Please create your first account to get started'],
+        hint: 'register',
+        noUsersInSystem: true
+      });
+    }
+
     // Check if user exists in database
     const userQuery = await pool.query(
       'SELECT id, name, email, password_hash, role FROM users WHERE email = $1',

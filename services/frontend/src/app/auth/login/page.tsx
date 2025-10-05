@@ -54,7 +54,31 @@ export default function LoginPage() {
       toast.success('Login realizado com sucesso!');
       router.push('/dashboard');
     } catch (error: any) {
-      toast.error(error.message || 'Erro ao fazer login');
+      // Check if it's a "no users in system" error
+      const errorData = error.response?.data;
+
+      if (errorData?.noUsersInSystem || errorData?.hint === 'register') {
+        toast((t) => (
+          <div className="flex flex-col gap-2">
+            <p className="font-medium text-gray-900">Nenhum usuário cadastrado ainda</p>
+            <p className="text-sm text-gray-600">Crie sua primeira conta para começar!</p>
+            <button
+              onClick={() => {
+                toast.dismiss(t.id);
+                router.push('/auth/register');
+              }}
+              className="mt-2 px-3 py-1.5 bg-primary-600 text-white rounded-md text-sm font-medium hover:bg-primary-700 transition-colors"
+            >
+              Criar conta agora →
+            </button>
+          </div>
+        ), {
+          duration: 8000,
+          icon: '👋',
+        });
+      } else {
+        toast.error(error.response?.data?.message || error.message || 'Erro ao fazer login');
+      }
     }
   };
 

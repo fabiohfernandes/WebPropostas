@@ -38,6 +38,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 const API_TIMEOUT = 30000; // 30 seconds
 
 // Create axios instance with default configuration
+// Note: API_BASE_URL should NOT include /api/v1 - it will be added by the route handlers
 const apiClient: AxiosInstance = axios.create({
   baseURL: `${API_BASE_URL}/api/v1`,
   timeout: API_TIMEOUT,

@@ -1,32 +1,59 @@
 # WebPropostas - Current Status & Next Development Roadmap
 
 **Date:** October 5, 2025
-**Current Phase:** Post-Production (Phase 19 Complete)
-**Next Phase:** Phase 20 (AI Integration) - Awaiting Approval
+**Current Phase:** Phase 20 (Local Docker Development & UX Improvements) - COMPLETE
+**Next Phase:** V3.0 Feature Implementation - Planning Stage
+
+---
+
+## 🐳 CURRENT DEVELOPMENT ENVIRONMENT
+
+### ✅ Local Docker Development (Active)
+
+**Development Strategy:**
+```
+implement → test on containers → validate → repeat
+Deploy to Railway: Weekly/Monthly when milestones are stable
+```
+
+**All Services Running Locally:**
+- ✅ Frontend: http://localhost:3001
+- ✅ Backend API: http://localhost:3000
+- ✅ PostgreSQL: localhost:5432
+- ✅ Redis: localhost:6379
+- ✅ Nginx: localhost:80
+
+**Container Status:**
+- ✅ webpropostas-nginx: HEALTHY
+- ✅ webpropostas-api: HEALTHY (524MB)
+- ✅ webpropostas-frontend: HEALTHY (5.71GB)
+- ✅ webpropostas-postgres: HEALTHY
+- ✅ webpropostas-redis: HEALTHY
+
+**Recent UX Improvements (Phase 20):**
+- ✅ Empty database detection on login
+- ✅ Friendly error messages instead of generic failures
+- ✅ Interactive toast with "Create account now →" button
+- ✅ Fixed API URL duplication bug
+- ✅ Proper environment variable configuration
 
 ---
 
 ## 🎉 WHAT'S ALREADY IMPLEMENTED AND WORKING
 
-### ✅ Production Environment (Railway - Live)
+### ✅ Production Environment (Railway - On Hold)
 
-**Frontend:** https://angelic-perception-production.up.railway.app
-**Backend:** https://orcamentosonline-production-2693.up.railway.app
+**Note:** Railway deployment temporarily paused in favor of local iterative development. Will deploy weekly/monthly when major milestones are stable.
 
-**Infrastructure Status:**
-- ✅ PostgreSQL 15 (Railway managed) - Operational
-- ✅ Redis 7 (Railway managed) - Operational
-- ✅ Next.js 14 Frontend - Deployed and running
-- ✅ Node.js/Express Backend API - Deployed and running
-- ✅ SSL/TLS automatic HTTPS - Active
-- ✅ Health checks and monitoring - Configured
-- ✅ Zero-downtime deployment - Ready
+**Last Known Production URLs:**
+- Frontend: https://angelic-perception-production.up.railway.app
+- Backend: https://orcamentosonline-production-2693.up.railway.app
 
-**Performance Metrics (Current):**
-- ✅ Uptime: 99.9% (Railway managed)
-- ✅ Page Load Time: ~2 seconds
-- ✅ API Response Time: <200ms average
-- ✅ Database Query Time: <50ms average
+**Infrastructure Available:**
+- ✅ PostgreSQL 15 (Railway managed)
+- ✅ Redis 7 (Railway managed)
+- ✅ SSL/TLS automatic HTTPS
+- ✅ Zero-downtime deployment ready
 
 ---
 
