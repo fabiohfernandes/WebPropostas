@@ -811,5 +811,292 @@
         }
       ]
     }
+  },
+  {
+    "id": "website-development",
+    "name": "Desenvolvimento de Website",
+    "category": "Tecnologia",
+    "sector": "Desenvolvimento Web",
+    "description": "Template para propostas de criação e desenvolvimento de websites profissionais",
+    "thumbnail": "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=400",
+    "fields": [
+      {
+        "id": "client_name",
+        "label": "Nome do Cliente",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "website_type",
+        "label": "Tipo de Website",
+        "type": "select",
+        "required": true,
+        "options": ["Institucional", "E-commerce", "Blog", "Portal", "Landing Page", "Aplicação Web"]
+      },
+      {
+        "id": "pages_count",
+        "label": "Número de Páginas",
+        "type": "number",
+        "required": true
+      },
+      {
+        "id": "features",
+        "label": "Funcionalidades Incluídas",
+        "type": "textarea",
+        "required": true,
+        "placeholder": "Ex: Formulário de contato, blog, galeria de fotos, integração com redes sociais"
+      },
+      {
+        "id": "responsive",
+        "label": "Design Responsivo",
+        "type": "select",
+        "required": true,
+        "options": ["Sim", "Não"]
+      },
+      {
+        "id": "hosting_included",
+        "label": "Hospedagem Inclusa",
+        "type": "select",
+        "required": true,
+        "options": ["Sim - 1 ano", "Sim - 6 meses", "Não"]
+      },
+      {
+        "id": "seo_included",
+        "label": "SEO Básico Incluso",
+        "type": "select",
+        "required": true,
+        "options": ["Sim", "Não"]
+      },
+      {
+        "id": "price",
+        "label": "Valor do Projeto",
+        "type": "currency",
+        "required": true
+      },
+      {
+        "id": "delivery_days",
+        "label": "Prazo de Entrega (dias)",
+        "type": "number",
+        "required": true
+      },
+      {
+        "id": "payment_conditions",
+        "label": "Condições de Pagamento",
+        "type": "textarea",
+        "required": true
+      }
+    ],
+    "content_template": {
+      "title": "Proposta de Desenvolvimento - Website {{website_type}}",
+      "sections": [
+        {
+          "title": "Apresentação do Projeto",
+          "content": "Prezado(a) {{client_name}},\n\nApresento a proposta para desenvolvimento de website {{website_type}} profissional, moderno e otimizado para conversão."
+        },
+        {
+          "title": "Escopo do Projeto",
+          "content": "🌐 Tipo: {{website_type}}\n📄 Número de Páginas: {{pages_count}}\n📱 Design Responsivo: {{responsive}}\n🔍 SEO Básico: {{seo_included}}\n☁️ Hospedagem: {{hosting_included}}\n\n⚙️ Funcionalidades:\n{{features}}"
+        },
+        {
+          "title": "Tecnologias e Diferenciais",
+          "content": "💻 Tecnologias Utilizadas:\n✅ HTML5, CSS3, JavaScript moderno\n✅ Framework responsivo (Bootstrap/Tailwind)\n✅ Otimização de performance\n✅ Segurança HTTPS\n✅ Backup automático\n\n🎨 Design:\n✅ Layout moderno e profissional\n✅ Identidade visual alinhada à marca\n✅ UX/UI otimizada\n✅ Compatibilidade cross-browser"
+        },
+        {
+          "title": "Investimento e Prazo",
+          "content": "💰 Valor do Projeto: {{price}}\n⏱️ Prazo de Entrega: {{delivery_days}} dias\n\n📋 Condições de Pagamento:\n{{payment_conditions}}\n\n✨ Garantia: 30 dias de suporte pós-lançamento\n🔧 Treinamento: Incluso para gestão de conteúdo"
+        }
+      ]
+    }
+  },
+  {
+    "id": "digital-marketing-campaign",
+    "name": "Campanha de Marketing Digital",
+    "category": "Marketing",
+    "sector": "Marketing Digital",
+    "description": "Template para propostas de campanhas de marketing digital e gestão de redes sociais",
+    "thumbnail": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400",
+    "fields": [
+      {
+        "id": "client_name",
+        "label": "Nome do Cliente",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "campaign_objective",
+        "label": "Objetivo da Campanha",
+        "type": "select",
+        "required": true,
+        "options": ["Branding", "Geração de Leads", "Vendas", "Engajamento", "Tráfego", "Conversão"]
+      },
+      {
+        "id": "platforms",
+        "label": "Plataformas",
+        "type": "textarea",
+        "required": true,
+        "placeholder": "Ex: Instagram, Facebook, Google Ads, LinkedIn"
+      },
+      {
+        "id": "posts_per_week",
+        "label": "Posts por Semana",
+        "type": "number",
+        "required": true
+      },
+      {
+        "id": "campaign_duration",
+        "label": "Duração da Campanha (meses)",
+        "type": "number",
+        "required": true
+      },
+      {
+        "id": "services_included",
+        "label": "Serviços Incluídos",
+        "type": "textarea",
+        "required": true,
+        "placeholder": "Ex: Criação de conteúdo, design gráfico, copywriting, gestão de anúncios"
+      },
+      {
+        "id": "ads_budget",
+        "label": "Orçamento para Mídia Paga (R$/mês)",
+        "type": "currency",
+        "required": false
+      },
+      {
+        "id": "price",
+        "label": "Valor da Gestão Mensal",
+        "type": "currency",
+        "required": true
+      },
+      {
+        "id": "start_date",
+        "label": "Data de Início",
+        "type": "date",
+        "required": true
+      }
+    ],
+    "content_template": {
+      "title": "Proposta de Campanha - {{campaign_objective}}",
+      "sections": [
+        {
+          "title": "Apresentação da Campanha",
+          "content": "Prezado(a) {{client_name}},\n\nApresento a proposta de campanha de marketing digital focada em {{campaign_objective}}, desenvolvida estrategicamente para alcançar seus objetivos de negócio."
+        },
+        {
+          "title": "Estratégia e Canais",
+          "content": "🎯 Objetivo: {{campaign_objective}}\n📱 Plataformas:\n{{platforms}}\n\n📊 Frequência: {{posts_per_week}} posts por semana\n📅 Duração: {{campaign_duration}} meses\n🗓️ Início: {{start_date}}\n\n{{#if ads_budget}}💸 Budget de Mídia: {{ads_budget}}/mês{{/if}}"
+        },
+        {
+          "title": "Serviços Incluídos",
+          "content": "📦 Entregas:\n{{services_included}}\n\n📈 Relatórios:\n✅ Relatório semanal de performance\n✅ Dashboard em tempo real\n✅ Análise de métricas e KPIs\n✅ Relatório mensal detalhado\n✅ Reunião mensal de resultados"
+        },
+        {
+          "title": "Investimento",
+          "content": "💰 Gestão Mensal: {{price}}\n{{#if ads_budget}}💸 Mídia Paga: {{ads_budget}}/mês (cobrado separadamente)\n{{/if}}\n🎁 Bônus:\n✅ Setup inicial sem custo adicional\n✅ Calendário editorial personalizado\n✅ Banco de hashtags estratégicas\n✅ Templates para stories\n✅ Primeira consultoria de branding gratuita\n\n📋 Contrato: Mínimo {{campaign_duration}} meses\n💳 Pagamento: Mensalidade adiantada"
+        }
+      ]
+    }
+  },
+  {
+    "id": "software-development",
+    "name": "Desenvolvimento de Software",
+    "category": "Tecnologia",
+    "sector": "Desenvolvimento de Software",
+    "description": "Template para propostas de desenvolvimento de sistemas e aplicações sob medida",
+    "thumbnail": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400",
+    "fields": [
+      {
+        "id": "client_name",
+        "label": "Nome do Cliente",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "software_type",
+        "label": "Tipo de Software",
+        "type": "select",
+        "required": true,
+        "options": ["Sistema Web", "Aplicativo Mobile", "API/Backend", "Desktop", "Automação", "Integrações"]
+      },
+      {
+        "id": "platform",
+        "label": "Plataforma",
+        "type": "select",
+        "required": true,
+        "options": ["Web", "iOS", "Android", "iOS + Android", "Windows", "macOS", "Linux", "Multi-plataforma"]
+      },
+      {
+        "id": "main_features",
+        "label": "Funcionalidades Principais",
+        "type": "textarea",
+        "required": true,
+        "placeholder": "Ex: Autenticação de usuários, dashboard administrativo, relatórios, integração com APIs"
+      },
+      {
+        "id": "integrations",
+        "label": "Integrações Necessárias",
+        "type": "textarea",
+        "required": false,
+        "placeholder": "Ex: ERP, CRM, gateways de pagamento, sistemas legados"
+      },
+      {
+        "id": "users_estimated",
+        "label": "Usuários Estimados",
+        "type": "number",
+        "required": true
+      },
+      {
+        "id": "development_methodology",
+        "label": "Metodologia",
+        "type": "select",
+        "required": true,
+        "options": ["Ágil (Scrum)", "Kanban", "Cascata", "Híbrida"]
+      },
+      {
+        "id": "price",
+        "label": "Valor do Projeto",
+        "type": "currency",
+        "required": true
+      },
+      {
+        "id": "delivery_weeks",
+        "label": "Prazo de Entrega (semanas)",
+        "type": "number",
+        "required": true
+      },
+      {
+        "id": "payment_conditions",
+        "label": "Condições de Pagamento",
+        "type": "textarea",
+        "required": true
+      },
+      {
+        "id": "maintenance_included",
+        "label": "Manutenção Inclusa",
+        "type": "select",
+        "required": true,
+        "options": ["3 meses", "6 meses", "12 meses", "Não inclusa"]
+      }
+    ],
+    "content_template": {
+      "title": "Proposta de Desenvolvimento - {{software_type}}",
+      "sections": [
+        {
+          "title": "Visão Geral do Projeto",
+          "content": "Prezado(a) {{client_name}},\n\nApresento a proposta para desenvolvimento de {{software_type}} customizado para atender às necessidades específicas do seu negócio."
+        },
+        {
+          "title": "Especificações Técnicas",
+          "content": "💻 Tipo: {{software_type}}\n📱 Plataforma: {{platform}}\n👥 Usuários Estimados: {{users_estimated}}\n🔄 Metodologia: {{development_methodology}}\n\n⚙️ Funcionalidades Principais:\n{{main_features}}\n\n{{#if integrations}}🔌 Integrações:\n{{integrations}}{{/if}}"
+        },
+        {
+          "title": "Stack Tecnológica e Arquitetura",
+          "content": "🏗️ Arquitetura:\n✅ Clean Architecture / MVC\n✅ RESTful API / GraphQL\n✅ Microserviços (se aplicável)\n✅ Cloud-native\n✅ Escalável e segura\n\n🛠️ Tecnologias:\n✅ Backend: Node.js / Python / Java\n✅ Frontend: React / Vue / Angular\n✅ Database: PostgreSQL / MongoDB\n✅ DevOps: Docker, CI/CD\n✅ Testes automatizados\n✅ Documentação completa"
+        },
+        {
+          "title": "Investimento e Cronograma",
+          "content": "💰 Valor do Projeto: {{price}}\n⏱️ Prazo de Entrega: {{delivery_weeks}} semanas\n🛡️ Manutenção: {{maintenance_included}}\n\n📋 Condições de Pagamento:\n{{payment_conditions}}\n\n📆 Etapas:\n1️⃣ Levantamento de requisitos (1 semana)\n2️⃣ Prototipação e validação (2 semanas)\n3️⃣ Desenvolvimento ({{delivery_weeks - 5}} semanas)\n4️⃣ Testes e homologação (1 semana)\n5️⃣ Deploy e treinamento (1 semana)\n\n✨ Incluso:\n✅ Código-fonte documentado\n✅ Treinamento da equipe\n✅ Manual do usuário\n✅ Suporte pós-lançamento"
+        }
+      ]
+    }
   }
 ]

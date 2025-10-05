@@ -25,7 +25,8 @@
       "Bash(docker:*)",
       "Bash(node:*)",
       "Bash(export DATABASE_URL=\"postgresql://webpropostas_user:dev_postgres_password_123@localhost:5432/webpropostas\")",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(psql:*)"
     ],
     "deny": [],
     "ask": []
