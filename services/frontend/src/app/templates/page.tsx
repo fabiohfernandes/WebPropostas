@@ -37,7 +37,6 @@ export default function TemplatesPage() {
   // Fetch templates on mount
   useEffect(() => {
     fetchTemplates();
-    fetchSectors();
   }, []);
 
   const fetchTemplates = async () => {
@@ -57,21 +56,6 @@ export default function TemplatesPage() {
     }
   };
 
-  const fetchSectors = async () => {
-    try {
-      const response = await api.get('/templates/sectors');
-      if (response.data.success) {
-        const sects = response.data.data.sectors || [];
-        setSectors([
-          { id: 'all', name: 'Todos os Setores' },
-          ...sects.map((s: string) => ({ id: s, name: s }))
-        ]);
-      }
-    } catch (err) {
-      console.error('Error fetching sectors:', err);
-    }
-  };
-
   // Calculate category counts when templates change
   useEffect(() => {
     if (templates.length > 0) {
@@ -87,6 +71,13 @@ export default function TemplatesPage() {
       setCategories([
         { id: 'all', name: 'Todos', count: templates.length },
         ...categoriesWithCount
+      ]);
+
+      // Get unique sectors from templates
+      const uniqueSectors = [...new Set(templates.map(t => t.sector))];
+      setSectors([
+        { id: 'all', name: 'Todos os Setores' },
+        ...uniqueSectors.map(sector => ({ id: sector, name: sector }))
       ]);
     }
   }, [templates]);
