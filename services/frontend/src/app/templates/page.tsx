@@ -33,6 +33,7 @@ export default function TemplatesPage() {
   const [sectors, setSectors] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
 
   // Fetch templates on mount
   useEffect(() => {
@@ -236,6 +237,7 @@ export default function TemplatesPage() {
                     <div
                       key={template.id}
                       className="group cursor-pointer"
+                      onClick={() => setSelectedTemplate(template)}
                     >
                       <div className={`relative aspect-[4/5] rounded-xl bg-gradient-to-br ${getTemplateColor(template.category)} p-1 overflow-hidden transition-transform group-hover:scale-105`}>
                         <div className="absolute top-4 right-4 z-10">
@@ -251,7 +253,15 @@ export default function TemplatesPage() {
                         </div>
                       </div>
                       <div className="mt-3 space-y-2">
-                        <Button variant="outline" size="sm" fullWidth>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          fullWidth
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedTemplate(template);
+                          }}
+                        >
                           Visualizar Template
                         </Button>
                         <p className="text-xs text-gray-500 text-center">{template.category}</p>
@@ -286,6 +296,91 @@ export default function TemplatesPage() {
           <Button size="lg">Criar Template Personalizado</Button>
         </div>
       </section>
+
+      {/* Template Detail Modal */}
+      {selectedTemplate && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedTemplate(null)}
+        >
+          <div
+            className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className={`relative bg-gradient-to-br ${getTemplateColor(selectedTemplate.category)} p-8 text-white`}>
+              <button
+                onClick={() => setSelectedTemplate(null)}
+                className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-lg transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <DocumentTextIcon className="w-16 h-16 mb-4 opacity-80" />
+              <h2 className="text-3xl font-bold mb-2">{selectedTemplate.name}</h2>
+              <p className="text-white/90 mb-4">{selectedTemplate.description}</p>
+              <div className="flex gap-3">
+                <Badge variant="default" size="sm" className="bg-white/20 text-white border-white/30">
+                  {selectedTemplate.category}
+                </Badge>
+                <Badge variant="default" size="sm" className="bg-white/20 text-white border-white/30">
+                  {selectedTemplate.sector}
+                </Badge>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-8">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Campos do Template</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                {selectedTemplate.fields.map((field: any) => (
+                  <div key={field.id} className="p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-medium text-gray-900">{field.label}</span>
+                      {field.required && (
+                        <span className="text-xs text-red-500">Obrigatório</span>
+                      )}
+                    </div>
+                    <span className="text-sm text-gray-500 capitalize">{field.type}</span>
+                  </div>
+                ))}
+              </div>
+
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Seções da Proposta</h3>
+              <div className="space-y-4 mb-8">
+                {selectedTemplate.content_template.sections.map((section: any, idx: number) => (
+                  <div key={idx} className="p-4 bg-gray-50 rounded-lg">
+                    <h4 className="font-medium text-gray-900 mb-2">{section.title}</h4>
+                    <p className="text-sm text-gray-600 whitespace-pre-line">{section.content}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex gap-4">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  fullWidth
+                  onClick={() => {
+                    // TODO: Navigate to create proposal with this template
+                    alert('Funcionalidade em desenvolvimento: Criar proposta com este template');
+                  }}
+                >
+                  Usar Este Template
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => setSelectedTemplate(null)}
+                >
+                  Fechar
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </PublicLayout>
   );
 }
