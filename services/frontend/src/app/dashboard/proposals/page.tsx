@@ -418,56 +418,6 @@ export default function ProposalsPage() {
           )}
         </div>
 
-        {/* Quick Actions */}
-        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <Link
-            href="/dashboard/proposals/create"
-            className={`bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-gray-200/50 dark:border-gray-700/50 shadow-lg rounded-xl p-6 hover:scale-105 transition-all duration-200 cursor-pointer group`}
-          >
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <PlusIcon className={`h-8 w-8 text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:text-blue-300`} />
-              </div>
-              <div className="ml-4">
-                <h3 className={`text-lg font-medium text-gray-900 dark:text-white`}>Criar Proposta</h3>
-                <p className={`text-sm text-gray-500 dark:text-gray-400`}>
-                  Comece uma nova proposta do zero
-                </p>
-              </div>
-            </div>
-          </Link>
-
-          <Link
-            href="/dashboard"
-            className={`bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-gray-200/50 dark:border-gray-700/50 shadow-lg rounded-xl p-6 hover:scale-105 transition-all duration-200 cursor-pointer group`}
-          >
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <CurrencyDollarIcon className={`h-8 w-8 text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:text-blue-300`} />
-              </div>
-              <div className="ml-4">
-                <h3 className={`text-lg font-medium text-gray-900 dark:text-white`}>Dashboard</h3>
-                <p className={`text-sm text-gray-500 dark:text-gray-400`}>
-                  Visualize estatísticas e métricas
-                </p>
-              </div>
-            </div>
-          </Link>
-
-          <div className={`bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-gray-200/50 dark:border-gray-700/50 shadow-lg rounded-xl p-6 group`}>
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <DocumentTextIcon className={`h-8 w-8 text-blue-600 dark:text-blue-400`} />
-              </div>
-              <div className="ml-4">
-                <h3 className={`text-lg font-medium text-gray-900 dark:text-white`}>Templates</h3>
-                <p className={`text-sm text-gray-500 dark:text-gray-400`}>
-                  Modelos de propostas (em breve)
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Credentials Modal */}

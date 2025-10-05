@@ -22,6 +22,7 @@ import {
   MagnifyingGlassIcon,
   UserCircleIcon,
   ArrowRightOnRectangleIcon,
+  RectangleStackIcon,
 } from '@heroicons/react/24/outline';
 import { appConfig } from '@/config';
 
@@ -33,6 +34,7 @@ const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   { name: 'Propostas', href: '/dashboard/proposals', icon: DocumentTextIcon },
   { name: 'Clientes', href: '/dashboard/clients', icon: UserGroupIcon },
+  { name: 'Templates', href: '/templates', icon: RectangleStackIcon },
   { name: 'Relatórios', href: '/dashboard/reports', icon: ChartBarIcon },
   { name: 'Configurações', href: '/dashboard/settings', icon: Cog6ToothIcon },
 ];
