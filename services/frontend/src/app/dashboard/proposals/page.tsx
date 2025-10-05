@@ -192,9 +192,9 @@ export default function ProposalsPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className={`text-center p-8 rounded-xl bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-gray-200/50 dark:border-gray-700/50 shadow-lg`}>
+        <div className="text-center p-8 rounded-xl bg-white/90 backdrop-blur-lg border border-gray-200/50 shadow-lg">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className={`mt-4 text-gray-900 dark:text-white`}>Carregando propostas...</p>
+          <p className="mt-4 text-gray-900">Carregando propostas...</p>
         </div>
       </div>
     );
@@ -203,19 +203,19 @@ export default function ProposalsPage() {
   return (
     <div>
       {/* Header */}
-      <div className={`bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-gray-200/50 dark:border-gray-700/50 shadow-lg border-b border-gray-200 dark:border-gray-700 mx-4 mt-4 rounded-xl`}>
+      <div className="bg-white/90 backdrop-blur-lg border border-gray-200/50 shadow-lg border-b border-gray-200 mx-4 mt-4 rounded-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div>
-              <h1 className={`text-2xl font-bold text-gray-900 dark:text-white`}>Gestão de Propostas</h1>
-              <p className={`mt-1 text-sm text-gray-500 dark:text-gray-400`}>
+              <h1 className="text-2xl font-bold text-gray-900">Gestão de Propostas</h1>
+              <p className="mt-1 text-sm text-gray-500">
                 Gerencie todas as suas propostas comerciais
               </p>
             </div>
             <div className="flex items-center space-x-3">
               <Link
                 href="/dashboard/proposals/create"
-                className={`bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center text-sm font-medium transition-all duration-200`}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center text-sm font-medium transition-all duration-200"
               >
                 <PlusIcon className="h-5 w-5 mr-2" />
                 Nova Proposta
@@ -227,10 +227,10 @@ export default function ProposalsPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search and Filters */}
-        <div className={`bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-gray-200/50 dark:border-gray-700/50 shadow-lg p-6 mb-6 rounded-xl`}>
+        <div className="bg-white/90 backdrop-blur-lg border border-gray-200/50 shadow-lg p-6 mb-6 rounded-xl">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div className="sm:col-span-2">
-              <label htmlFor="search" className={`block text-sm font-medium text-gray-900 dark:text-white mb-2`}>
+              <label htmlFor="search" className="block text-sm font-medium text-gray-900 mb-2">
                 Buscar propostas
               </label>
               <input
@@ -239,18 +239,18 @@ export default function ProposalsPage() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Buscar por nome da proposta ou cliente..."
-                className={`w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white px-3 py-2 rounded-lg focus:ring-2 transition-all duration-200`}
+                className="w-full bg-white border border-gray-300 text-gray-900 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               />
             </div>
             <div>
-              <label htmlFor="status" className={`block text-sm font-medium text-gray-900 dark:text-white mb-2`}>
+              <label htmlFor="status" className="block text-sm font-medium text-gray-900 mb-2">
                 Status
               </label>
               <select
                 id="status"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className={`w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white px-3 py-2 rounded-lg focus:ring-2 transition-all duration-200`}
+                className="w-full bg-white border border-gray-300 text-gray-900 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               >
                 <option value="all">Todos os status</option>
                 <option value="open">Abertas</option>
@@ -262,11 +262,11 @@ export default function ProposalsPage() {
         </div>
 
         {/* Proposals Table */}
-        <div className={`bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-gray-200/50 dark:border-gray-700/50 shadow-lg rounded-xl`}>
-          <div className={`px-6 py-4 border-b border-gray-200 dark:border-gray-700`}>
+        <div className="bg-white/90 backdrop-blur-lg border border-gray-200/50 shadow-lg rounded-xl">
+          <div className="px-6 py-4 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <h2 className={`text-lg font-semibold text-gray-900 dark:text-white`}>Suas Propostas</h2>
-              <span className={`text-sm text-gray-500 dark:text-gray-400`}>
+              <h2 className="text-lg font-semibold text-gray-900">Suas Propostas</h2>
+              <span className="text-sm text-gray-500">
                 {filteredProposals.length} de {proposals.length} proposta(s)
               </span>
             </div>
@@ -274,17 +274,17 @@ export default function ProposalsPage() {
 
           {filteredProposals.length === 0 ? (
             <div className="p-12 text-center">
-              <DocumentTextIcon className={`mx-auto h-12 w-12 text-gray-500 dark:text-gray-400`} />
+              <DocumentTextIcon className="mx-auto h-12 w-12 text-gray-400" />
               {proposals.length === 0 ? (
                 <>
-                  <h3 className={`mt-2 text-sm font-medium text-gray-900 dark:text-white`}>Nenhuma proposta ainda</h3>
-                  <p className={`mt-1 text-sm text-gray-500 dark:text-gray-400`}>
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">Nenhuma proposta ainda</h3>
+                  <p className="mt-1 text-sm text-gray-500">
                     Comece criando sua primeira proposta.
                   </p>
                   <div className="mt-6">
                     <Link
                       href="/dashboard/proposals/create"
-                      className={`bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 inline-flex items-center`}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 inline-flex items-center"
                     >
                       <PlusIcon className="h-4 w-4 mr-2" />
                       Criar Primeira Proposta
@@ -293,8 +293,8 @@ export default function ProposalsPage() {
                 </>
               ) : (
                 <>
-                  <h3 className={`mt-2 text-sm font-medium text-gray-900 dark:text-white`}>Nenhuma proposta encontrada</h3>
-                  <p className={`mt-1 text-sm text-gray-500 dark:text-gray-400`}>
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">Nenhuma proposta encontrada</h3>
+                  <p className="mt-1 text-sm text-gray-500">
                     Tente ajustar os filtros de busca ou status.
                   </p>
                   <div className="mt-6">
@@ -303,7 +303,7 @@ export default function ProposalsPage() {
                         setSearchTerm('');
                         setStatusFilter('all');
                       }}
-                      className={`bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200`}
+                      className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
                     >
                       Limpar Filtros
                     </button>
@@ -313,50 +313,50 @@ export default function ProposalsPage() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className={`min-w-full divide-y border-gray-200 dark:border-gray-700`}>
-                <thead className={`bg-gray-100 dark:bg-gray-700`}>
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
                   <tr>
-                    <th className={`px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider`}>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Proposta
                     </th>
-                    <th className={`px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider`}>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Cliente
                     </th>
-                    <th className={`px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider`}>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Valor
                     </th>
-                    <th className={`px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider`}>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className={`px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider`}>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Data
                     </th>
-                    <th className={`px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider`}>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Ações
                     </th>
                   </tr>
                 </thead>
-                <tbody className={`divide-y border-gray-200 dark:border-gray-700`}>
+                <tbody className="bg-white divide-y divide-gray-200">
                   {filteredProposals.map((proposal) => (
-                    <tr key={proposal.id} className={`hover:bg-gray-100 dark:bg-gray-700 transition-colors`}>
+                    <tr key={proposal.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           {getStatusIcon(proposal.status)}
                           <div className="ml-3">
-                            <div className={`text-sm font-medium text-gray-900 dark:text-white`}>
+                            <div className="text-sm font-medium text-gray-900">
                               {proposal.proposal_name}
                             </div>
-                            <div className={`text-sm text-gray-500 dark:text-gray-400`}>
+                            <div className="text-sm text-gray-500">
                               {proposal.job_name}
                             </div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className={`text-sm text-gray-900 dark:text-white`}>{proposal.client_name}</div>
+                        <div className="text-sm text-gray-900">{proposal.client_name}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className={`text-sm font-semibold text-gray-900 dark:text-white`}>
+                        <div className="text-sm font-semibold text-gray-900">
                           {proposal.proposal_value > 0 ? (
                             new Intl.NumberFormat('pt-BR', {
                               style: 'currency',
@@ -370,7 +370,7 @@ export default function ProposalsPage() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         {getStatusBadge(proposal.status)}
                       </td>
-                      <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400`}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {new Date(proposal.created_at).toLocaleDateString('pt-BR')}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -378,7 +378,7 @@ export default function ProposalsPage() {
                           {proposal.public_token && (
                             <button
                               onClick={() => copyProposalLink(proposal.public_token)}
-                              className={`text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:text-blue-300 transition-colors p-1 rounded`}
+                              className="text-blue-600 hover:text-blue-700 transition-colors p-1 rounded"
                               title="Copiar link"
                             >
                               <ShareIcon className="h-4 w-4" />
@@ -395,7 +395,7 @@ export default function ProposalsPage() {
 
                           <Link
                             href={`/dashboard/proposals/${proposal.id}/edit`}
-                            className={`text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:text-white transition-colors p-1 rounded`}
+                            className="text-gray-500 hover:text-gray-900 transition-colors p-1 rounded"
                             title="Editar"
                           >
                             <PencilIcon className="h-4 w-4" />
@@ -423,15 +423,15 @@ export default function ProposalsPage() {
       {/* Credentials Modal */}
       {showCredentialsModal && selectedProposal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className={`bg-white dark:bg-gray-800 backdrop-blur-xl border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl max-w-md w-full`}>
-            <div className={`flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700`}>
-              <h3 className={`text-lg font-medium text-gray-900 dark:text-white flex items-center`}>
+          <div className="bg-white backdrop-blur-xl border border-gray-200 rounded-xl shadow-2xl max-w-md w-full">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-lg font-medium text-gray-900 flex items-center">
                 <LockClosedIcon className="h-5 w-5 mr-2 text-green-500" />
                 Credenciais de Acesso do Cliente
               </h3>
               <button
                 onClick={() => setShowCredentialsModal(false)}
-                className={`text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:text-white transition-colors p-1 rounded`}
+                className="text-gray-500 hover:text-gray-900 transition-colors p-1 rounded"
               >
                 <XMarkIcon className="h-6 w-6" />
               </button>
@@ -439,17 +439,17 @@ export default function ProposalsPage() {
 
             <div className="p-6">
               <div className="mb-4">
-                <h4 className={`text-sm font-medium text-gray-900 dark:text-white mb-2`}>
+                <h4 className="text-sm font-medium text-gray-900 mb-2">
                   Proposta: {selectedProposal.proposal_name}
                 </h4>
-                <p className={`text-sm text-gray-500 dark:text-gray-400`}>
+                <p className="text-sm text-gray-500">
                   Cliente: {selectedProposal.client_name}
                 </p>
               </div>
 
-              <div className={`bg-gray-100 dark:bg-gray-700 rounded-lg p-4 space-y-3`}>
+              <div className="bg-gray-100 rounded-lg p-4 space-y-3">
                 <div>
-                  <label className={`block text-sm font-medium text-gray-900 dark:text-white mb-1`}>
+                  <label className="block text-sm font-medium text-gray-900 mb-1">
                     Usuário de Acesso
                   </label>
                   <div className="flex items-center space-x-2">
@@ -457,11 +457,11 @@ export default function ProposalsPage() {
                       type="text"
                       value={selectedProposal.client_username}
                       readOnly
-                      className={`flex-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white px-3 py-2 rounded-lg text-sm`}
+                      className="flex-1 bg-white border border-gray-300 text-gray-900 px-3 py-2 rounded-lg text-sm"
                     />
                     <button
                       onClick={() => navigator.clipboard.writeText(selectedProposal.client_username)}
-                      className={`bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm transition-all duration-200`}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm transition-all duration-200"
                     >
                       Copiar
                     </button>
@@ -469,7 +469,7 @@ export default function ProposalsPage() {
                 </div>
 
                 <div>
-                  <label className={`block text-sm font-medium text-gray-900 dark:text-white mb-1`}>
+                  <label className="block text-sm font-medium text-gray-900 mb-1">
                     Senha de Acesso
                   </label>
                   <div className="flex items-center space-x-2">
@@ -477,11 +477,11 @@ export default function ProposalsPage() {
                       type="text"
                       value={selectedProposal.client_password_display || 'Não disponível'}
                       readOnly
-                      className={`flex-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white px-3 py-2 rounded-lg text-sm`}
+                      className="flex-1 bg-white border border-gray-300 text-gray-900 px-3 py-2 rounded-lg text-sm"
                     />
                     <button
                       onClick={() => navigator.clipboard.writeText(selectedProposal.client_password_display || '')}
-                      className={`bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm transition-all duration-200`}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm transition-all duration-200"
                       disabled={!selectedProposal.client_password_display}
                     >
                       Copiar
@@ -493,7 +493,7 @@ export default function ProposalsPage() {
               <div className="mt-6 flex justify-between">
                 <button
                   onClick={() => copyCredentials(selectedProposal.client_username, selectedProposal.client_password_display || '')}
-                  className="px-4 py-2 bg-green-600/90 hover:bg-green-700/90 text-white rounded-lg text-sm transition-all duration-200 flex items-center backdrop-blur-sm"
+                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-all duration-200 flex items-center"
                 >
                   <ClipboardDocumentCheckIcon className="h-4 w-4 mr-2" />
                   Copiar Ambos
@@ -501,14 +501,14 @@ export default function ProposalsPage() {
 
                 <button
                   onClick={() => setShowCredentialsModal(false)}
-                  className={`bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg text-sm transition-all duration-200`}
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm transition-all duration-200"
                 >
                   Fechar
                 </button>
               </div>
 
-              <div className="mt-4 p-3 bg-base-200 rounded-lg border border-primary/30">
-                <p className={`text-xs text-gray-500 dark:text-gray-400`}>
+              <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <p className="text-xs text-gray-600">
                   <strong>Nota:</strong> Compartilhe essas credenciais com o cliente para que ele possa acessar a proposta.
                 </p>
               </div>
