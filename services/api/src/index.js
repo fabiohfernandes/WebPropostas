@@ -37,6 +37,7 @@ const {
 const { router: proposalPlatformRouter, initializePool } = require('./routes/proposal-platform');
 const { router: clientAuthRouter, initializePool: initializeClientPool } = require('./routes/client-auth');
 const aiProposalsRouter = require('./routes/ai-proposals');
+const templatesRouter = require('./routes/templates');
 
 // Initialize Express app
 const app = express();
@@ -200,6 +201,9 @@ app.use('/api/v1/client', clientAuthRouter);
 
 // Mount AI proposals routes (V2 - Phase 0)
 app.use('/api/v1/ai/proposals', authenticateToken, aiProposalsRouter);
+
+// Mount templates routes
+app.use('/api/v1/templates', templatesRouter);
 
 // Simple test endpoint
 app.get('/api/v1/test', (req, res) => {

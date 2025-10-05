@@ -22,7 +22,10 @@
       "Bash(cat:*)",
       "Bash(else echo \"❌ .env file NOT found - need to create\")",
       "Bash(fi)",
-      "Bash(docker:*)"
+      "Bash(docker:*)",
+      "Bash(node:*)",
+      "Bash(export DATABASE_URL=\"postgresql://webpropostas_user:dev_postgres_password_123@localhost:5432/webpropostas\")",
+      "Bash(python:*)"
     ],
     "deny": [],
     "ask": []
