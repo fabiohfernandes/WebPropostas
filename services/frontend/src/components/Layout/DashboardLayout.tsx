@@ -31,10 +31,10 @@ interface DashboardLayoutProps {
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
-  { name: 'Propostas', href: '/proposals', icon: DocumentTextIcon },
-  { name: 'Clientes', href: '/clients', icon: UserGroupIcon },
-  { name: 'Relatórios', href: '/reports', icon: ChartBarIcon },
-  { name: 'Configurações', href: '/settings', icon: Cog6ToothIcon },
+  { name: 'Propostas', href: '/dashboard/proposals', icon: DocumentTextIcon },
+  { name: 'Clientes', href: '/dashboard/clients', icon: UserGroupIcon },
+  { name: 'Relatórios', href: '/dashboard/reports', icon: ChartBarIcon },
+  { name: 'Configurações', href: '/dashboard/settings', icon: Cog6ToothIcon },
 ];
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
