@@ -327,6 +327,37 @@ curl http://localhost:3000/api/v1/templates | jq '.data.templates | length'
 
 ---
 
-**Last Updated**: 2025-10-05
+## 🔮 FUTURE VISION: Metaverse Proposals (2027-2030)
+
+### Long-Term Roadmap Documentation
+
+**Vision Document:** [WebPropostas_WishList.md](docs/planning/WebPropostas_WishList.md) - Feature #2
+
+**Concept:** Transform 2D proposals into fully immersive 3D metaverse experiences
+
+**Key Features (Future):**
+- 🌐 VR/AR virtual environments clients can walk through
+- 🤖 MetaHuman AI avatars with sector-specific personalities
+- 🏠 Real estate: Walk through apartments, experience solar insolation
+- 🚗 Automotive: Virtual test drives with full interaction
+- 🎨 Design: Immersive 3D mood boards and office spaces
+- 🕶️ Multi-platform: VR headsets, AR mobile, desktop 3D
+
+**Tech Stack (Planned):**
+- Unreal Engine 5 / Unity 6
+- MetaHuman Creator (Epic Games)
+- GPT-5/6 for AI personalities
+- WebXR API for browser-based VR/AR
+- NVIDIA CloudXR for streaming
+
+**Pricing Tier (2029):** R$ 997/mês (Metaverse tier)
+
+**Status:** 🔮 Visionary concept for 2027-2030 implementation
+
+**Reference:** See complete 25-page specification in [WebPropostas_WishList.md](docs/planning/WebPropostas_WishList.md)
+
+---
+
+**Last Updated**: 2025-10-06
 **Purpose**: Prevent wasting time searching for basic system information
 **Usage**: Read this FIRST when confused about data flow, storage, or connectivity
