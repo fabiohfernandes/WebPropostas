@@ -1,6 +1,10 @@
 # WebPropostas System Map
 **Quick Reference - Read This First When Lost**
 
+> **📝 LIVING DOCUMENT**: This file is continuously updated whenever new system components,
+> configurations, or important patterns are created. Always check here first before searching
+> the codebase to avoid wasting tokens.
+
 ## 🗄️ DATABASE CONFIGURATION
 
 ### Active Databases
