@@ -33,6 +33,13 @@ const {
   LEGAL_BASES
 } = require('./middleware/lgpd');
 
+// Import Swagger documentation
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
+
+// Import cache utility
+const cache = require('./utils/cache');
+
 // Import proposal platform routes
 const { router: proposalPlatformRouter, initializePool } = require('./routes/proposal-platform');
 const { router: clientAuthRouter, initializePool: initializeClientPool } = require('./routes/client-auth');
@@ -204,6 +211,19 @@ app.use('/api/v1/ai/proposals', authenticateToken, aiProposalsRouter);
 
 // Mount templates routes
 app.use('/api/v1/templates', templatesRouter);
+
+// Swagger API Documentation
+app.use('/api/v1/docs', swaggerUi.serve);
+app.get('/api/v1/docs', swaggerUi.setup(swaggerSpec, {
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'WebPropostas API Documentation'
+}));
+
+// Swagger JSON endpoint
+app.get('/api/v1/docs.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
 
 // Simple test endpoint
 app.get('/api/v1/test', (req, res) => {
@@ -1254,13 +1274,26 @@ process.on('SIGINT', async () => {
     await initializeSchema();
     logger.info('Database schema ready');
 
+    // Initialize Redis cache
+    logger.info('Initializing Redis cache...');
+    await cache.initializeRedis();
+
+    if (cache.isConnected) {
+      // Warm up cache with frequently accessed data
+      await cache.warmupCache(pool);
+      logger.info('✅ Redis cache initialized and warmed up');
+    } else {
+      logger.warn('⚠️  Redis not available - running without cache (degraded mode)');
+    }
+
     // Start server
     // Bind to 0.0.0.0 to accept connections in Railway container environment
     app.listen(port, '0.0.0.0', () => {
       logger.info(`🚀 WebPropostas API server started on port ${port}`, {
         port,
         environment: process.env.NODE_ENV || 'development',
-        pid: process.pid
+        pid: process.pid,
+        cacheEnabled: cache.isConnected
       });
     });
   } catch (error) {

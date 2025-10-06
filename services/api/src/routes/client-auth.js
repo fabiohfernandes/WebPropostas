@@ -24,6 +24,75 @@ const initializePool = (dbPool) => {
   pool = dbPool;
 };
 
+/**
+ * @swagger
+ * /api/v1/client/login:
+ *   post:
+ *     tags:
+ *       - Client Authentication
+ *     summary: Login de cliente para acesso a proposta
+ *     description: Endpoint para clientes acessarem suas propostas com credenciais únicas
+ *     security: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: Nome de usuário único fornecido ao cliente
+ *                 example: "cliente_abc123"
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 description: Senha fornecida ao cliente
+ *                 example: "SenhaSegura123!"
+ *     responses:
+ *       200:
+ *         description: Login realizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Login realizado com sucesso"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     token:
+ *                       type: string
+ *                       description: JWT token válido por 24 horas
+ *                     proposalId:
+ *                       type: string
+ *                       format: uuid
+ *                     proposalName:
+ *                       type: string
+ *                     clientName:
+ *                       type: string
+ *                     status:
+ *                       type: string
+ *                       enum: [aberta, alteracoes_solicitadas, fechada, rejeitada]
+ *       400:
+ *         description: Dados de entrada inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Credenciais inválidas
+ *       429:
+ *         description: Muitas tentativas de login (rate limit)
+ */
 // Client login endpoint
 router.post('/login', clientLoginLimiter, async (req, res) => {
   try {

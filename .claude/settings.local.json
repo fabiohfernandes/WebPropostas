@@ -30,7 +30,8 @@
       "Bash(DATABASE_URL=\"postgresql://webpropostas_user:dev_postgres_password_123@localhost:5432/webpropostas\" node src/scripts/seed-templates.js)",
       "Bash(if exist proposal-templates-old-backup.json del proposal-templates-old-backup.json)",
       "Bash(if exist proposal-templates-redesigned.json del proposal-templates-redesigned.json)",
-      "Bash(del:*)"
+      "Bash(del:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []

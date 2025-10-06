@@ -127,6 +127,69 @@ const authenticateClient = async (req, res, next) => {
 // PROPOSAL MANAGEMENT ROUTES (User-facing)
 // ============================================================================
 
+/**
+ * @swagger
+ * /api/v1/proposals:
+ *   get:
+ *     tags:
+ *       - Proposals
+ *     summary: List all proposals for authenticated user
+ *     description: Retrieve paginated list of proposals with filtering by status and search
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [aberta, alteracoes_solicitadas, fechada, rejeitada]
+ *         description: Filter by proposal status
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search in proposal name or client name
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *         description: Number of proposals per page
+ *       - in: query
+ *         name: offset
+ *         schema:
+ *           type: integer
+ *           default: 0
+ *         description: Number of proposals to skip
+ *     responses:
+ *       200:
+ *         description: Proposals retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     proposals:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Proposal'
+ *                     count:
+ *                       type: integer
+ *       401:
+ *         description: Unauthorized - Token missing or invalid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal server error
+ */
 // Get all proposals for authenticated user
 router.get('/proposals', authenticateUser, async (req, res) => {
   try {
@@ -209,6 +272,88 @@ router.get('/proposals', authenticateUser, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/v1/proposals:
+ *   post:
+ *     tags:
+ *       - Proposals
+ *     summary: Create new proposal
+ *     description: Create a new proposal with client credentials and content sections
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - proposalName
+ *               - clientName
+ *               - jobName
+ *               - scopeText
+ *               - termsText
+ *               - clientPassword
+ *               - proposalAccessNumber
+ *             properties:
+ *               proposalName:
+ *                 type: string
+ *                 example: "Proposta Website Corporativo"
+ *               clientName:
+ *                 type: string
+ *                 example: "Empresa ABC Ltda"
+ *               jobName:
+ *                 type: string
+ *                 example: "Desenvolvimento Website"
+ *               presentationUrl:
+ *                 type: string
+ *                 example: "https://example.com/presentation.pdf"
+ *               commercialProposalUrl:
+ *                 type: string
+ *                 example: "https://example.com/proposal.pdf"
+ *               scopeText:
+ *                 type: string
+ *                 example: "Desenvolvimento de website responsivo..."
+ *               termsText:
+ *                 type: string
+ *                 example: "Prazo: 60 dias. Pagamento: 50% antecipado..."
+ *               clientPassword:
+ *                 type: string
+ *                 format: password
+ *                 example: "SenhaCliente123!"
+ *               proposalValue:
+ *                 type: number
+ *                 example: 15000.00
+ *               proposalAccessNumber:
+ *                 type: string
+ *                 example: "PROP-2025-001"
+ *     responses:
+ *       201:
+ *         description: Proposal created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Proposal created successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     proposal:
+ *                       $ref: '#/components/schemas/Proposal'
+ *       400:
+ *         description: Validation error - Missing required fields
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
 // Create new proposal
 router.post('/proposals', authenticateUser, async (req, res) => {
   try {

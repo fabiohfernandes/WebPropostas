@@ -18,8 +18,55 @@ const authenticateUser = (req, res, next) => {
 };
 
 /**
- * GET /api/v1/templates
- * List all templates with optional filtering
+ * @swagger
+ * /api/v1/templates:
+ *   get:
+ *     tags:
+ *       - Templates
+ *     summary: List all proposal templates
+ *     description: Retrieve all active templates with optional filtering by category, sector, or search term
+ *     parameters:
+ *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *         description: Filter by template category
+ *         example: "Desenvolvimento Web"
+ *       - in: query
+ *         name: sector
+ *         schema:
+ *           type: string
+ *         description: Filter by market sector
+ *         example: "Tecnologia"
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search in template name or description
+ *         example: "website"
+ *     responses:
+ *       200:
+ *         description: Templates retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     templates:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Template'
+ *                     total:
+ *                       type: integer
+ *                       example: 12
+ *       500:
+ *         description: Internal server error
  */
 router.get('/', async (req, res) => {
   try {
@@ -77,8 +124,40 @@ router.get('/', async (req, res) => {
 });
 
 /**
- * GET /api/v1/templates/categories
- * Get all unique categories
+ * @swagger
+ * /api/v1/templates/categories:
+ *   get:
+ *     tags:
+ *       - Templates
+ *     summary: Get all template categories
+ *     description: Retrieve list of unique template categories with counts
+ *     responses:
+ *       200:
+ *         description: Categories retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     categories:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           category:
+ *                             type: string
+ *                             example: "Desenvolvimento Web"
+ *                           count:
+ *                             type: integer
+ *                             example: 5
+ *       500:
+ *         description: Internal server error
  */
 router.get('/categories', async (req, res) => {
   try {
@@ -109,8 +188,40 @@ router.get('/categories', async (req, res) => {
 });
 
 /**
- * GET /api/v1/templates/sectors
- * Get all unique sectors
+ * @swagger
+ * /api/v1/templates/sectors:
+ *   get:
+ *     tags:
+ *       - Templates
+ *     summary: Get all template sectors
+ *     description: Retrieve list of unique market sectors with counts
+ *     responses:
+ *       200:
+ *         description: Sectors retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     sectors:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           sector:
+ *                             type: string
+ *                             example: "Tecnologia"
+ *                           count:
+ *                             type: integer
+ *                             example: 8
+ *       500:
+ *         description: Internal server error
  */
 router.get('/sectors', async (req, res) => {
   try {
@@ -141,8 +252,45 @@ router.get('/sectors', async (req, res) => {
 });
 
 /**
- * GET /api/v1/templates/:id
- * Get a specific template by ID
+ * @swagger
+ * /api/v1/templates/{id}:
+ *   get:
+ *     tags:
+ *       - Templates
+ *     summary: Get specific template by ID
+ *     description: Retrieve detailed information about a single template
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Template ID
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Template retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     template:
+ *                       $ref: '#/components/schemas/Template'
+ *       404:
+ *         description: Template not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal server error
  */
 router.get('/:id', async (req, res) => {
   try {
@@ -180,8 +328,69 @@ router.get('/:id', async (req, res) => {
 });
 
 /**
- * POST /api/v1/templates/:id/use
- * Create a proposal from a template
+ * @swagger
+ * /api/v1/templates/{id}/use:
+ *   post:
+ *     tags:
+ *       - Templates
+ *     summary: Create proposal from template
+ *     description: Generate a new proposal using a template with custom field values
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Template ID to use
+ *         example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - field_values
+ *               - client_id
+ *             properties:
+ *               field_values:
+ *                 type: object
+ *                 description: Key-value pairs for template placeholders
+ *                 example:
+ *                   company_name: "Empresa ABC Ltda"
+ *                   project_name: "Website Corporativo"
+ *                   deadline: "60 dias"
+ *                   value: "R$ 15.000,00"
+ *               client_id:
+ *                 type: integer
+ *                 description: Client ID for the proposal
+ *                 example: 1
+ *     responses:
+ *       200:
+ *         description: Proposal created successfully from template
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     processed_content:
+ *                       type: object
+ *                     proposal_data:
+ *                       type: object
+ *       404:
+ *         description: Template not found
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
  */
 router.post('/:id/use', authenticateUser, async (req, res) => {
   try {
