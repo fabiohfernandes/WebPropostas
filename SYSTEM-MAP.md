@@ -372,6 +372,59 @@ curl http://localhost:3000/api/v1/templates | jq '.data.templates | length'
 
 ---
 
+## 📊 BUSINESS PRESENTATIONS & DOCUMENTATION
+
+### Executive Presentations
+
+**📄 WebPropostas Business Presentation 2025**
+- **File (English)**: [docs/presentations/WebPropostas_Business_Presentation_2025.md](docs/presentations/WebPropostas_Business_Presentation_2025.md)
+- **File (Português)**: [docs/presentations/WebPropostas_Apresentacao_Negocios_2025.md](docs/presentations/WebPropostas_Apresentacao_Negocios_2025.md)
+- **Length**: 120+ pages (both versions)
+- **Purpose**: Comprehensive investor-ready business presentation
+
+**Content Includes**:
+- Executive Summary (vision, market opportunity, competitive edge)
+- Market Analysis ($2.7B → $9B market, 13.5% CAGR)
+- Competitive Landscape (PandaDoc, Proposify comparison - WebPropostas 60% cheaper)
+- Platform Features (V1.0-V7.0 complete breakdown)
+- Client Success Stories (ROI calculations: 2,600%-81,000% returns)
+- Financial Projections (R$ 152K Y1 → R$ 2.3M Y3)
+- Technology Roadmap (8-version evolution 2024-2032)
+- Metaverse Vision (VR/AR immersive proposals)
+- Investment Opportunity (R$ 500K-1M seed, 8x-83x returns)
+
+**Market Research Data**:
+- Competitive pricing: PandaDoc $49/mo, Proposify $49/mo, WebPropostas R$ 97/mo
+- Global market size: $2.7B (2025) → $9.0B (2030)
+- Brazilian TAM: 21M businesses, 6M SMEs, R$ 2.5B market
+- B2B conversion stats: Traditional 20%, WebPropostas metaverse 60%
+- Sales cycle: Proposals beyond 21 days have 70% lower closing rate
+
+**Use Cases**:
+- Investor pitches and fundraising meetings
+- Strategic planning and team alignment
+- Market positioning and competitive analysis
+- Revenue model validation and financial planning
+
+### Planning & Vision Documents
+
+**📄 WebPropostas WishList**
+- **File**: [docs/planning/WebPropostas_WishList.md](docs/planning/WebPropostas_WishList.md)
+- **Purpose**: Future feature requests and visionary concepts
+- **Key Sections**:
+  - Feature #2: Metaverse Immersive Proposals (80+ pages)
+  - VR/AR virtual environments with MetaHuman AI avatars
+  - Real estate virtual tours, automotive test drives
+  - Gaussian splatting 3D products
+  - Tech stack: Unreal Engine 5, GPT-5/6, WebXR, NVIDIA CloudXR
+
+**📄 Version Roadmap**
+- **File**: [WEBPROPOSTAS-VERSION-ROADMAP.md](WEBPROPOSTAS-VERSION-ROADMAP.md)
+- **Purpose**: Master roadmap consolidating all 8 versions (2024-2032)
+- **Content**: Timeline, tech stack, features, pricing, success metrics per version
+
+---
+
 **Last Updated**: 2025-10-06
 **Purpose**: Prevent wasting time searching for basic system information
 **Usage**: Read this FIRST when confused about data flow, storage, or connectivity
