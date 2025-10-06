@@ -1,8 +1,27 @@
 # CLAUDE.md
 
+**⚠️ CRITICAL: WHEN LOST OR CONFUSED, READ [SYSTEM-MAP.md](SYSTEM-MAP.md) IMMEDIATELY**
+
 **⚠️ BEFORE RUNNING ANY COMMAND I WILL READ AND REMEMBER READ.MD**
 
 **⚠️ BEFORE EVERY STEP OF DEVELOPMENT I WILL READ .vibecoding/Prompt/guardrails.md BEFORE ACTING ⚠️**
+
+## 🗺️ SYSTEM REFERENCE (READ THIS FIRST WHEN CONFUSED)
+
+**See [SYSTEM-MAP.md](SYSTEM-MAP.md) for complete system architecture and data flow**
+
+### Quick Facts (Avoid Token Waste)
+- **Database Name**: `webpropostas` ⚠️ (NOT `orcamentos`)
+- **Templates Storage**: PostgreSQL `proposal_templates` table (NOT JSON file)
+- **Container Prefix**: All containers start with `webpropostas-`
+- **API Base**: `http://localhost:3000/api/v1`
+- **Frontend Base**: `http://localhost:3001`
+
+### Database Access
+```bash
+# Always use this database name
+docker exec webpropostas-postgres psql -U webpropostas_user -d webpropostas -c "SELECT COUNT(*) FROM proposal_templates;"
+```
 
 ## CORE ABSOLUTE RULES - NO EXCEPTIONS (From .vibecoding/Prompt/guardrails.md)
 

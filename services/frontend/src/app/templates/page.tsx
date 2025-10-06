@@ -19,6 +19,7 @@ interface Template {
   sector: string;
   description: string;
   thumbnail: string;
+  hero_image?: string;
   fields: any[];
   content_template: any;
   created_at?: string;
@@ -92,17 +93,18 @@ export default function TemplatesPage() {
     return categoryMatch && sectorMatch && searchMatch;
   });
 
-  // Color mapping for template cards
+  // Color mapping for template cards (not used for cards anymore, but kept for future use)
   const getTemplateColor = (category: string) => {
     const colorMap: { [key: string]: string } = {
       'Tecnologia': 'from-blue-500 to-cyan-500',
       'Marketing': 'from-purple-500 to-pink-500',
-      'Imóveis': 'from-green-500 to-emerald-500',
-      'Veículos': 'from-orange-500 to-red-500',
-      'Serviços Profissionais': 'from-indigo-500 to-blue-500',
-      'Serviços Residenciais': 'from-yellow-500 to-orange-500',
-      'Serviços Pessoais': 'from-teal-500 to-green-500',
-      'Educação': 'from-pink-500 to-rose-500',
+      'Imobiliário': 'from-green-500 to-emerald-500',
+      'Arquitetura & Design': 'from-violet-500 to-purple-500',
+      'Automotivo': 'from-orange-500 to-red-500',
+      'Moda & Estilo': 'from-pink-500 to-fuchsia-500',
+      'Serviços': 'from-indigo-500 to-blue-500',
+      'Educação': 'from-amber-500 to-orange-500',
+      'Serviços Pessoais': 'from-teal-500 to-cyan-500',
     };
     return colorMap[category] || 'from-gray-500 to-slate-500';
   };
@@ -239,20 +241,35 @@ export default function TemplatesPage() {
                       className="group cursor-pointer"
                       onClick={() => setSelectedTemplate(template)}
                     >
-                      <div className={`relative aspect-[4/5] rounded-xl bg-gradient-to-br ${getTemplateColor(template.category)} p-1 overflow-hidden transition-transform group-hover:scale-105`}>
+                      <div className="relative aspect-[3/4] rounded-xl overflow-hidden shadow-soft hover:shadow-soft-lg transition-all group-hover:scale-105">
+                        {/* Thumbnail Image */}
+                        <img
+                          src={template.thumbnail}
+                          alt={template.name}
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover:from-black/90 transition-colors" />
+
+                        {/* Sector Badge */}
                         <div className="absolute top-4 right-4 z-10">
-                          <Badge variant="default" size="sm">
+                          <Badge variant="default" size="sm" className="bg-white/90 text-gray-900 border-white/50 backdrop-blur-sm">
                             {template.sector}
                           </Badge>
                         </div>
-                        <div className="absolute inset-0 bg-white/10 backdrop-blur-sm group-hover:bg-white/20 transition-colors" />
-                        <div className="relative h-full flex flex-col items-center justify-center text-white p-6">
-                          <DocumentTextIcon className="w-16 h-16 mb-4 opacity-80" />
-                          <h3 className="text-xl font-semibold text-center mb-2">{template.name}</h3>
-                          <p className="text-sm text-white/80 text-center line-clamp-2">{template.description}</p>
+
+                        {/* Content */}
+                        <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                          <h3 className="text-xl font-bold mb-2 line-clamp-2">{template.name}</h3>
+                          <p className="text-sm text-white/90 line-clamp-2 mb-4">{template.description}</p>
+                          <Badge variant="default" size="sm" className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
+                            {template.category}
+                          </Badge>
                         </div>
                       </div>
-                      <div className="mt-3 space-y-2">
+
+                      <div className="mt-3">
                         <Button
                           variant="outline"
                           size="sm"
@@ -264,7 +281,6 @@ export default function TemplatesPage() {
                         >
                           Visualizar Template
                         </Button>
-                        <p className="text-xs text-gray-500 text-center">{template.category}</p>
                       </div>
                     </div>
                   ))}
@@ -307,26 +323,40 @@ export default function TemplatesPage() {
             className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header */}
-            <div className={`relative bg-gradient-to-br ${getTemplateColor(selectedTemplate.category)} p-8 text-white`}>
+            {/* Modal Header with Hero Image */}
+            <div className="relative h-80 overflow-hidden">
+              {/* Hero Image */}
+              <img
+                src={selectedTemplate.hero_image || selectedTemplate.thumbnail}
+                alt={selectedTemplate.name}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30" />
+
+              {/* Close Button */}
               <button
                 onClick={() => setSelectedTemplate(null)}
-                className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-lg transition-colors"
+                className="absolute top-4 right-4 z-10 p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors backdrop-blur-sm"
               >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-              <DocumentTextIcon className="w-16 h-16 mb-4 opacity-80" />
-              <h2 className="text-3xl font-bold mb-2">{selectedTemplate.name}</h2>
-              <p className="text-white/90 mb-4">{selectedTemplate.description}</p>
-              <div className="flex gap-3">
-                <Badge variant="default" size="sm" className="bg-white/20 text-white border-white/30">
-                  {selectedTemplate.category}
-                </Badge>
-                <Badge variant="default" size="sm" className="bg-white/20 text-white border-white/30">
-                  {selectedTemplate.sector}
-                </Badge>
+
+              {/* Content */}
+              <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+                <h2 className="text-4xl font-bold mb-3">{selectedTemplate.name}</h2>
+                <p className="text-lg text-white/90 mb-4 max-w-2xl">{selectedTemplate.description}</p>
+                <div className="flex gap-3">
+                  <Badge variant="default" size="sm" className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
+                    {selectedTemplate.category}
+                  </Badge>
+                  <Badge variant="default" size="sm" className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
+                    {selectedTemplate.sector}
+                  </Badge>
+                </div>
               </div>
             </div>
 
