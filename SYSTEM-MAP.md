@@ -327,34 +327,48 @@ curl http://localhost:3000/api/v1/templates | jq '.data.templates | length'
 
 ---
 
-## 🔮 FUTURE VISION: Metaverse Proposals (2027-2030)
+## 🗺️ VERSION ROADMAP: V1.0 → V8.0+ (2024-2032)
 
-### Long-Term Roadmap Documentation
+### Master Roadmap Reference
 
-**Vision Document:** [WebPropostas_WishList.md](docs/planning/WebPropostas_WishList.md) - Feature #2
+**📄 Complete Document:** [WEBPROPOSTAS-VERSION-ROADMAP.md](WEBPROPOSTAS-VERSION-ROADMAP.md)
 
-**Concept:** Transform 2D proposals into fully immersive 3D metaverse experiences
+**8 Major Versions:**
+- **V1.0** Foundation (✅ COMPLETED) - Dec 2024-Sep 2025
+- **V2.0** Production Ready (🚧 IN PROGRESS) - Sep-Dec 2025
+- **V3.0** Visual Editor & Multi-Tier (🎯 CURRENT) - Oct 2025-Aug 2026
+- **V4.0** AI Image Generation (📅 PLANNED) - 2026-2027
+- **V5.0** AI Video Creation (📅 PLANNED) - 2027-2028
+- **V6.0** Gaussian Splatting & 3D (📅 PLANNED) - 2028-2029
+- **V7.0** Metaverse Introduction (🔮 VISIONARY) - 2029-2030
+- **V8.0+** Future Expansion (💡 CONCEPT) - 2031+
 
-**Key Features (Future):**
-- 🌐 VR/AR virtual environments clients can walk through
-- 🤖 MetaHuman AI avatars with sector-specific personalities
-- 🏠 Real estate: Walk through apartments, experience solar insolation
-- 🚗 Automotive: Virtual test drives with full interaction
-- 🎨 Design: Immersive 3D mood boards and office spaces
-- 🕶️ Multi-platform: VR headsets, AR mobile, desktop 3D
+### Quick Version Summary
 
-**Tech Stack (Planned):**
-- Unreal Engine 5 / Unity 6
-- MetaHuman Creator (Epic Games)
-- GPT-5/6 for AI personalities
-- WebXR API for browser-based VR/AR
-- NVIDIA CloudXR for streaming
+**V3.0 - Visual Editor** (NEXT - Oct 2025)
+- Gamma/Canva-style template builder
+- 3-tier pricing (R$ 0 / R$ 97 / R$ 247)
+- Team collaboration (multi-user editing)
+- AI content assistance (GPT-4)
 
-**Pricing Tier (2029):** R$ 997/mês (Metaverse tier)
+**V4.0 - AI Images** (2026-2027)
+- Sora, Flux, DALL-E 3, Nano Banana, Midjourney
+- Auto-generate images from proposal content
 
-**Status:** 🔮 Visionary concept for 2027-2030 implementation
+**V5.0 - AI Videos** (2027-2028)
+- Runway, Pika, HeyGen, Sora video
+- Auto-storyboarding and voiceover
 
-**Reference:** See complete 25-page specification in [WebPropostas_WishList.md](docs/planning/WebPropostas_WishList.md)
+**V6.0 - Gaussian Splatting** (2028-2029)
+- Luma AI, Polycam 3D scanning
+- Interactive product viewers in browser
+
+**V7.0 - Metaverse** (2029-2030)
+- VR/AR immersive proposals
+- MetaHuman AI guides
+- R$ 997/mês tier
+
+**Full specifications:** [WEBPROPOSTAS-VERSION-ROADMAP.md](WEBPROPOSTAS-VERSION-ROADMAP.md) (80 pages)
 
 ---
 
