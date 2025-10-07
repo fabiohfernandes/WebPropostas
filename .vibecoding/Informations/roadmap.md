@@ -253,65 +253,27 @@ This roadmap documents the completed foundation phases (1-19) and outlines the f
 
 ---
 
-### Phase 21: Design Import Pipeline (Q4 2025 - Q1 2026)
-**Duration:** 6 weeks
-**Status:** 📋 Planned
-**Lead:** RESEARCHER + VULCAN (Performance)
-**Operational Cost:** $800-1,500/month
+### Phase 21: ⚠️ REPLACED - See TEMPLATE-BUILDER-ROADMAP.md
 
-#### Week 1-2: API Research & Authentication
+**⚠️ CRITICAL CORRECTION:** This phase has been REPLACED with the **WebPropostas Proprietary Template Builder** (16 weeks). Canva and Gamma are COMPETITORS - we will NOT integrate them.
 
-**Canva Integration:**
-- OAuth 2.0 authentication flow
-- Export API endpoints research
-- Design metadata extraction
-- Asset download pipeline
+**New Implementation:** See `.vibecoding/Informations/TEMPLATE-BUILDER-ROADMAP.md` for complete 16-week roadmap.
 
-**Gamma Integration:**
-- API authentication setup
-- HTML/JSON export handling
-- Slide content parsing
-- Media asset extraction
+**Summary:** Build our OWN professional drag-and-drop template builder with:
+- Visual editor (Elements | Canvas | Properties panels)
+- Text tools, media management, visual effects
+- Charts, icons, layout systems
+- OpenAI GPT-4 content generation
+- DALL-E 3 image generation (Professional tier)
+- Brand management and template library
+- Tier-based feature gates (Freemium/Standard/Professional)
 
-**Success Criteria:**
-- [ ] API documentation analyzed
-- [ ] Authentication flows designed
-- [ ] Data extraction strategies defined
-- [ ] Visual fidelity framework created
+**Timeline:** 16 weeks (Phases 26-37 in new roadmap)
+**Revenue Impact:** R$ 118K MRR by Month 12 from builder-driven conversions
 
-#### Week 3-4: Import Pipeline Implementation
+---
 
-**Headless Automation:**
-- Browser automation with Playwright
-- Design capture system
-- Asset extraction and optimization
-- 95%+ fidelity validation
-
-**Storage & Processing:**
-- S3-compatible media storage
-- Image optimization pipeline
-- CDN integration for assets
-- Batch processing capabilities
-
-**Success Criteria:**
-- [ ] Import pipeline operational
-- [ ] Visual fidelity ≥95%
-- [ ] Import time <30 seconds
-- [ ] Asset optimization working
-
-#### Week 5-6: Integration & Testing
-
-**Editor Integration:**
-- Import workflow in proposal creation
-- Multi-format support (presentations, documents)
-- Error handling and user feedback
-- Performance optimization
-
-**Success Criteria:**
-- [ ] Canva import working with 95%+ fidelity
-- [ ] Gamma import working with 95%+ fidelity
-- [ ] User workflow optimized
-- [ ] Comprehensive testing complete
+### ~~Phase 21: Design Import Pipeline~~ - DEPRECATED - DO NOT IMPLEMENT
 
 ---
 
