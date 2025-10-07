@@ -24,15 +24,18 @@ import { cn } from '@/utils';
 import '@/styles/globals.css';
 
 // Font configuration - All fonts for builder
+// Load fonts globally so they're available to Konva canvas
 const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-sans',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-inter',
   display: 'swap',
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
-  variable: '--font-mono',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800'],
+  variable: '--font-jetbrains-mono',
   display: 'swap',
 });
 
@@ -45,12 +48,14 @@ const roboto = Roboto({
 
 const openSans = Open_Sans({
   subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800'],
   variable: '--font-open-sans',
   display: 'swap',
 });
 
 const montserrat = Montserrat({
   subsets: ['latin'],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
   variable: '--font-montserrat',
   display: 'swap',
 });
@@ -71,12 +76,14 @@ const lato = Lato({
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800', '900'],
   variable: '--font-playfair',
   display: 'swap',
 });
 
 const raleway = Raleway({
   subsets: ['latin'],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
   variable: '--font-raleway',
   display: 'swap',
 });
@@ -90,12 +97,14 @@ const merriweather = Merriweather({
 
 const oswald = Oswald({
   subsets: ['latin'],
+  weight: ['200', '300', '400', '500', '600', '700'],
   variable: '--font-oswald',
   display: 'swap',
 });
 
 const sourceSans = Source_Sans_3({
   subsets: ['latin'],
+  weight: ['200', '300', '400', '500', '600', '700', '900'],
   variable: '--font-source-sans',
   display: 'swap',
 });
@@ -210,6 +219,20 @@ export default function RootLayout({ children }: RootLayoutProps) {
         {/* Performance optimization */}
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="preconnect" href="//fonts.gstatic.com" crossOrigin="" />
+
+        {/* Google Fonts for Konva canvas - Load with actual font names */}
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@200;300;400;500;600;700;900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
         {/* Schema.org structured data */}
         <script
