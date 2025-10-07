@@ -104,7 +104,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a documentation and configuration repository for **WebPropostas** - an AI-driven commercial proposal platform that streamlines the entire proposal lifecycle from creation to contract signature. The platform enables businesses to import designs from third-party tools (Canva, Gamma), collaborate with clients in real-time, and automatically generate contracts upon approval.
+This is a documentation and configuration repository for **WebPropostas** - an AI-driven commercial proposal platform that streamlines the entire proposal lifecycle from creation to contract signature. The platform features a **proprietary visual template builder** (main platform attraction), AI-powered content generation, client collaboration, and automated contract generation.
 
 **Domain:** infigital.net
 **Environment:** Florianópolis - SC - Brazil
@@ -121,12 +121,13 @@ The project follows a hierarchical multi-agent orchestration model:
 - **Crew Gamma (Excellence)**: Quality, Security & Deployment agents (including RAILWAY CONDUCTOR, TESTER)
 
 ### Key Components
-- **Import & Foundation**: Third-party design import (Canva/Gamma) with 95%+ visual fidelity
-- **AI-Enhanced Editing**: OpenAI GPT-4 integration with Nano Banana API for media processing
-- **Dynamic Hosting**: AWS Route 53 integration for automatic subdomain creation
+- **⭐ Template Builder (MAIN FEATURE)**: Proprietary drag-and-drop visual editor with AI content generation (16-week implementation - see TEMPLATE-BUILDER-ROADMAP.md)
+- **AI-Enhanced Editing**: OpenAI GPT-4 integration for text generation, rewriting, translation (50K-200K tokens/month by tier)
+- **AI Image Generation**: DALL-E 3 integration for image creation (Professional tier only)
 - **Client Collaboration**: Real-time review system with approval workflows
 - **Contract Generation**: Automated proposal-to-contract conversion with DocuSign integration
 - **Multi-Channel Notifications**: Email, WhatsApp, and Telegram integration
+- **Dynamic Hosting**: AWS Route 53 integration for automatic subdomain creation
 
 ## Repository Structure
 
@@ -139,7 +140,10 @@ The project follows a hierarchical multi-agent orchestration model:
 │   ├── planning.md          # Strategic planning documentation
 │   ├── proposal-platform-plan.md  # Platform vision and implementation plan
 │   ├── readme.md            # Project overview and quick start
-│   └── roadmap.md           # Implementation roadmap and timeline
+│   ├── roadmap.md           # Implementation roadmap and timeline
+│   ├── TEMPLATE-BUILDER-ROADMAP.md  # ⭐ Proprietary Template Builder - 16-week implementation plan
+│   ├── TEMPLATE-BUILDER-VISUAL-SUMMARY.md  # Visual reference guide for builder
+│   └── ROADMAP-CORRECTION-SUMMARY.md  # Critical correction: Builder replaces Canva/Gamma import
 ├── Procedures/
 │   └── best_practices.md    # Coding standards and multi-agent best practices
 ├── Prompt/
