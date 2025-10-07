@@ -11,6 +11,7 @@ import { Stage, Layer, Rect, Circle, Text as KonvaText, Image as KonvaImage, Tra
 import { useDroppable } from '@dnd-kit/core';
 import { useBuilderStore } from '@/store/builder';
 import { getFontFamily } from '@/utils/fonts';
+import { useElasticAnimation } from '@/hooks/useElasticAnimation';
 import type { Element, TextElement, ShapeElement, ImageElement } from '@/types/builder';
 
 // Image element with fit modes (cover, contain, fill, none)
@@ -21,9 +22,19 @@ function ImageElement({ element }: { element: ImageElement }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [loadedImage, setLoadedImage] = useState<HTMLImageElement | null>(null);
 
+  // Apply elastic animation
+  useElasticAnimation(imageRef, isSelected, {
+    stiffness: 0.05,
+    damping: 0.5,
+    mass: 1,
+  });
+
   useEffect(() => {
     const img = new window.Image();
-    img.crossOrigin = 'anonymous';
+    // Don't use crossOrigin for Google Drive (causes CORS issues)
+    if (!element.properties.src.includes('drive.google.com')) {
+      img.crossOrigin = 'anonymous';
+    }
     img.src = element.properties.src;
     img.onload = () => {
       setImageLoaded(true);
@@ -34,6 +45,7 @@ function ImageElement({ element }: { element: ImageElement }) {
       }
     };
     img.onerror = () => {
+      console.error('Failed to load image in canvas:', element.properties.src);
       setImageLoaded(false);
       setLoadedImage(null);
     };
@@ -187,8 +199,90 @@ function ImageElement({ element }: { element: ImageElement }) {
     }
   };
 
+  // Calculate frame dimensions
+  const frameConfig = element.properties.frame;
+  const hasFrame = frameConfig && frameConfig.style !== 'none';
+  const frameWidth = hasFrame ? frameConfig.width : 0;
+  const totalWidth = element.width + (frameWidth * 2);
+  const totalHeight = element.height + (frameWidth * 2);
+
   return (
     <>
+      {/* Frame/Border Background */}
+      {hasFrame && imageLoaded && (
+        <>
+          {/* Outer frame */}
+          <Rect
+            x={element.x - frameWidth}
+            y={element.y - frameWidth}
+            width={totalWidth}
+            height={totalHeight}
+            fill={frameConfig.color}
+            rotation={element.rotation}
+            listening={false}
+            shadowColor={frameConfig.shadowEnabled ? 'rgba(0,0,0,0.3)' : undefined}
+            shadowBlur={frameConfig.shadowEnabled ? 10 : 0}
+            shadowOffsetX={frameConfig.shadowEnabled ? 2 : 0}
+            shadowOffsetY={frameConfig.shadowEnabled ? 2 : 0}
+          />
+
+          {/* Inner frame for double frame style */}
+          {frameConfig.style === 'double' && frameConfig.innerColor && (
+            <Rect
+              x={element.x - frameWidth * 0.5}
+              y={element.y - frameWidth * 0.5}
+              width={element.width + frameWidth}
+              height={element.height + frameWidth}
+              fill={frameConfig.innerColor}
+              rotation={element.rotation}
+              listening={false}
+            />
+          )}
+
+          {/* Ornate corners for ornate style */}
+          {frameConfig.style === 'ornate' && (
+            <>
+              {/* Top-left corner decoration */}
+              <Circle
+                x={element.x - frameWidth}
+                y={element.y - frameWidth}
+                radius={frameWidth * 0.4}
+                fill={frameConfig.innerColor || '#FFD700'}
+                rotation={element.rotation}
+                listening={false}
+              />
+              {/* Top-right corner decoration */}
+              <Circle
+                x={element.x + element.width + frameWidth}
+                y={element.y - frameWidth}
+                radius={frameWidth * 0.4}
+                fill={frameConfig.innerColor || '#FFD700'}
+                rotation={element.rotation}
+                listening={false}
+              />
+              {/* Bottom-left corner decoration */}
+              <Circle
+                x={element.x - frameWidth}
+                y={element.y + element.height + frameWidth}
+                radius={frameWidth * 0.4}
+                fill={frameConfig.innerColor || '#FFD700'}
+                rotation={element.rotation}
+                listening={false}
+              />
+              {/* Bottom-right corner decoration */}
+              <Circle
+                x={element.x + element.width + frameWidth}
+                y={element.y + element.height + frameWidth}
+                radius={frameWidth * 0.4}
+                fill={frameConfig.innerColor || '#FFD700'}
+                rotation={element.rotation}
+                listening={false}
+              />
+            </>
+          )}
+        </>
+      )}
+
       {/* Placeholder */}
       {!imageLoaded && (
         <>
@@ -240,6 +334,14 @@ function ImageElement({ element }: { element: ImageElement }) {
 function CanvasElement({ element }: { element: Element }) {
   const { selectElement, updateElement, selectedElementId } = useBuilderStore();
   const isSelected = selectedElementId === element.id;
+  const elementRef = useRef<any>(null);
+
+  // Apply elastic animation to all elements
+  useElasticAnimation(elementRef, isSelected, {
+    stiffness: 0.05,
+    damping: 0.5,
+    mass: 1,
+  });
 
   const handleDragEnd = (e: any) => {
     updateElement(element.id, {
@@ -266,6 +368,7 @@ function CanvasElement({ element }: { element: Element }) {
   };
 
   const commonProps = {
+    ref: elementRef,
     id: element.id,
     x: element.x,
     y: element.y,

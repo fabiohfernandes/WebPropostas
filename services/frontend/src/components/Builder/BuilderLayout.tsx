@@ -12,6 +12,7 @@ import { ElementsPanel } from './ElementsPanel';
 import { BuilderCanvas } from './BuilderCanvas';
 import { PropertiesPanel } from './PropertiesPanel';
 import { BuilderToolbar } from './BuilderToolbar';
+import { PagesPanel } from './PagesPanel';
 import type { Element } from '@/types/builder';
 
 interface BuilderLayoutProps {
@@ -80,7 +81,7 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
         {/* Top Toolbar */}
         <BuilderToolbar templateId={templateId} />
 
-        {/* Main Builder Area - 3 Panels */}
+        {/* Main Builder Area - 3 Panels + Bottom Pages Panel */}
         <div className="flex flex-1 overflow-hidden">
           {/* Left Panel - Elements Library */}
           <div
@@ -90,9 +91,15 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
             <ElementsPanel />
           </div>
 
-          {/* Center Panel - Canvas */}
-          <div className="flex-1 overflow-auto bg-gray-100 relative">
-            <BuilderCanvas />
+          {/* Center Panel - Canvas + Pages Panel */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {/* Canvas */}
+            <div className="flex-1 overflow-auto bg-gray-100 relative">
+              <BuilderCanvas />
+            </div>
+
+            {/* Pages Panel */}
+            <PagesPanel />
           </div>
 
           {/* Right Panel - Properties */}

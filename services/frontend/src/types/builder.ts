@@ -73,6 +73,11 @@ export interface TextElement extends BaseElement {
 }
 
 /**
+ * Frame/Border style presets for images
+ */
+export type FrameStyle = 'none' | 'simple' | 'classic' | 'modern' | 'vintage' | 'polaroid' | 'double' | 'ornate';
+
+/**
  * Image element properties
  */
 export interface ImageElement extends BaseElement {
@@ -88,6 +93,14 @@ export interface ImageElement extends BaseElement {
       width: number;
       color: string;
       radius: number;
+    };
+    // Frame/Moldura configuration
+    frame?: {
+      style: FrameStyle;
+      width: number;
+      color: string;
+      innerColor?: string; // For double frames
+      shadowEnabled?: boolean;
     };
     shadow?: {
       blur: number;

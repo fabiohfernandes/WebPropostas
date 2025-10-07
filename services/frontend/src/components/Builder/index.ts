@@ -8,3 +8,4 @@ export { BuilderToolbar } from './BuilderToolbar';
 export { ElementsPanel } from './ElementsPanel';
 export { BuilderCanvas } from './BuilderCanvas';
 export { PropertiesPanel } from './PropertiesPanel';
+export { PagesPanel } from './PagesPanel';

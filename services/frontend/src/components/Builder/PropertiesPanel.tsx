@@ -338,18 +338,37 @@ function ImageProperties({ element }: { element: ImageElement }) {
     // Convert Google Drive sharing URLs to direct image URLs
     let imageUrl = url;
 
-    // Google Drive format: https://drive.google.com/file/d/FILE_ID/view
-    // Convert to: https://drive.google.com/uc?export=view&id=FILE_ID
+    // Google Drive formats:
+    // https://drive.google.com/file/d/FILE_ID/view
+    // https://drive.google.com/open?id=FILE_ID
+    // https://drive.google.com/uc?id=FILE_ID
+    // Convert all to: https://drive.google.com/thumbnail?id=FILE_ID&sz=w2000
     if (url.includes('drive.google.com')) {
-      const fileIdMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-      if (fileIdMatch) {
-        imageUrl = `https://drive.google.com/uc?export=view&id=${fileIdMatch[1]}`;
+      let fileId = null;
+
+      // Try /d/ format
+      const dMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      if (dMatch) fileId = dMatch[1];
+
+      // Try id= format
+      if (!fileId) {
+        const idMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+        if (idMatch) fileId = idMatch[1];
+      }
+
+      if (fileId) {
+        // Use thumbnail endpoint with large size for better compatibility
+        imageUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`;
       }
     }
 
     // Load image to get natural dimensions
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    // Don't use crossOrigin for Google Drive (causes CORS issues)
+    if (!url.includes('drive.google.com')) {
+      img.crossOrigin = 'anonymous';
+    }
+
     img.onload = () => {
       updateElement(element.id, {
         width: img.naturalWidth,
@@ -361,6 +380,7 @@ function ImageProperties({ element }: { element: ImageElement }) {
       } as Partial<ImageElement>);
     };
     img.onerror = () => {
+      console.error('Failed to load image from:', imageUrl);
       // If image fails to load, just update URL without resizing
       updateElement(element.id, {
         properties: { ...element.properties, src: imageUrl },
@@ -422,6 +442,153 @@ function ImageProperties({ element }: { element: ImageElement }) {
           <option value="fill">Esticar (Fill)</option>
           <option value="none">Original</option>
         </select>
+      </div>
+
+      {/* Frame/Moldura */}
+      <div className="border-t border-gray-200 pt-4">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Moldura
+        </label>
+        <select
+          value={element.properties.frame?.style || 'none'}
+          onChange={(e) => {
+            const style = e.target.value as any;
+            if (style === 'none') {
+              updateElement(element.id, {
+                properties: {
+                  ...element.properties,
+                  frame: undefined,
+                },
+              } as Partial<ImageElement>);
+            } else {
+              updateElement(element.id, {
+                properties: {
+                  ...element.properties,
+                  frame: {
+                    style,
+                    width: 20,
+                    color: '#8B4513',
+                    innerColor: style === 'double' ? '#D4A574' : undefined,
+                    shadowEnabled: true,
+                  },
+                },
+              } as Partial<ImageElement>);
+            }
+          }}
+          className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="none">Sem Moldura</option>
+          <option value="simple">Simples</option>
+          <option value="classic">Clássica</option>
+          <option value="modern">Moderna</option>
+          <option value="vintage">Vintage</option>
+          <option value="polaroid">Polaroid</option>
+          <option value="double">Dupla</option>
+          <option value="ornate">Ornamentada</option>
+        </select>
+
+        {/* Frame customization (shown when frame is enabled) */}
+        {element.properties.frame && element.properties.frame.style !== 'none' && (
+          <div className="mt-3 space-y-3">
+            {/* Frame Width */}
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">
+                Espessura
+              </label>
+              <input
+                type="range"
+                min="5"
+                max="60"
+                value={element.properties.frame.width}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      frame: {
+                        ...element.properties.frame!,
+                        width: parseInt(e.target.value),
+                      },
+                    },
+                  } as Partial<ImageElement>)
+                }
+                className="w-full"
+              />
+              <span className="text-xs text-gray-500">{element.properties.frame.width}px</span>
+            </div>
+
+            {/* Frame Color */}
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">
+                Cor da Moldura
+              </label>
+              <input
+                type="color"
+                value={element.properties.frame.color}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      frame: {
+                        ...element.properties.frame!,
+                        color: e.target.value,
+                      },
+                    },
+                  } as Partial<ImageElement>)
+                }
+                className="w-full h-10 rounded-lg border border-gray-200 cursor-pointer"
+              />
+            </div>
+
+            {/* Inner Color for double and ornate frames */}
+            {(element.properties.frame.style === 'double' || element.properties.frame.style === 'ornate') && (
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  {element.properties.frame.style === 'double' ? 'Cor Interna' : 'Cor dos Detalhes'}
+                </label>
+                <input
+                  type="color"
+                  value={element.properties.frame.innerColor || '#D4A574'}
+                  onChange={(e) =>
+                    updateElement(element.id, {
+                      properties: {
+                        ...element.properties,
+                        frame: {
+                          ...element.properties.frame!,
+                          innerColor: e.target.value,
+                        },
+                      },
+                    } as Partial<ImageElement>)
+                  }
+                  className="w-full h-10 rounded-lg border border-gray-200 cursor-pointer"
+                />
+              </div>
+            )}
+
+            {/* Shadow Toggle */}
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="frame-shadow"
+                checked={element.properties.frame.shadowEnabled !== false}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      frame: {
+                        ...element.properties.frame!,
+                        shadowEnabled: e.target.checked,
+                      },
+                    },
+                  } as Partial<ImageElement>)
+                }
+                className="mr-2 h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
+              />
+              <label htmlFor="frame-shadow" className="text-xs font-medium text-gray-600">
+                Sombra na moldura
+              </label>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
