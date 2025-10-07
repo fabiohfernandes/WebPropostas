@@ -3,19 +3,9 @@
 
 const express = require('express');
 const router = express.Router();
-const { Pool } = require('pg');
 
-// Database connection
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://webpropostas_user:webpropostas_password@localhost:5432/orcamentos',
-});
-
-// Authentication middleware (simplified - use your actual auth middleware)
-const authenticateUser = (req, res, next) => {
-  // Add your JWT authentication logic here
-  // For now, just pass through
-  next();
-};
+// Note: Database pool is accessed via req.app.locals.pool (set in index.js)
+// Note: Authentication middleware is applied in index.js when mounting routes
 
 /**
  * @swagger
@@ -103,7 +93,7 @@ router.get('/', async (req, res) => {
 
     query += ' ORDER BY category, name';
 
-    const result = await pool.query(query, params);
+    const result = await req.app.locals.pool.query(query, params);
 
     res.json({
       success: true,
@@ -169,7 +159,7 @@ router.get('/categories', async (req, res) => {
       ORDER BY category
     `;
 
-    const result = await pool.query(query);
+    const result = await req.app.locals.pool.query(query);
 
     res.json({
       success: true,
@@ -233,7 +223,7 @@ router.get('/sectors', async (req, res) => {
       ORDER BY sector
     `;
 
-    const result = await pool.query(query);
+    const result = await req.app.locals.pool.query(query);
 
     res.json({
       success: true,
@@ -302,7 +292,7 @@ router.get('/:id', async (req, res) => {
       WHERE id = $1 AND is_active = true
     `;
 
-    const result = await pool.query(query, [id]);
+    const result = await req.app.locals.pool.query(query, [id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({
@@ -392,7 +382,7 @@ router.get('/:id', async (req, res) => {
  *       500:
  *         description: Internal server error
  */
-router.post('/:id/use', authenticateUser, async (req, res) => {
+router.post('/:id/use', async (req, res) => {
   try {
     const { id } = req.params;
     const { field_values, client_id } = req.body;
@@ -402,7 +392,7 @@ router.post('/:id/use', authenticateUser, async (req, res) => {
       SELECT * FROM proposal_templates
       WHERE id = $1 AND is_active = true
     `;
-    const templateResult = await pool.query(templateQuery, [id]);
+    const templateResult = await req.app.locals.pool.query(templateQuery, [id]);
 
     if (templateResult.rows.length === 0) {
       return res.status(404).json({

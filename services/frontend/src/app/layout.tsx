@@ -3,14 +3,27 @@
 // NOVA Agent - Frontend Development Specialist
 // ============================================================================
 
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import {
+  Inter,
+  JetBrains_Mono,
+  Roboto,
+  Open_Sans,
+  Montserrat,
+  Poppins,
+  Lato,
+  Playfair_Display,
+  Raleway,
+  Merriweather,
+  Oswald,
+  Source_Sans_3
+} from 'next/font/google';
 import type { Metadata } from 'next';
 import { appConfig } from '@/config';
 import { Providers } from './providers';
 import { cn } from '@/utils';
 import '@/styles/globals.css';
 
-// Font configuration
+// Font configuration - All fonts for builder
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-sans',
@@ -20,6 +33,70 @@ const inter = Inter({
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
+  display: 'swap',
+});
+
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '700', '900'],
+  variable: '--font-roboto',
+  display: 'swap',
+});
+
+const openSans = Open_Sans({
+  subsets: ['latin'],
+  variable: '--font-open-sans',
+  display: 'swap',
+});
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  variable: '--font-montserrat',
+  display: 'swap',
+});
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800'],
+  variable: '--font-poppins',
+  display: 'swap',
+});
+
+const lato = Lato({
+  subsets: ['latin'],
+  weight: ['300', '400', '700', '900'],
+  variable: '--font-lato',
+  display: 'swap',
+});
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-playfair',
+  display: 'swap',
+});
+
+const raleway = Raleway({
+  subsets: ['latin'],
+  variable: '--font-raleway',
+  display: 'swap',
+});
+
+const merriweather = Merriweather({
+  subsets: ['latin'],
+  weight: ['300', '400', '700', '900'],
+  variable: '--font-merriweather',
+  display: 'swap',
+});
+
+const oswald = Oswald({
+  subsets: ['latin'],
+  variable: '--font-oswald',
+  display: 'swap',
+});
+
+const sourceSans = Source_Sans_3({
+  subsets: ['latin'],
+  variable: '--font-source-sans',
   display: 'swap',
 });
 
@@ -103,7 +180,17 @@ export default function RootLayout({ children }: RootLayoutProps) {
       className={cn(
         'h-full bg-gray-50',
         inter.variable,
-        jetbrainsMono.variable
+        jetbrainsMono.variable,
+        roboto.variable,
+        openSans.variable,
+        montserrat.variable,
+        poppins.variable,
+        lato.variable,
+        playfair.variable,
+        raleway.variable,
+        merriweather.variable,
+        oswald.variable,
+        sourceSans.variable
       )}
       suppressHydrationWarning
     >

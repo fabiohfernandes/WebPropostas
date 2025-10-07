@@ -31,7 +31,19 @@
       "Bash(if exist proposal-templates-old-backup.json del proposal-templates-old-backup.json)",
       "Bash(if exist proposal-templates-redesigned.json del proposal-templates-redesigned.json)",
       "Bash(del:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxODQ2NzQ2MS1iYmEwLTRhNWQtYTNiMC1iZGE0NjI0YjJjYjAiLCJlbWFpbCI6ImRlbW9Ad2VicHJvcG9zdGFzLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5NzkyNTY3LCJleHAiOjE3NTk3OTM0Njd9.ykUH8j2KfRKHVlvNi7InK4oR8skfBILNyZWlj6BQAyU\" curl -X GET http://localhost:3000/api/v1/auth/me -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxODQ2NzQ2MS1iYmEwLTRhNWQtYTNiMC1iZGE0NjI0YjJjYjAiLCJlbWFpbCI6ImRlbW9Ad2VicHJvcG9zdGFzLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5NzkyNTY3LCJleHAiOjE3NTk3OTM0Njd9.ykUH8j2KfRKHVlvNi7InK4oR8skfBILNyZWlj6BQAyU\")",
+      "Bash(REFRESH_TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyODZlZGQ1Ny03MjM1LTQ5OGEtYmZkMS01NzBiNmZlNzNkMDYiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc1OTc5MzI5NSwiZXhwIjoxNzYwMzk4MDk1fQ.GjzoPBER0EN3Hp38VlIINA3AMJ4zncuBpKfFP0SPwc8\" curl -X POST http://localhost:3000/api/v1/auth/refresh -H \"Content-Type: application/json\" -d \"{\"\"refreshToken\"\":\"\"$REFRESH_TOKEN\"\"}\")",
+      "Bash(REFRESH_TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyODZlZGQ1Ny03MjM1LTQ5OGEtYmZkMS01NzBiNmZlNzNkMDYiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc1OTc5MzI5NSwiZXhwIjoxNzYwMzk4MDk1fQ.GjzoPBER0EN3Hp38VlIINA3AMJ4zncuBpKfFP0SPwc8\")",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxODQ2NzQ2MS1iYmEwLTRhNWQtYTNiMC1iZGE0NjI0YjJjYjAiLCJlbWFpbCI6ImRlbW9Ad2VicHJvcG9zdGFzLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5NzkyNTY3LCJleHAiOjE3NTk3OTM0Njd9.ykUH8j2KfRKHVlvNi7InK4oR8skfBILNyZWlj6BQAyU\" curl -X POST http://localhost:3000/api/v1/auth/login -H \"Content-Type: application/json\" -d '{\"\"\"\"email\"\"\"\":\"\"\"\"demo@webpropostas.com\"\"\"\",\"\"\"\"password\"\"\"\":\"\"\"\"demo123\"\"\"\"}')",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxODQ2NzQ2MS1iYmEwLTRhNWQtYTNiMC1iZGE0NjI0YjJjYjAiLCJlbWFpbCI6ImRlbW9Ad2VicHJvcG9zdGFzLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5Nzk0MDgyLCJleHAiOjE3NTk3OTQ5ODJ9.zbX7dzk266Jshl4dZrtRtscUAf7lBOgYmxjZo09oQkE\" curl -X POST http://localhost:3000/api/v1/clients -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\n  \"\"\"\"name\"\"\"\": \"\"\"\"Acme Corporation\"\"\"\",\n  \"\"\"\"email\"\"\"\": \"\"\"\"contact@acme.com\"\"\"\",\n  \"\"\"\"company\"\"\"\": \"\"\"\"Acme Corp\"\"\"\",\n  \"\"\"\"phone\"\"\"\": \"\"\"\"(11) 98765-4321\"\"\"\",\n  \"\"\"\"document\"\"\"\": \"\"\"\"12345678000190\"\"\"\",\n  \"\"\"\"document_type\"\"\"\": \"\"\"\"cnpj\"\"\"\"\n}')",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxODQ2NzQ2MS1iYmEwLTRhNWQtYTNiMC1iZGE0NjI0YjJjYjAiLCJlbWFpbCI6ImRlbW9Ad2VicHJvcG9zdGFzLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5Nzk0MDgyLCJleHAiOjE3NTk3OTQ5ODJ9.zbX7dzk266Jshl4dZrtRtscUAf7lBOgYmxjZo09oQkE\")",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxODQ2NzQ2MS1iYmEwLTRhNWQtYTNiMC1iZGE0NjI0YjJjYjAiLCJlbWFpbCI6ImRlbW9Ad2VicHJvcG9zdGFzLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5Nzk0NDU5LCJleHAiOjE3NTk3OTUzNTl9.iSsN2dBActNfXd-M93DdZRniBJmOxn41wshDUvLh2_w\")",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxODQ2NzQ2MS1iYmEwLTRhNWQtYTNiMC1iZGE0NjI0YjJjYjAiLCJlbWFpbCI6ImRlbW9Ad2VicHJvcG9zdGFzLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5Nzk0NDU5LCJleHAiOjE3NTk3OTUzNTl9.iSsN2dBActNfXd-M93DdZRniBJmOxn41wshDUvLh2_w\" curl -X GET http://localhost:3000/api/v1/proposals -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(npm run type-check:*)",
+      "Bash(npm run build:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []

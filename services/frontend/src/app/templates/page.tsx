@@ -62,7 +62,7 @@ export default function TemplatesPage() {
   useEffect(() => {
     if (templates.length > 0) {
       // Get unique categories from templates
-      const uniqueCategories = [...new Set(templates.map(t => t.category))];
+      const uniqueCategories = Array.from(new Set(templates.map(t => t.category)));
 
       const categoriesWithCount = uniqueCategories.map((cat) => ({
         id: cat,
@@ -76,7 +76,7 @@ export default function TemplatesPage() {
       ]);
 
       // Get unique sectors from templates
-      const uniqueSectors = [...new Set(templates.map(t => t.sector))];
+      const uniqueSectors = Array.from(new Set(templates.map(t => t.sector)));
       setSectors([
         { id: 'all', name: 'Todos os Setores' },
         ...uniqueSectors.map(sector => ({ id: sector, name: sector }))

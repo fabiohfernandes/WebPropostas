@@ -1,3 +1,3 @@
 // Layout Components Barrel Export
-export { DashboardLayout } from './DashboardLayout';
-export { PublicLayout } from './PublicLayout';
+export { default as DashboardLayout } from './DashboardLayout';
+export { default as PublicLayout } from './PublicLayout';

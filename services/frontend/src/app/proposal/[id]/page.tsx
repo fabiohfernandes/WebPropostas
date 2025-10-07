@@ -87,6 +87,9 @@ export default function ProposalViewerPage() {
       if (!token || !proposal) return;
 
       try {
+        const currentPageData = pages[currentPage - 1];
+        if (!currentPageData) return;
+
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
         await fetch(`${apiUrl}/api/v1/client/proposal/${proposalId}/view`, {
           method: 'POST',
@@ -95,7 +98,7 @@ export default function ProposalViewerPage() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            page_name: pages[currentPage - 1].name.toLowerCase(),
+            page_name: currentPageData.name.toLowerCase(),
           }),
         });
       } catch (error) {

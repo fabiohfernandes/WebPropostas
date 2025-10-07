@@ -173,11 +173,13 @@ export function ProposalWizard({ onComplete, initialData }: Props) {
       if (keys.length === 1) {
         return { ...prev, [field]: value };
       } else {
+        const key0 = keys[0] as string;
+        const key1 = keys[1] as string;
         return {
           ...prev,
-          [keys[0]]: {
-            ...(prev[keys[0] as keyof typeof prev] as any),
-            [keys[1]]: value,
+          [key0]: {
+            ...(prev[key0 as keyof typeof prev] as any),
+            [key1]: value,
           },
         };
       }

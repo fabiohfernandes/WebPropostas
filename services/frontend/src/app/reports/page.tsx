@@ -64,11 +64,11 @@ const buildMonthlyStats = (proposals: any[]) => {
   return sortedData.map((current, index) => {
     const previous = sortedData[index + 1];
 
-    const closedDealsChange = previous ?
+    const closedDealsChange = (previous && current) ?
       (current.closedDeals - previous.closedDeals) : 0;
 
     let closedDealsChangePercent = 0;
-    if (previous) {
+    if (previous && current) {
       if (previous.closedDeals === 0 && current.closedDeals > 0) {
         // When previous was 0 and current is positive, show 100% growth
         closedDealsChangePercent = 100;
@@ -79,11 +79,11 @@ const buildMonthlyStats = (proposals: any[]) => {
       // If both are 0, keep as 0
     }
 
-    const proposalsChange = previous ?
+    const proposalsChange = (previous && current) ?
       (current.proposals - previous.proposals) : 0;
 
     let proposalsChangePercent = 0;
-    if (previous) {
+    if (previous && current) {
       if (previous.proposals === 0 && current.proposals > 0) {
         // When previous was 0 and current is positive, show 100% growth
         proposalsChangePercent = 100;
@@ -107,7 +107,13 @@ const buildMonthlyStats = (proposals: any[]) => {
 export default function ReportsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [reports, setReports] = useState({
+  const [reports, setReports] = useState<{
+    totalClients: number;
+    totalProposals: number;
+    totalRevenue: number;
+    conversionRate: number;
+    monthlyStats: any[];
+  }>({
     totalClients: 0,
     totalProposals: 0,
     totalRevenue: 0,
@@ -141,7 +147,7 @@ export default function ReportsPage() {
 
           // Since API doesn't provide clients or monthlyStats, we need to fetch them separately
           let clientsCount = 0;
-          let monthlyStats = [];
+          let monthlyStats: any[] = [];
 
           // Try to fetch clients count from clients API
           try {

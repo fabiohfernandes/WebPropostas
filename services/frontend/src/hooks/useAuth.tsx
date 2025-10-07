@@ -138,17 +138,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     router.push('/auth/login');
   };
 
+  const contextValue: AuthContextType = {
+    user,
+    token,
+    login,
+    register,
+    logout,
+    loading,
+  };
+
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        token,
-        login,
-        register,
-        logout,
-        loading,
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );

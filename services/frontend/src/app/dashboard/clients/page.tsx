@@ -186,11 +186,11 @@ export default function ClientsPage() {
           icon={<BuildingOfficeIcon className="w-16 h-16" />}
           title="Nenhum cliente cadastrado"
           description="Comece adicionando seu primeiro cliente para gerenciar propostas"
-          action={
-            <Button leftIcon={<PlusIcon className="w-5 h-5" />}>
-              Adicionar Primeiro Cliente
-            </Button>
-          }
+          action={{
+            label: 'Adicionar Primeiro Cliente',
+            onClick: () => window.location.href = '/dashboard/clients/new',
+            icon: <PlusIcon className="w-5 h-5" />
+          }}
         />
       )}
 

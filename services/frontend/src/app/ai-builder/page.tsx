@@ -89,7 +89,6 @@ export default function AIBuilderPage() {
       {pageState === 'editor' && proposalId && (
         <ProposalEditor
           proposalId={proposalId}
-          onBack={handleBackToWizard}
         />
       )}
     </div>

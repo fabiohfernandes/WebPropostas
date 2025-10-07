@@ -23,6 +23,7 @@ import {
   UserCircleIcon,
   ArrowRightOnRectangleIcon,
   RectangleStackIcon,
+  PencilSquareIcon,
 } from '@heroicons/react/24/outline';
 import { appConfig } from '@/config';
 
@@ -34,7 +35,8 @@ const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   { name: 'Propostas', href: '/dashboard/proposals', icon: DocumentTextIcon },
   { name: 'Clientes', href: '/dashboard/clients', icon: UserGroupIcon },
-  { name: 'Templates', href: '/templates', icon: RectangleStackIcon },
+  { name: 'Construtor', href: '/builder', icon: PencilSquareIcon },
+  { name: 'Templates', href: '/dashboard/templates', icon: RectangleStackIcon },
   { name: 'Relatórios', href: '/dashboard/reports', icon: ChartBarIcon },
   { name: 'Configurações', href: '/dashboard/settings', icon: Cog6ToothIcon },
 ];
@@ -43,22 +45,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { logout, user, isAuthenticated, tokens, isLoading, initialize } = useAuthStore();
-
-  // Initialize authentication state on mount
-  useEffect(() => {
-    const initAuth = async () => {
-      // If already authenticated, nothing to do
-      if (isAuthenticated && tokens) {
-        return;
-      }
-
-      // Try to initialize from stored data
-      await initialize();
-    };
-
-    initAuth();
-  }, [initialize, isAuthenticated, tokens]);
+  const { logout, user, isAuthenticated, tokens, isLoading } = useAuthStore();
 
   // Redirect to login if not authenticated after loading
   useEffect(() => {

@@ -40,11 +40,17 @@ const swaggerSpec = require('./config/swagger');
 // Import cache utility
 const cache = require('./utils/cache');
 
-// Import proposal platform routes
+// Import routes
+const { router: authRouter } = require('./routes/auth');
+const proposalsRouter = require('./routes/proposals');
+const clientsRouter = require('./routes/clients');
+const clientReviewRouter = require('./routes/client-review');
 const { router: proposalPlatformRouter, initializePool } = require('./routes/proposal-platform');
 const { router: clientAuthRouter, initializePool: initializeClientPool } = require('./routes/client-auth');
 const aiProposalsRouter = require('./routes/ai-proposals');
 const templatesRouter = require('./routes/templates');
+const dashboardRouter = require('./routes/dashboard');
+const uploadsRouter = require('./routes/uploads');
 
 // Initialize Express app
 const app = express();
@@ -162,6 +168,9 @@ app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Static file serving for uploads
+app.use('/uploads', express.static('uploads'));
+
 // Input sanitization middleware
 app.use(sanitizeMiddleware);
 
@@ -194,17 +203,32 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
+// Make pool available to all routes via app.locals
+app.locals.pool = pool;
+
 // Initialize proposal platform routes with database pool
 initializePool(pool);
 initializeClientPool(pool);
 
 // API Routes
 
-// Mount proposal platform routes
+// Mount authentication routes (NO auth required)
+app.use('/api/v1/auth', authRouter);
+
+// Mount NEW V2 routes (require authentication)
+app.use('/api/v1/proposals', authenticateToken, proposalsRouter);
+app.use('/api/v1/clients', authenticateToken, clientsRouter);
+app.use('/api/v1/dashboard', authenticateToken, dashboardRouter);
+app.use('/api/v1/uploads', authenticateToken, uploadsRouter);
+
+// Mount client review routes (NO auth - uses access code/password)
+app.use('/api/v1/client', clientReviewRouter);
+
+// Mount OLD proposal platform routes (legacy compatibility)
 app.use('/api/v1', proposalPlatformRouter);
 
-// Mount client authentication routes
-app.use('/api/v1/client', clientAuthRouter);
+// Mount OLD client authentication routes (legacy)
+app.use('/api/v1/client-legacy', clientAuthRouter);
 
 // Mount AI proposals routes (V2 - Phase 0)
 app.use('/api/v1/ai/proposals', authenticateToken, aiProposalsRouter);
@@ -1270,9 +1294,10 @@ process.on('SIGINT', async () => {
     await checkConnection();
 
     // Initialize database schema (creates tables if they don't exist)
-    logger.info('Initializing database schema...');
-    await initializeSchema();
-    logger.info('Database schema ready');
+    // DISABLED: Using schema.sql instead
+    // logger.info('Initializing database schema...');
+    // await initializeSchema();
+    // logger.info('Database schema ready');
 
     // Initialize Redis cache
     logger.info('Initializing Redis cache...');
