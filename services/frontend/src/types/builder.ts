@@ -73,11 +73,6 @@ export interface TextElement extends BaseElement {
 }
 
 /**
- * Frame/Border style presets for images
- */
-export type FrameStyle = 'none' | 'simple' | 'classic' | 'modern' | 'vintage' | 'polaroid' | 'double' | 'ornate';
-
-/**
  * Image element properties
  */
 export interface ImageElement extends BaseElement {
@@ -94,13 +89,11 @@ export interface ImageElement extends BaseElement {
       color: string;
       radius: number;
     };
-    // Frame/Moldura configuration
-    frame?: {
-      style: FrameStyle;
-      width: number;
+    // Alpha-respecting border (follows transparent contours)
+    alphaBorder?: {
+      enabled: boolean;
+      size: number;
       color: string;
-      innerColor?: string; // For double frames
-      shadowEnabled?: boolean;
     };
     shadow?: {
       blur: number;
@@ -183,13 +176,23 @@ export interface CanvasSize {
 }
 
 /**
+ * Page background configuration
+ */
+export interface PageBackground {
+  type: 'color' | 'image';
+  color?: string;
+  image?: string;
+  opacity?: number;
+}
+
+/**
  * Page in multi-page document
  */
 export interface Page {
   id: string;
   name: string;
   elements: Element[];
-  background: string;
+  background: string | PageBackground;
   canvasSize: CanvasSize;
   createdAt: number;
 }
@@ -256,6 +259,7 @@ export interface BuilderState {
   setCurrentPage: (pageId: string) => void;
   duplicatePage: (pageId: string) => void;
   reorderPages: (startIndex: number, endIndex: number) => void;
+  updatePageBackground: (pageId: string, background: string | PageBackground) => void;
 
   // Actions - Elements
   addElement: (element: Element) => void;

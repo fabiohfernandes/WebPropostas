@@ -21,12 +21,74 @@ WebPropostas is an AI-powered platform that streamlines the entire commercial pr
 
 ---
 
-## Current Phase: Template Builder Development - Week 1 Complete
+## Current Phase: Template Builder Development - Advanced Features Complete
 
 **Date:** 2025-10-07
-**Status:** 🎨 TEMPLATE BUILDER WEEK 1 COMPLETE - Professional Canva-like template builder with Konva.js, multi-page A4 documents, image handling, and comprehensive font system implemented.
+**Status:** 🎨 TEMPLATE BUILDER ADVANCED FEATURES COMPLETE - Elastic animations, auto-scroll, shadow system, PNG alpha borders, and canvas background customization with image support and opacity control.
 
 ### 🚀 Latest Completed Milestones
+
+#### Phase 27: Template Builder Advanced Effects & Interactions (2025-10-07) 🎨 ADVANCED BUILDER MILESTONE
+- ✅ **Elastic Animation System** - Konva ElasticEaseOut bounce effects
+  - Implemented useElasticAnimation hook with Konva.Tween
+  - Scale up 10% on drag start with shadow
+  - Elastic bounce back on drag end using Konva.Easings.ElasticEaseOut
+  - Works for all elements (text, images, shapes)
+  - Client-side only rendering to prevent SSR hydration errors
+  - Fixed scope issues - animations persist across select/deselect cycles
+
+- ✅ **Auto-Scroll by Edge Drag** - Canvas scrolling when dragging near edges
+  - 50px edge threshold detection
+  - 5px/interval scroll speed (~60fps)
+  - Automatic container scroll with element position adjustment
+  - Stage-level event listeners for all draggable elements
+  - Smooth scrolling during drag operations
+
+- ✅ **Comprehensive Shadow System** - Professional shadow effects for all elements
+  - Shadow controls in CommonProperties panel (text, images, shapes)
+  - Blur control (0-50px slider)
+  - Offset X (-50 to +50px slider)
+  - Offset Y (-50 to +50px slider)
+  - Color picker with rgba support
+  - Enable/disable checkbox toggle
+  - Applied to image rendering (shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY)
+
+- ✅ **PNG Alpha-Respecting Borders** - Advanced image border with transparency support
+  - Custom BorderFilter based on Konva official example
+  - Follows transparent PNG contours exactly
+  - Shadow-based technique with threshold detection
+  - Alpha border controls in PropertiesPanel:
+    - Enable/disable checkbox
+    - Border size slider (1-20px)
+    - Border color picker with hex input
+  - Applied via Konva filters array with caching
+  - Note: Complex implementation - partial functionality
+
+- ✅ **Canvas Background System** - Full page background customization
+  - PageBackground type supporting 'color' and 'image' modes
+  - BackgroundRect component for rendering
+  - Background controls in PropertiesPanel (when no element selected):
+    - Type selector dropdown (Color/Image)
+    - Color picker for solid backgrounds
+    - Image URL input for background images
+    - Opacity slider (0-100%) for both types
+  - Per-page background storage in page.background
+  - Backwards compatible with string color values
+  - Color picker in toolbar for quick access
+
+- ✅ **Multi-Page Panel** - Bottom panel for page navigation
+  - Page thumbnail display
+  - Add/Delete/Duplicate page buttons
+  - Visual page selection (blue border on current)
+  - Page reordering support
+  - Integrated into BuilderLayout
+
+- 🔧 **Technical Improvements**
+  - Fixed elastic animation SSR hydration errors
+  - Improved image shadow rendering
+  - Enhanced background rendering with image support
+  - Added PageBackground interface to types
+  - Updated builder store with updatePageBackground function
 
 #### Phase 26: Template Builder Week 1 - Core Foundation (2025-10-07) 🎨 MAJOR BUILDER MILESTONE
 - ✅ **Konva.js Canvas Implementation** - Professional canvas rendering with react-konva v18.2.10

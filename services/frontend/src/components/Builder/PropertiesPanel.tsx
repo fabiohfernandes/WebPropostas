@@ -444,149 +444,102 @@ function ImageProperties({ element }: { element: ImageElement }) {
         </select>
       </div>
 
-      {/* Frame/Moldura */}
-      <div className="border-t border-gray-200 pt-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Moldura
-        </label>
-        <select
-          value={element.properties.frame?.style || 'none'}
-          onChange={(e) => {
-            const style = e.target.value as any;
-            if (style === 'none') {
+      {/* Alpha Border (Moldura que respeita transparência PNG) */}
+      <div className="pt-4 border-t border-gray-200">
+        <div className="flex items-center justify-between mb-3">
+          <label className="text-sm font-medium text-gray-700">
+            Moldura PNG
+          </label>
+          <input
+            type="checkbox"
+            checked={element.properties.alphaBorder?.enabled || false}
+            onChange={(e) =>
               updateElement(element.id, {
                 properties: {
                   ...element.properties,
-                  frame: undefined,
-                },
-              } as Partial<ImageElement>);
-            } else {
-              updateElement(element.id, {
-                properties: {
-                  ...element.properties,
-                  frame: {
-                    style,
-                    width: 20,
-                    color: '#8B4513',
-                    innerColor: style === 'double' ? '#D4A574' : undefined,
-                    shadowEnabled: true,
+                  alphaBorder: {
+                    enabled: e.target.checked,
+                    size: element.properties.alphaBorder?.size || 5,
+                    color: element.properties.alphaBorder?.color || '#000000',
                   },
                 },
-              } as Partial<ImageElement>);
+              } as Partial<ImageElement>)
             }
-          }}
-          className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="none">Sem Moldura</option>
-          <option value="simple">Simples</option>
-          <option value="classic">Clássica</option>
-          <option value="modern">Moderna</option>
-          <option value="vintage">Vintage</option>
-          <option value="polaroid">Polaroid</option>
-          <option value="double">Dupla</option>
-          <option value="ornate">Ornamentada</option>
-        </select>
+            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+          />
+        </div>
 
-        {/* Frame customization (shown when frame is enabled) */}
-        {element.properties.frame && element.properties.frame.style !== 'none' && (
-          <div className="mt-3 space-y-3">
-            {/* Frame Width */}
+        {element.properties.alphaBorder?.enabled && (
+          <div className="space-y-3 pl-2">
+            {/* Border Size */}
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">
-                Espessura
+              <label className="block text-xs text-gray-600 mb-1">
+                Espessura: {element.properties.alphaBorder.size}px
               </label>
               <input
                 type="range"
-                min="5"
-                max="60"
-                value={element.properties.frame.width}
+                min="1"
+                max="20"
+                value={element.properties.alphaBorder.size}
                 onChange={(e) =>
                   updateElement(element.id, {
                     properties: {
                       ...element.properties,
-                      frame: {
-                        ...element.properties.frame!,
-                        width: parseInt(e.target.value),
+                      alphaBorder: {
+                        ...element.properties.alphaBorder!,
+                        size: parseInt(e.target.value),
                       },
                     },
                   } as Partial<ImageElement>)
                 }
                 className="w-full"
               />
-              <span className="text-xs text-gray-500">{element.properties.frame.width}px</span>
             </div>
 
-            {/* Frame Color */}
+            {/* Border Color */}
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">
+              <label className="block text-xs text-gray-600 mb-1">
                 Cor da Moldura
               </label>
-              <input
-                type="color"
-                value={element.properties.frame.color}
-                onChange={(e) =>
-                  updateElement(element.id, {
-                    properties: {
-                      ...element.properties,
-                      frame: {
-                        ...element.properties.frame!,
-                        color: e.target.value,
-                      },
-                    },
-                  } as Partial<ImageElement>)
-                }
-                className="w-full h-10 rounded-lg border border-gray-200 cursor-pointer"
-              />
-            </div>
-
-            {/* Inner Color for double and ornate frames */}
-            {(element.properties.frame.style === 'double' || element.properties.frame.style === 'ornate') && (
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">
-                  {element.properties.frame.style === 'double' ? 'Cor Interna' : 'Cor dos Detalhes'}
-                </label>
+              <div className="flex gap-2">
                 <input
                   type="color"
-                  value={element.properties.frame.innerColor || '#D4A574'}
+                  value={element.properties.alphaBorder.color}
                   onChange={(e) =>
                     updateElement(element.id, {
                       properties: {
                         ...element.properties,
-                        frame: {
-                          ...element.properties.frame!,
-                          innerColor: e.target.value,
+                        alphaBorder: {
+                          ...element.properties.alphaBorder!,
+                          color: e.target.value,
                         },
                       },
                     } as Partial<ImageElement>)
                   }
-                  className="w-full h-10 rounded-lg border border-gray-200 cursor-pointer"
+                  className="w-12 h-9 rounded cursor-pointer"
+                />
+                <input
+                  type="text"
+                  value={element.properties.alphaBorder.color}
+                  onChange={(e) =>
+                    updateElement(element.id, {
+                      properties: {
+                        ...element.properties,
+                        alphaBorder: {
+                          ...element.properties.alphaBorder!,
+                          color: e.target.value,
+                        },
+                      },
+                    } as Partial<ImageElement>)
+                  }
+                  className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-mono"
                 />
               </div>
-            )}
-
-            {/* Shadow Toggle */}
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="frame-shadow"
-                checked={element.properties.frame.shadowEnabled !== false}
-                onChange={(e) =>
-                  updateElement(element.id, {
-                    properties: {
-                      ...element.properties,
-                      frame: {
-                        ...element.properties.frame!,
-                        shadowEnabled: e.target.checked,
-                      },
-                    },
-                  } as Partial<ImageElement>)
-                }
-                className="mr-2 h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
-              />
-              <label htmlFor="frame-shadow" className="text-xs font-medium text-gray-600">
-                Sombra na moldura
-              </label>
             </div>
+
+            <p className="text-xs text-gray-500 italic">
+              ✨ A moldura segue o contorno da imagem PNG
+            </p>
           </div>
         )}
       </div>
@@ -718,26 +671,301 @@ function CommonProperties({ element }: { element: any }) {
           />
         </div>
       </div>
+
+      {/* Shadow Controls */}
+      <div className="pt-4 border-t border-gray-200">
+        <div className="flex items-center justify-between mb-3">
+          <label className="text-sm font-medium text-gray-700">
+            Sombra
+          </label>
+          <input
+            type="checkbox"
+            checked={!!element.properties?.shadow}
+            onChange={(e) => {
+              if (e.target.checked) {
+                updateElement(element.id, {
+                  properties: {
+                    ...element.properties,
+                    shadow: {
+                      blur: 10,
+                      color: 'rgba(0, 0, 0, 0.5)',
+                      offsetX: 5,
+                      offsetY: 5,
+                    },
+                  },
+                });
+              } else {
+                const { shadow, ...restProperties } = element.properties;
+                updateElement(element.id, {
+                  properties: restProperties,
+                });
+              }
+            }}
+            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+          />
+        </div>
+
+        {element.properties?.shadow && (
+          <div className="space-y-3 pl-2">
+            {/* Shadow Blur */}
+            <div>
+              <label className="block text-xs text-gray-600 mb-1">
+                Desfoque: {element.properties.shadow.blur}px
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="50"
+                value={element.properties.shadow.blur}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        blur: parseInt(e.target.value),
+                      },
+                    },
+                  })
+                }
+                className="w-full"
+              />
+            </div>
+
+            {/* Shadow Offset X */}
+            <div>
+              <label className="block text-xs text-gray-600 mb-1">
+                Deslocamento X: {element.properties.shadow.offsetX}px
+              </label>
+              <input
+                type="range"
+                min="-50"
+                max="50"
+                value={element.properties.shadow.offsetX}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        offsetX: parseInt(e.target.value),
+                      },
+                    },
+                  })
+                }
+                className="w-full"
+              />
+            </div>
+
+            {/* Shadow Offset Y */}
+            <div>
+              <label className="block text-xs text-gray-600 mb-1">
+                Deslocamento Y: {element.properties.shadow.offsetY}px
+              </label>
+              <input
+                type="range"
+                min="-50"
+                max="50"
+                value={element.properties.shadow.offsetY}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        offsetY: parseInt(e.target.value),
+                      },
+                    },
+                  })
+                }
+                className="w-full"
+              />
+            </div>
+
+            {/* Shadow Color */}
+            <div>
+              <label className="block text-xs text-gray-600 mb-1">
+                Cor da Sombra
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="color"
+                  value={element.properties.shadow.color.startsWith('rgba')
+                    ? '#000000'
+                    : element.properties.shadow.color}
+                  onChange={(e) =>
+                    updateElement(element.id, {
+                      properties: {
+                        ...element.properties,
+                        shadow: {
+                          ...element.properties.shadow,
+                          color: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  className="w-12 h-9 rounded cursor-pointer"
+                />
+                <input
+                  type="text"
+                  value={element.properties.shadow.color}
+                  onChange={(e) =>
+                    updateElement(element.id, {
+                      properties: {
+                        ...element.properties,
+                        shadow: {
+                          ...element.properties.shadow,
+                          color: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                  placeholder="rgba(0, 0, 0, 0.5)"
+                  className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-mono"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
 export function PropertiesPanel() {
   const selectedElement = useSelectedElement();
-  const { deleteElement, duplicateElement } = useBuilderStore();
+  const { deleteElement, duplicateElement, currentPageId, updatePageBackground, pages } = useBuilderStore();
+  const currentPage = pages.find(p => p.id === currentPageId);
 
   if (!selectedElement) {
+    const bg = currentPage?.background;
+    const isObject = typeof bg === 'object';
+    const bgType = isObject ? bg.type : 'color';
+    const bgColor = isObject && bg.color ? bg.color : (typeof bg === 'string' ? bg : '#FFFFFF');
+    const bgImage = isObject && bg.image ? bg.image : '';
+    const bgOpacity = isObject && bg.opacity !== undefined ? bg.opacity : 1;
+
     return (
       <div className="h-full flex flex-col">
         <div className="p-4 border-b border-gray-200">
-          <h3 className="font-semibold text-gray-900">Propriedades</h3>
+          <h3 className="font-semibold text-gray-900">Fundo da Página</h3>
         </div>
-        <div className="flex-1 flex items-center justify-center p-8">
-          <div className="text-center">
-            <AdjustmentsHorizontalIcon className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-sm text-gray-500">
-              Selecione um elemento para editar suas propriedades
-            </p>
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {/* Background Type */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Tipo de Fundo
+            </label>
+            <select
+              value={bgType}
+              onChange={(e) => {
+                const type = e.target.value as 'color' | 'image';
+                if (type === 'color') {
+                  updatePageBackground(currentPageId, {
+                    type: 'color',
+                    color: bgColor,
+                    opacity: bgOpacity,
+                  });
+                } else {
+                  updatePageBackground(currentPageId, {
+                    type: 'image',
+                    image: bgImage || '',
+                    opacity: bgOpacity,
+                  });
+                }
+              }}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="color">Cor Sólida</option>
+              <option value="image">Imagem</option>
+            </select>
+          </div>
+
+          {/* Color Background */}
+          {bgType === 'color' && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Cor
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="color"
+                  value={bgColor}
+                  onChange={(e) =>
+                    updatePageBackground(currentPageId, {
+                      type: 'color',
+                      color: e.target.value,
+                      opacity: bgOpacity,
+                    })
+                  }
+                  className="w-12 h-10 rounded cursor-pointer"
+                />
+                <input
+                  type="text"
+                  value={bgColor}
+                  onChange={(e) =>
+                    updatePageBackground(currentPageId, {
+                      type: 'color',
+                      color: e.target.value,
+                      opacity: bgOpacity,
+                    })
+                  }
+                  className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Image Background */}
+          {bgType === 'image' && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                URL da Imagem
+              </label>
+              <input
+                type="text"
+                value={bgImage}
+                onChange={(e) =>
+                  updatePageBackground(currentPageId, {
+                    type: 'image',
+                    image: e.target.value,
+                    opacity: bgOpacity,
+                  })
+                }
+                placeholder="https://exemplo.com/imagem.jpg"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-mono"
+              />
+            </div>
+          )}
+
+          {/* Opacity */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Opacidade: {Math.round(bgOpacity * 100)}%
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={bgOpacity * 100}
+              onChange={(e) => {
+                const opacity = parseInt(e.target.value) / 100;
+                if (bgType === 'color') {
+                  updatePageBackground(currentPageId, {
+                    type: 'color',
+                    color: bgColor,
+                    opacity,
+                  });
+                } else {
+                  updatePageBackground(currentPageId, {
+                    type: 'image',
+                    image: bgImage,
+                    opacity,
+                  });
+                }
+              }}
+              className="w-full"
+            />
           </div>
         </div>
       </div>

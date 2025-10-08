@@ -32,8 +32,13 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
     toggleSnapToGrid,
     toggleOrientation,
     currentCanvasSize,
+    currentPageId,
+    updatePageBackground,
+    pages,
   } = useBuilderStore();
   const { canUndo, canRedo } = useHistoryState();
+
+  const currentPage = pages.find(p => p.id === currentPageId);
 
   const canvasSize = currentCanvasSize();
   const isPortrait = canvasSize.orientation === 'portrait';
@@ -142,6 +147,20 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
         >
           <Square3Stack3DIcon className="w-5 h-5" />
         </button>
+
+        <div className="w-px h-6 bg-gray-300 mx-2" />
+
+        {/* Canvas Background */}
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium text-gray-600">Fundo:</span>
+          <input
+            type="color"
+            value={currentPage?.background || '#FFFFFF'}
+            onChange={(e) => updatePageBackground(currentPageId, e.target.value)}
+            className="w-8 h-8 rounded cursor-pointer border border-gray-300"
+            title="Cor do Fundo"
+          />
+        </div>
       </div>
 
       {/* Right Section - Save/Export */}

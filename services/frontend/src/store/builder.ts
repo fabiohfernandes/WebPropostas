@@ -155,6 +155,17 @@ export const useBuilderStore = create<BuilderState>()(
         get().saveHistory();
       },
 
+      updatePageBackground: (pageId: string, background: string | import('@/types/builder').PageBackground) => {
+        set((state) => ({
+          pages: state.pages.map((page) =>
+            page.id === pageId
+              ? { ...page, background }
+              : page
+          ),
+        }));
+        get().saveHistory();
+      },
+
       reorderPages: (startIndex: number, endIndex: number) => {
         set((state) => {
           const newPages = Array.from(state.pages);

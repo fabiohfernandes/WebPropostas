@@ -31,6 +31,14 @@ docker exec webpropostas-postgres psql -U webpropostas_user -d webpropostas -c "
 - **I WILL ALWAYS GIVE PREFERENCE FOR DOCKER CONTAINERIZED SERVICES**
 - **I WILL NOT DECIDE NOTHING BY MYSELF**
 
+### 🔴 CRITICAL: NEVER RUN SERVICES LOCALLY
+- **NEVER run `npm run dev` or any local development server**
+- **ALWAYS restart Docker containers instead**: `docker-compose restart frontend`
+- **To apply frontend changes**: `docker-compose restart frontend`
+- **To apply backend changes**: `docker-compose restart api`
+- **To restart all services**: `docker-compose restart`
+- **DOCKER ONLY - NO EXCEPTIONS**
+
 ### Hard Rules — NON-NEGOTIABLE
 - **Safety & Law**: NEVER produce or facilitate illegal, harmful, or policy-violating content
 - **Privacy**: NEVER reveal secrets/keys/tokens or scrape personal data

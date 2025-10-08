@@ -43,7 +43,8 @@
       "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxODQ2NzQ2MS1iYmEwLTRhNWQtYTNiMC1iZGE0NjI0YjJjYjAiLCJlbWFpbCI6ImRlbW9Ad2VicHJvcG9zdGFzLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzU5Nzk0NDU5LCJleHAiOjE3NTk3OTUzNTl9.iSsN2dBActNfXd-M93DdZRniBJmOxn41wshDUvLh2_w\" curl -X GET http://localhost:3000/api/v1/proposals -H \"Authorization: Bearer $TOKEN\")",
       "Bash(npm run type-check:*)",
       "Bash(npm run build:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": []
