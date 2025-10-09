@@ -284,6 +284,9 @@ export interface HistoryState {
  * Builder state interface (for Zustand store)
  */
 export interface BuilderState {
+  // Session Navigation
+  activeSession: 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets' | 'ai' | 'tips';
+
   // Pages (multi-page support)
   pages: Page[];
   currentPageId: string;
@@ -326,6 +329,9 @@ export interface BuilderState {
   deleteElement: (id: string) => void;
   duplicateElement: (id: string) => void;
   selectElement: (id: string | null) => void;
+
+  // Actions - Session Navigation
+  setActiveSession: (session: 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets' | 'ai' | 'tips') => void;
 
   // Actions - Canvas
   setCanvasSize: (size: CanvasSize) => void;

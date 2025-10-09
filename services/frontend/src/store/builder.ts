@@ -46,6 +46,9 @@ function createInitialPage(): Page {
 export const useBuilderStore = create<BuilderState>()(
   devtools(
     (set, get) => ({
+      // Session State - Navigation
+      activeSession: 'text' as 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets' | 'ai' | 'tips',
+
       // Initial State - Pages
       pages: [createInitialPage()],
       currentPageId: createInitialPage().id,
@@ -273,6 +276,11 @@ export const useBuilderStore = create<BuilderState>()(
 
       selectElement: (id: string | null) => {
         set({ selectedElementId: id });
+      },
+
+      // Actions - Session Navigation
+      setActiveSession: (session: 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets' | 'ai' | 'tips') => {
+        set({ activeSession: session });
       },
 
       // Actions - Canvas

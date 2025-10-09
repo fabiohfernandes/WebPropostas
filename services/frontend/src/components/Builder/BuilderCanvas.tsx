@@ -12,8 +12,10 @@ import { useDroppable } from '@dnd-kit/core';
 import { useBuilderStore } from '@/store/builder';
 import { getFontFamily } from '@/utils/fonts';
 import { useElasticAnimation } from '@/hooks/useElasticAnimation';
-import type { Element, TextElement, ShapeElement, ImageElement, FormElement } from '@/types/builder';
+import type { Element, TextElement, ShapeElement, ImageElement, FormElement, IconElement } from '@/types/builder';
 import Konva from 'konva';
+import { renderToString } from 'react-dom/server';
+import * as LucideIcons from 'lucide-react';
 
 // Background component that handles both color and image backgrounds
 function BackgroundRect({ background, width, height }: { background: any; width: number; height: number }) {
@@ -257,7 +259,7 @@ function ImageElement({ element }: { element: ImageElement }) {
     });
   };
 
-  // Calculate image rendering based on fit mode
+  // Calculate image rendering based on fit mode (relative to Group at 0,0)
   const getImageConfig = () => {
     if (!loadedImage) return {};
 
@@ -269,21 +271,7 @@ function ImageElement({ element }: { element: ImageElement }) {
     const boxRatio = boxWidth / boxHeight;
 
     const baseConfig = {
-      id: element.id,
-      x: element.x,
-      y: element.y,
-      offsetX: element.width / 2,  // Center pivot for rotation/transform
-      offsetY: element.height / 2, // Center pivot for rotation/transform
-      rotation: element.rotation,
-      opacity: element.opacity,
-      draggable: !element.locked,
-      onClick: () => selectElement(element.id),
-      onTap: () => selectElement(element.id),
-      onDragStart: () => selectElement(element.id),  // Select on drag start
-      onDragEnd: handleDragEnd,
-      onTransformEnd: handleTransformEnd,
-      stroke: isSelected ? '#3B82F6' : undefined,
-      strokeWidth: isSelected ? 2 : 0,
+      listening: false,
       // Shadow support
       shadowColor: element.properties.shadow?.color,
       shadowBlur: element.properties.shadow?.blur,
@@ -300,6 +288,8 @@ function ImageElement({ element }: { element: ImageElement }) {
           const cropX = (scaledWidth - boxWidth) / 2 / scale;
           return {
             ...baseConfig,
+            x: 0,
+            y: 0,
             width: boxWidth,
             height: boxHeight,
             crop: {
@@ -315,6 +305,8 @@ function ImageElement({ element }: { element: ImageElement }) {
           const cropY = (scaledHeight - boxHeight) / 2 / scale;
           return {
             ...baseConfig,
+            x: 0,
+            y: 0,
             width: boxWidth,
             height: boxHeight,
             crop: {
@@ -335,8 +327,8 @@ function ImageElement({ element }: { element: ImageElement }) {
           const offsetY = (boxHeight - scaledHeight) / 2;
           return {
             ...baseConfig,
-            x: element.x,
-            y: element.y + offsetY,
+            x: 0,
+            y: offsetY,
             width: boxWidth,
             height: scaledHeight,
           };
@@ -346,8 +338,8 @@ function ImageElement({ element }: { element: ImageElement }) {
           const offsetX = (boxWidth - scaledWidth) / 2;
           return {
             ...baseConfig,
-            x: element.x + offsetX,
-            y: element.y,
+            x: offsetX,
+            y: 0,
             width: scaledWidth,
             height: boxHeight,
           };
@@ -365,8 +357,8 @@ function ImageElement({ element }: { element: ImageElement }) {
 
         return {
           ...baseConfig,
-          x: element.x + offsetX,
-          y: element.y + offsetY,
+          x: offsetX,
+          y: offsetY,
           width: displayWidth,
           height: displayHeight,
           crop: {
@@ -383,6 +375,8 @@ function ImageElement({ element }: { element: ImageElement }) {
         // Stretch to fill
         return {
           ...baseConfig,
+          x: 0,
+          y: 0,
           width: boxWidth,
           height: boxHeight,
         };
@@ -390,31 +384,39 @@ function ImageElement({ element }: { element: ImageElement }) {
   };
 
   return (
-    <>
+    <Group
+      id={element.id}
+      x={element.x}
+      y={element.y}
+      width={element.width}
+      height={element.height}
+      offsetX={element.width / 2}
+      offsetY={element.height / 2}
+      rotation={element.rotation}
+      opacity={element.opacity}
+      draggable={!element.locked}
+      onClick={() => selectElement(element.id)}
+      onTap={() => selectElement(element.id)}
+      onDragStart={() => selectElement(element.id)}
+      onDragEnd={handleDragEnd}
+      onTransformEnd={handleTransformEnd}
+    >
       {/* Placeholder */}
       {!imageLoaded && (
         <>
           <Rect
-            id={element.id}
-            x={element.x}
-            y={element.y}
+            x={0}
+            y={0}
             width={element.width}
             height={element.height}
-            rotation={element.rotation}
-            opacity={element.opacity}
             fill="#F3F4F6"
             stroke={isSelected ? '#3B82F6' : '#D1D5DB'}
             strokeWidth={isSelected ? 2 : 1}
             dash={[5, 5]}
-            draggable={!element.locked}
-            onClick={() => selectElement(element.id)}
-            onTap={() => selectElement(element.id)}
-            onDragEnd={handleDragEnd}
-            onTransformEnd={handleTransformEnd}
           />
           <KonvaText
-            x={element.x}
-            y={element.y + element.height / 2 - 10}
+            x={0}
+            y={element.height / 2 - 10}
             width={element.width}
             height={20}
             text="📷 Imagem"
@@ -430,12 +432,253 @@ function ImageElement({ element }: { element: ImageElement }) {
 
       {/* Image with fit mode applied */}
       {imageLoaded && (
+        <>
+          {/* Hit area for click detection */}
+          <Rect
+            x={0}
+            y={0}
+            width={element.width}
+            height={element.height}
+            fill="transparent"
+          />
+          <KonvaImage
+            ref={imageRef}
+            {...getImageConfig()}
+          />
+        </>
+      )}
+    </Group>
+  );
+}
+
+// Icon SVG path data
+function getIconPath(iconName: string): string {
+  const paths: Record<string, string> = {
+    // Arrows
+    'arrow-up': '<line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>',
+    'arrow-down': '<line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>',
+    'arrow-left': '<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>',
+    'arrow-right': '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+    'arrow-up-right': '<line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/>',
+    'arrow-down-left': '<line x1="17" y1="7" x2="7" y2="17"/><polyline points="17 17 7 17 7 7"/>',
+    'trending-up': '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
+    'trending-down': '<polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/>',
+
+    // Real Estate
+    're-home': '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+    're-building': '<rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/>',
+    're-map-pin': '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+    're-key': '<path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/>',
+    're-bed': '<path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/>',
+    're-car': '<path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/>',
+
+    // Automotive
+    'auto-car': '<path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/>',
+    'auto-fuel': '<line x1="3" y1="22" x2="15" y2="22"/><line x1="4" y1="9" x2="14" y2="9"/><path d="M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18"/><path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V9.83a2 2 0 0 0-.59-1.42L18 5"/>',
+    'auto-gauge': '<path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/>',
+    'auto-zap': '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+
+    // Business
+    'briefcase': '<rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+    'target': '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+    'award': '<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>',
+    'users': '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+
+    // UI
+    'check': '<polyline points="20 6 9 17 4 12"/>',
+    'x': '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+    'plus': '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+    'star': '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+    'heart': '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>',
+
+    // Nature
+    'sun': '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+    'leaf': '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>',
+  };
+
+  return paths[iconName] || '<circle cx="12" cy="12" r="10"/>';
+}
+
+// Icon name mapping utility
+function getIconComponentName(iconName: string): string {
+  // Handle special cases and aliases
+  const iconMap: Record<string, string> = {
+    'trending-up': 'TrendingUp',
+    'trending-down': 'TrendingDown',
+    'arrow-up': 'ArrowUp',
+    'arrow-down': 'ArrowDown',
+    'arrow-left': 'ArrowLeft',
+    'arrow-right': 'ArrowRight',
+    'arrow-up-right': 'ArrowUpRight',
+    'arrow-down-left': 'ArrowDownLeft',
+    'move-up-right': 'MoveUpRight',
+    'corner-up-right': 'CornerUpRight',
+    'bar-chart': 'BarChart3',
+    'pie-chart': 'PieChart',
+    'alert-circle': 'AlertCircle',
+    're-home': 'Home',
+    're-building': 'Building',
+    're-map-pin': 'MapPin',
+    're-key': 'Key',
+    're-door-open': 'DoorOpen',
+    're-bed': 'Bed',
+    're-bath': 'Bath',
+    're-car': 'Car',
+    're-trees': 'Trees',
+    're-warehouse': 'Warehouse',
+    'auto-car': 'Car',
+    'auto-fuel': 'Fuel',
+    'auto-gauge': 'Gauge',
+    'auto-wrench': 'Wrench',
+    'auto-zap': 'Zap',
+    'auto-shield': 'Shield',
+  };
+
+  if (iconMap[iconName]) {
+    return iconMap[iconName];
+  }
+
+  // Convert kebab-case to PascalCase
+  return iconName
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join('');
+}
+
+function IconElementRenderer({ element }: { element: IconElement }) {
+  const { selectElement, updateElement, selectedElementId } = useBuilderStore();
+  const isSelected = selectedElementId === element.id;
+  const groupRef = useRef<any>(null);
+  const [iconImage, setIconImage] = useState<HTMLImageElement | null>(null);
+
+  // Apply elastic animation
+  useElasticAnimation(groupRef, isSelected, {
+    scaleFactor: 1.05,
+    duration: 0.5,
+    shadowOffset: 10,
+  });
+
+  // Convert SVG icon to image
+  useEffect(() => {
+    const iconComponentName = getIconComponentName(element.properties.iconName);
+    const IconComponent = (LucideIcons as any)[iconComponentName];
+
+    if (!IconComponent) {
+      console.warn(`Icon ${element.properties.iconName} (${iconComponentName}) not found in lucide-react`);
+      return;
+    }
+
+    const size = Math.min(element.width, element.height);
+
+    // Create SVG manually instead of using renderToString
+    const svgString = `
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="${size}"
+        height="${size}"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="${element.properties.color}"
+        stroke-width="${element.properties.strokeWidth || 2}"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        ${getIconPath(element.properties.iconName)}
+      </svg>
+    `;
+
+    // Convert SVG to data URL
+    const svg = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svg);
+
+    // Load as image
+    const img = new window.Image();
+    img.onload = () => {
+      setIconImage(img);
+      URL.revokeObjectURL(url);
+    };
+    img.onerror = () => {
+      console.error('Failed to load icon image:', element.properties.iconName);
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
+
+    return () => {
+      if (iconImage) {
+        URL.revokeObjectURL(url);
+      }
+    };
+  }, [element.properties.iconName, element.properties.color, element.properties.strokeWidth, element.width, element.height]);
+
+  const handleDragEnd = (e: any) => {
+    updateElement(element.id, {
+      x: e.target.x(),
+      y: e.target.y(),
+    });
+  };
+
+  const handleTransformEnd = (e: any) => {
+    const node = e.target;
+    const scaleX = node.scaleX();
+    const scaleY = node.scaleY();
+
+    // Calculate new dimensions based on current element dimensions (not node.width/height)
+    const newWidth = Math.max(5, element.width * scaleX);
+    const newHeight = Math.max(5, element.height * scaleY);
+
+    // Reset scale to 1
+    node.scaleX(1);
+    node.scaleY(1);
+
+    updateElement(element.id, {
+      x: node.x(),
+      y: node.y(),
+      width: newWidth,
+      height: newHeight,
+      rotation: node.rotation(),
+    });
+  };
+
+  return (
+    <Group
+      ref={groupRef}
+      id={element.id}
+      x={element.x}
+      y={element.y}
+      width={element.width}
+      height={element.height}
+      offsetX={element.width / 2}
+      offsetY={element.height / 2}
+      rotation={element.rotation}
+      opacity={element.opacity}
+      draggable={!element.locked}
+      onClick={() => selectElement(element.id)}
+      onTap={() => selectElement(element.id)}
+      onDragStart={() => selectElement(element.id)}
+      onDragEnd={handleDragEnd}
+      onTransformEnd={handleTransformEnd}
+    >
+      {iconImage && (
         <KonvaImage
-          ref={imageRef}
-          {...getImageConfig()}
+          x={0}
+          y={0}
+          width={element.width}
+          height={element.height}
+          image={iconImage}
         />
       )}
-    </>
+      {isSelected && (
+        <Rect
+          x={0}
+          y={0}
+          width={element.width}
+          height={element.height}
+          stroke="#3B82F6"
+          strokeWidth={2}
+          listening={false}
+        />
+      )}
+    </Group>
   );
 }
 
@@ -724,6 +967,10 @@ function CanvasElement({ element }: { element: Element }) {
 
   if (element.type === 'form') {
     return <FormElementRenderer element={element as FormElement} />;
+  }
+
+  if (element.type === 'icon') {
+    return <IconElementRenderer element={element as IconElement} />;
   }
 
   if (element.type === 'shape') {

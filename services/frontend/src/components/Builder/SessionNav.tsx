@@ -1,0 +1,139 @@
+// ============================================================================
+// Template Builder - Session Navigation (Left Sidebar Icon Nav)
+// AURELIA (Design System) + NOVA (Frontend)
+// ============================================================================
+
+'use client';
+
+import {
+  LayoutTemplate,
+  Type,
+  Shapes,
+  Frame,
+  Image as ImageIcon,
+  Video,
+  FileText,
+  Sparkles,
+  Lightbulb,
+} from 'lucide-react';
+import { useBuilderStore } from '@/store/builder';
+
+interface Session {
+  id: 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets' | 'ai' | 'tips';
+  label: string;
+  icon: React.ReactNode;
+  color: string;
+  gradient: string;
+}
+
+const sessions: Session[] = [
+  {
+    id: 'templates',
+    label: 'Templates',
+    icon: <LayoutTemplate className="w-5 h-5" strokeWidth={2.5} />,
+    color: 'text-purple-600',
+    gradient: 'from-purple-500 to-purple-600',
+  },
+  {
+    id: 'text',
+    label: 'Texto',
+    icon: <Type className="w-5 h-5" strokeWidth={2.5} />,
+    color: 'text-indigo-600',
+    gradient: 'from-indigo-500 to-indigo-600',
+  },
+  {
+    id: 'icons',
+    label: 'Ícones',
+    icon: <Shapes className="w-5 h-5" strokeWidth={2.5} />,
+    color: 'text-emerald-600',
+    gradient: 'from-emerald-500 to-emerald-600',
+  },
+  {
+    id: 'frames',
+    label: 'Molduras',
+    icon: <Frame className="w-5 h-5" strokeWidth={2.5} />,
+    color: 'text-blue-600',
+    gradient: 'from-blue-500 to-blue-600',
+  },
+  {
+    id: 'images',
+    label: 'Imagens',
+    icon: <ImageIcon className="w-5 h-5" strokeWidth={2.5} />,
+    color: 'text-pink-600',
+    gradient: 'from-pink-500 to-pink-600',
+  },
+  {
+    id: 'videos',
+    label: 'Vídeos',
+    icon: <Video className="w-5 h-5" strokeWidth={2.5} />,
+    color: 'text-rose-600',
+    gradient: 'from-rose-500 to-rose-600',
+  },
+  {
+    id: 'bullets',
+    label: 'Bullets',
+    icon: <FileText className="w-5 h-5" strokeWidth={2.5} />,
+    color: 'text-amber-600',
+    gradient: 'from-amber-500 to-amber-600',
+  },
+  {
+    id: 'ai',
+    label: 'IA',
+    icon: <Sparkles className="w-5 h-5" strokeWidth={2.5} />,
+    color: 'text-violet-600',
+    gradient: 'from-violet-500 to-violet-600',
+  },
+  {
+    id: 'tips',
+    label: 'Dicas',
+    icon: <Lightbulb className="w-5 h-5" strokeWidth={2.5} />,
+    color: 'text-yellow-600',
+    gradient: 'from-yellow-500 to-yellow-600',
+  },
+];
+
+export function SessionNav() {
+  const { activeSession, setActiveSession } = useBuilderStore();
+
+  return (
+    <div className="w-16 bg-white border-r border-gray-200 flex flex-col items-center py-4 gap-2">
+      {sessions.map((session) => {
+        const isActive = activeSession === session.id;
+
+        return (
+          <button
+            key={session.id}
+            onClick={() => setActiveSession(session.id)}
+            className={`
+              group relative w-12 h-12 rounded-xl flex items-center justify-center
+              transition-all duration-200
+              ${isActive
+                ? `bg-gradient-to-br ${session.gradient} shadow-lg scale-105`
+                : 'bg-gray-50 hover:bg-gray-100 hover:scale-105'
+              }
+            `}
+            title={session.label}
+          >
+            <div className={isActive ? 'text-white' : session.color}>
+              {session.icon}
+            </div>
+
+            {/* Tooltip */}
+            <div className="
+              absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded
+              opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity
+              whitespace-nowrap z-50
+            ">
+              {session.label}
+            </div>
+
+            {/* Active indicator */}
+            {isActive && (
+              <div className={`absolute -right-1 w-1 h-8 rounded-full bg-gradient-to-b ${session.gradient}`} />
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}

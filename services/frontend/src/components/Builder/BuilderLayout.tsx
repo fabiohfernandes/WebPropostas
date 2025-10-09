@@ -8,7 +8,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { useBuilderStore } from '@/store/builder';
-import { ElementsPanel } from './ElementsPanel';
+import { SessionNav } from './SessionNav';
+import { ElementsPanelNew } from './ElementsPanelNew';
 import { BuilderCanvas } from './BuilderCanvas';
 import { PropertiesPanel } from './PropertiesPanel';
 import { BuilderToolbar } from './BuilderToolbar';
@@ -119,13 +120,9 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
 
         {/* Main Builder Area - 3 Panels */}
         <div className="flex flex-1 overflow-hidden">
-          {/* Left Panel - Elements Library */}
-          <div
-            className="flex-shrink-0 bg-white border-r border-gray-200 overflow-y-auto"
-            style={{ width: `${leftPanelWidth}px` }}
-          >
-            <ElementsPanel />
-          </div>
+          {/* Left Panel - Session Navigation + Content */}
+          <SessionNav />
+          <ElementsPanelNew />
 
           {/* Center Panel - Canvas */}
           <div
