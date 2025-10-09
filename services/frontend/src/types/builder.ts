@@ -6,7 +6,7 @@
 /**
  * Element Types supported in the builder
  */
-export type ElementType = 'text' | 'image' | 'shape' | 'icon' | 'chart';
+export type ElementType = 'text' | 'image' | 'shape' | 'icon' | 'chart' | 'form';
 
 /**
  * Shape Types for shape elements
@@ -161,9 +161,62 @@ export interface ChartElement extends BaseElement {
 }
 
 /**
+ * Form element properties - rounded rectangle with text, border, and optional clipped image
+ */
+export interface FormElement extends BaseElement {
+  type: 'form';
+  properties: {
+    // Background
+    backgroundColor: string;
+    backgroundOpacity: number;
+
+    // Border
+    border: {
+      enabled: boolean;
+      color: string;
+      width: number;
+      opacity: number;
+    };
+
+    // Corner radius
+    cornerRadius: number;
+
+    // Text content
+    text: {
+      content: string;
+      fontFamily: string;
+      fontSize: number;
+      fontWeight: number | string;
+      color: string;
+      align: TextAlign;
+      verticalAlign: 'top' | 'middle' | 'bottom';
+      padding: number;
+    };
+
+    // Optional clipped image inside
+    image?: {
+      enabled: boolean;
+      src: string;
+      fit: 'cover' | 'contain' | 'fill';
+      opacity: number;
+      position: 'background' | 'overlay'; // Background behind text or overlay on top
+    };
+
+    // Shadow
+    shadow?: {
+      enabled: boolean;
+      blur: number;
+      color: string;
+      offsetX: number;
+      offsetY: number;
+    };
+  };
+}
+
+/**
  * Union type for all element types
  */
-export type Element = TextElement | ImageElement | ShapeElement | IconElement | ChartElement;
+export type Element = TextElement | ImageElement | ShapeElement | IconElement | ChartElement | FormElement;
 
 /**
  * Canvas size configuration
@@ -253,6 +306,12 @@ export interface BuilderState {
     selectedCategory: string | null;
   };
 
+  // Insertion mode - for click-to-insert functionality
+  insertionMode: {
+    type: ElementType;
+    defaultProps: Partial<Element>;
+  } | null;
+
   // Actions - Pages
   addPage: () => void;
   deletePage: (pageId: string) => void;
@@ -283,6 +342,7 @@ export interface BuilderState {
   // Actions - UI
   setSearchQuery: (query: string) => void;
   setSelectedCategory: (category: string | null) => void;
+  setInsertionMode: (mode: { type: ElementType; defaultProps: Partial<Element> } | null) => void;
 
   // Actions - Utility
   clearCanvas: () => void;
@@ -333,4 +393,18 @@ export interface Template {
   metadata: TemplateMetadata;
   canvasSize: CanvasSize;
   elements: Element[];
+}
+
+/**
+ * Uploaded image in the library
+ */
+export interface UploadedImage {
+  id: string;
+  name: string;
+  src: string; // base64 data URL
+  thumbnail: string; // smaller base64 for thumbnails
+  width: number;
+  height: number;
+  size: number; // file size in bytes
+  uploadedAt: number;
 }

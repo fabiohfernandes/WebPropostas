@@ -7,12 +7,12 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
-import { Stage, Layer, Rect, Circle, Text as KonvaText, Image as KonvaImage, Transformer } from 'react-konva';
+import { Stage, Layer, Rect, Circle, Text as KonvaText, Image as KonvaImage, Transformer, Group } from 'react-konva';
 import { useDroppable } from '@dnd-kit/core';
 import { useBuilderStore } from '@/store/builder';
 import { getFontFamily } from '@/utils/fonts';
 import { useElasticAnimation } from '@/hooks/useElasticAnimation';
-import type { Element, TextElement, ShapeElement, ImageElement } from '@/types/builder';
+import type { Element, TextElement, ShapeElement, ImageElement, FormElement } from '@/types/builder';
 import Konva from 'konva';
 
 // Background component that handles both color and image backgrounds
@@ -277,6 +277,7 @@ function ImageElement({ element }: { element: ImageElement }) {
       draggable: !element.locked,
       onClick: () => selectElement(element.id),
       onTap: () => selectElement(element.id),
+      onDragStart: () => selectElement(element.id),  // Select on drag start
       onDragEnd: handleDragEnd,
       onTransformEnd: handleTransformEnd,
       stroke: isSelected ? '#3B82F6' : undefined,
@@ -436,6 +437,199 @@ function ImageElement({ element }: { element: ImageElement }) {
   );
 }
 
+function FormElementRenderer({ element }: { element: FormElement }) {
+  const { selectElement, updateElement, selectedElementId } = useBuilderStore();
+  const isSelected = selectedElementId === element.id;
+  const groupRef = useRef<any>(null);
+  const [formImage, setFormImage] = useState<HTMLImageElement | null>(null);
+
+  // Apply elastic animation
+  useElasticAnimation(groupRef, isSelected, {
+    scaleFactor: 1.05,
+    duration: 0.5,
+    shadowOffset: 10,
+  });
+
+  // Load optional image
+  useEffect(() => {
+    if (element.properties.image?.enabled && element.properties.image?.src) {
+      const img = new window.Image();
+      if (!element.properties.image.src.includes('drive.google.com')) {
+        img.crossOrigin = 'anonymous';
+      }
+      img.src = element.properties.image.src;
+      img.onload = () => setFormImage(img);
+      img.onerror = () => setFormImage(null);
+    } else {
+      setFormImage(null);
+    }
+  }, [element.properties.image?.enabled, element.properties.image?.src]);
+
+  const handleDragEnd = (e: any) => {
+    updateElement(element.id, {
+      x: e.target.x(),
+      y: e.target.y(),
+    });
+  };
+
+  const handleTransformEnd = (e: any) => {
+    const node = e.target;
+    const scaleX = node.scaleX();
+    const scaleY = node.scaleY();
+
+    node.scaleX(1);
+    node.scaleY(1);
+
+    updateElement(element.id, {
+      x: node.x(),
+      y: node.y(),
+      width: Math.max(5, node.width() * scaleX),
+      height: Math.max(5, node.height() * scaleY),
+      rotation: node.rotation(),
+    });
+  };
+
+  const textProps = element.properties.text;
+  const border = element.properties.border;
+  const shadow = element.properties.shadow;
+
+  // Calculate text Y position based on vertical alignment
+  const getTextY = () => {
+    const totalPadding = textProps.padding * 2;
+    const availableHeight = element.height - totalPadding;
+
+    switch (textProps.verticalAlign) {
+      case 'top':
+        return textProps.padding;
+      case 'bottom':
+        return element.height - textProps.padding - textProps.fontSize;
+      case 'middle':
+      default:
+        return (element.height - textProps.fontSize) / 2;
+    }
+  };
+
+  return (
+    <Group
+      ref={groupRef}
+      id={element.id}
+      x={element.x}
+      y={element.y}
+      width={element.width}
+      height={element.height}
+      rotation={element.rotation}
+      opacity={element.opacity}
+      draggable={!element.locked}
+      onDragStart={() => selectElement(element.id)}  // Select on drag start
+      onDragEnd={handleDragEnd}
+      onTransformEnd={handleTransformEnd}
+    >
+      {/* Hit Area - invisible rectangle to capture clicks */}
+      <Rect
+        x={0}
+        y={0}
+        width={element.width}
+        height={element.height}
+        fill="transparent"
+        onClick={() => selectElement(element.id)}
+        onTap={() => selectElement(element.id)}
+      />
+
+      {/* Background Image (if enabled and position is background) */}
+      {formImage && element.properties.image?.position === 'background' && (
+        <Rect
+          x={0}
+          y={0}
+          width={element.width}
+          height={element.height}
+          fillPatternImage={formImage}
+          fillPatternScaleX={element.width / formImage.naturalWidth}
+          fillPatternScaleY={element.height / formImage.naturalHeight}
+          opacity={element.properties.image?.opacity || 1}
+          cornerRadius={element.properties.cornerRadius}
+          listening={false}
+        />
+      )}
+
+      {/* Background Rectangle */}
+      <Rect
+        x={0}
+        y={0}
+        width={element.width}
+        height={element.height}
+        fill={element.properties.backgroundColor}
+        opacity={element.properties.backgroundOpacity}
+        cornerRadius={element.properties.cornerRadius}
+        shadowEnabled={shadow?.enabled}
+        shadowColor={shadow?.color}
+        shadowBlur={shadow?.blur}
+        shadowOffsetX={shadow?.offsetX}
+        shadowOffsetY={shadow?.offsetY}
+        listening={false}
+      />
+
+      {/* Border */}
+      {border.enabled && (
+        <Rect
+          x={0}
+          y={0}
+          width={element.width}
+          height={element.height}
+          stroke={border.color}
+          strokeWidth={border.width}
+          opacity={border.opacity}
+          cornerRadius={element.properties.cornerRadius}
+          listening={false}
+        />
+      )}
+
+      {/* Text Content */}
+      <KonvaText
+        x={textProps.padding}
+        y={getTextY()}
+        width={element.width - (textProps.padding * 2)}
+        text={textProps.content}
+        fontSize={textProps.fontSize}
+        fontFamily={getFontFamily(textProps.fontFamily)}
+        fontStyle={typeof textProps.fontWeight === 'string' && textProps.fontWeight === 'bold' ? 'bold' : 'normal'}
+        fill={textProps.color}
+        align={textProps.align}
+        listening={false}
+      />
+
+      {/* Overlay Image (if enabled and position is overlay) */}
+      {formImage && element.properties.image?.position === 'overlay' && (
+        <Rect
+          x={0}
+          y={0}
+          width={element.width}
+          height={element.height}
+          fillPatternImage={formImage}
+          fillPatternScaleX={element.width / formImage.naturalWidth}
+          fillPatternScaleY={element.height / formImage.naturalHeight}
+          opacity={element.properties.image?.opacity || 1}
+          cornerRadius={element.properties.cornerRadius}
+          listening={false}
+        />
+      )}
+
+      {/* Selection Border */}
+      {isSelected && (
+        <Rect
+          x={0}
+          y={0}
+          width={element.width}
+          height={element.height}
+          stroke="#3B82F6"
+          strokeWidth={2}
+          cornerRadius={element.properties.cornerRadius}
+          listening={false}
+        />
+      )}
+    </Group>
+  );
+}
+
 function CanvasElement({ element }: { element: Element }) {
   const { selectElement, updateElement, selectedElementId } = useBuilderStore();
   const isSelected = selectedElementId === element.id;
@@ -484,6 +678,7 @@ function CanvasElement({ element }: { element: Element }) {
     draggable: !element.locked,
     onClick: () => selectElement(element.id),
     onTap: () => selectElement(element.id),
+    onDragStart: () => selectElement(element.id),  // Select on drag start
     onDragEnd: handleDragEnd,
     onTransformEnd: handleTransformEnd,
   };
@@ -521,6 +716,10 @@ function CanvasElement({ element }: { element: Element }) {
     return <ImageElement element={element as ImageElement} />;
   }
 
+  if (element.type === 'form') {
+    return <FormElementRenderer element={element as FormElement} />;
+  }
+
   if (element.type === 'shape') {
     const shapeEl = element as ShapeElement;
 
@@ -541,9 +740,11 @@ function CanvasElement({ element }: { element: Element }) {
     }
 
     if (shapeEl.properties.shapeType === 'circle') {
+      // Circle uses x,y as center by default in Konva, so NO offset needed
+      const { offsetX, offsetY, ...circleProps } = commonProps;
       return (
         <Circle
-          {...commonProps}
+          {...circleProps}
           radius={Math.min(element.width, element.height) / 2}
           fill={shapeEl.properties.fill}
           strokeWidth={shapeEl.properties.stroke?.width || (isSelected ? 2 : 0)}
@@ -574,27 +775,76 @@ export function BuilderCanvas() {
   const currentElements = useBuilderStore((state) => state.currentElements());
   const currentCanvasSize = useBuilderStore((state) => state.currentCanvasSize());
   const currentPage = useBuilderStore((state) => state.pages.find(p => p.id === state.currentPageId));
-  const { zoom, gridVisible, selectElement, selectedElementId, deleteElement } = useBuilderStore();
+  const { zoom, gridVisible, selectElement, selectedElementId, deleteElement, addElement, insertionMode, setInsertionMode } = useBuilderStore();
 
   const { setNodeRef } = useDroppable({ id: 'canvas-drop-zone' });
 
   const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // DELETE KEY
+  // Pan state - using refs to avoid effect re-runs
+  const isPanningRef = useRef(false);
+  const panStartRef = useRef({ x: 0, y: 0 });
+  const spacePressedRef = useRef(false);
+  const [cursorState, setCursorState] = useState<'default' | 'grab' | 'grabbing' | 'crosshair'>('default');
+
+  // KEYBOARD SHORTCUTS - Track Ctrl key for touchpad pan
+  const ctrlPressedRef = useRef(false);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.key === 'Delete' || e.key === 'Backspace') && selectedElementId) {
-        const target = e.target as HTMLElement;
-        if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA' && target.contentEditable !== 'true') {
-          e.preventDefault();
-          deleteElement(selectedElementId);
+      const target = e.target as HTMLElement;
+      const isTyping = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.contentEditable === 'true';
+
+      // DELETE/BACKSPACE
+      if ((e.key === 'Delete' || e.key === 'Backspace') && selectedElementId && !isTyping) {
+        e.preventDefault();
+        deleteElement(selectedElementId);
+      }
+
+      // SPACE KEY for panning
+      if (e.code === 'Space' && !isTyping) {
+        e.preventDefault();
+        spacePressedRef.current = true;
+        setCursorState(isPanningRef.current ? 'grabbing' : 'grab');
+      }
+
+      // CTRL KEY for touchpad pan (better for notebooks)
+      if (e.ctrlKey && !isTyping) {
+        ctrlPressedRef.current = true;
+        if (!isPanningRef.current) {
+          setCursorState('grab');
+        }
+      }
+
+      // ESC to cancel insertion mode
+      if (e.key === 'Escape' && insertionMode) {
+        setInsertionMode(null);
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        spacePressedRef.current = false;
+        isPanningRef.current = false;
+        setCursorState(insertionMode ? 'crosshair' : 'default');
+      }
+
+      if (e.key === 'Control') {
+        ctrlPressedRef.current = false;
+        if (!isPanningRef.current) {
+          setCursorState(insertionMode ? 'crosshair' : 'default');
         }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedElementId, deleteElement]);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [selectedElementId, deleteElement, insertionMode, setInsertionMode]);
 
   // Auto-scroll when dragging near edges
   useEffect(() => {
@@ -669,7 +919,21 @@ export function BuilderCanvas() {
         const selectedNode = stage.findOne(`#${selectedElementId}`);
         if (selectedNode) {
           transformer.nodes([selectedNode]);
-          transformer.getLayer().batchDraw();
+
+          // Configure transformer to handle offset correctly
+          transformer.boundBoxFunc(function(oldBox: any, newBox: any) {
+            // Prevent negative or zero dimensions
+            if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
+              return oldBox;
+            }
+            return newBox;
+          });
+
+          // Force update after render to account for offsetX/offsetY
+          requestAnimationFrame(() => {
+            transformer.forceUpdate();
+            transformer.getLayer().batchDraw();
+          });
         }
       } else {
         transformer.nodes([]);
@@ -678,11 +942,143 @@ export function BuilderCanvas() {
     }
   }, [selectedElementId]);
 
+  // PAN & CLICK-TO-INSERT HANDLERS
   const handleStageClick = (e: any) => {
-    if (e.target === e.target.getStage()) {
-      selectElement(null);
+    console.log('Stage click:', { target: e.target, insertionMode });
+
+    if (insertionMode) {
+      // In insertion mode, insert element anywhere clicked (even over other elements)
+      console.log('Insertion mode active, creating element');
+
+      const stage = e.target.getStage();
+      const pointerPos = stage.getPointerPosition();
+      if (!pointerPos) {
+        console.log('No pointer position');
+        return;
+      }
+
+      // Get element dimensions
+      const width = insertionMode.defaultProps.width || 200;
+      const height = insertionMode.defaultProps.height || 200;
+
+      // Without offset, x,y is top-left corner
+      // To center element on click, subtract half width/height
+      const x = pointerPos.x - (width / 2);
+      const y = pointerPos.y - (height / 2);
+
+      console.log('Creating element at:', { x, y, width, height, zoom });
+      console.log('Insertion mode config:', insertionMode);
+
+      // Create new element with proper structure
+      const newElement = {
+        id: `element-${Date.now()}`,
+        type: insertionMode.type,
+        x,
+        y,
+        width,
+        height,
+        rotation: insertionMode.defaultProps.rotation || 0,
+        opacity: insertionMode.defaultProps.opacity || 1,
+        zIndex: insertionMode.defaultProps.zIndex || 0,
+        locked: insertionMode.defaultProps.locked || false,
+        visible: insertionMode.defaultProps.visible !== false,
+        properties: insertionMode.defaultProps.properties || {},
+      } as Element;
+
+      console.log('Element being created:', newElement);
+      addElement(newElement);
+      selectElement(newElement.id);
+      setInsertionMode(null);
+      console.log('Element created:', newElement.id);
+    } else {
+      // Normal mode - only deselect if clicking on stage (not on elements)
+      if (e.target === e.target.getStage()) {
+        selectElement(null);
+      }
     }
   };
+
+  // Update cursor when insertion mode changes
+  useEffect(() => {
+    if (insertionMode && !spacePressedRef.current && !isPanningRef.current) {
+      setCursorState('crosshair');
+    } else if (!insertionMode && !spacePressedRef.current && !isPanningRef.current) {
+      setCursorState('default');
+    }
+  }, [insertionMode]);
+
+  // Pan functionality via DOM events on container (not Konva events)
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const container = stage.container();
+    if (!container) return;
+
+    const handleMouseDown = (e: MouseEvent) => {
+      const isMiddleButton = e.button === 1;
+      const ctrlPressed = e.ctrlKey || ctrlPressedRef.current;
+
+      console.log('Pan mousedown:', {
+        spacePressed: spacePressedRef.current,
+        ctrlPressed,
+        isMiddleButton
+      });
+
+      // Pan mode: Space+Drag OR Ctrl+Drag OR Middle Mouse Button
+      if (spacePressedRef.current || ctrlPressed || isMiddleButton) {
+        e.preventDefault();
+        e.stopPropagation();
+        isPanningRef.current = true;
+        setCursorState('grabbing');
+
+        const scrollContainer = container.parentElement;
+        if (scrollContainer) {
+          panStartRef.current = {
+            x: e.clientX + scrollContainer.scrollLeft,
+            y: e.clientY + scrollContainer.scrollTop,
+          };
+          console.log('Pan started with:', {
+            space: spacePressedRef.current,
+            ctrl: ctrlPressed,
+            middle: isMiddleButton,
+            start: panStartRef.current
+          });
+        }
+      }
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isPanningRef.current) return;
+
+      console.log('Pan moving');
+      e.preventDefault();
+      const scrollContainer = container.parentElement;
+      if (scrollContainer) {
+        scrollContainer.scrollLeft = panStartRef.current.x - e.clientX;
+        scrollContainer.scrollTop = panStartRef.current.y - e.clientY;
+      }
+    };
+
+    const handleMouseUp = () => {
+      if (isPanningRef.current) {
+        console.log('Pan ended');
+        isPanningRef.current = false;
+        setCursorState(spacePressedRef.current ? 'grab' : (insertionMode ? 'crosshair' : 'default'));
+      }
+    };
+
+    // Attach mousedown to container, but mousemove/mouseup to window
+    container.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      container.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [insertionMode]);
 
   const renderGrid = () => {
     if (!gridVisible) return null;
@@ -725,7 +1121,11 @@ export function BuilderCanvas() {
     <div
       ref={setNodeRef}
       className="w-full h-full flex items-center justify-center p-8 bg-gray-200"
-      style={{ position: 'relative', overflow: 'auto' }}
+      style={{
+        position: 'relative',
+        overflow: 'auto',
+        cursor: cursorState
+      }}
     >
       <div
         className="bg-white shadow-2xl"
@@ -744,6 +1144,9 @@ export function BuilderCanvas() {
           height={currentCanvasSize.height}
           onClick={handleStageClick}
           onTap={handleStageClick}
+          style={{
+            cursor: cursorState
+          }}
         >
           <Layer>
             {/* Canvas Background */}
@@ -780,21 +1183,11 @@ export function BuilderCanvas() {
               anchorFill="#FFFFFF"
               anchorSize={8}
               anchorCornerRadius={4}
+              ignoreStroke={true}
+              keepRatio={false}
             />
           </Layer>
         </Stage>
-      </div>
-
-      <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg">
-        <div className="flex items-center gap-4 text-xs text-gray-600">
-          <span>{currentCanvasSize.width} × {currentCanvasSize.height}px</span>
-          <span className="w-px h-4 bg-gray-300" />
-          <span>{currentCanvasSize.preset}</span>
-          <span className="w-px h-4 bg-gray-300" />
-          <span>{currentElements.length} elementos</span>
-          <span className="w-px h-4 bg-gray-300" />
-          <span>{Math.round(zoom * 100)}% zoom</span>
-        </div>
       </div>
     </div>
   );

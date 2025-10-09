@@ -44,7 +44,12 @@
       "Bash(npm run type-check:*)",
       "Bash(npm run build:*)",
       "Bash(npx tsc:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(timeout 60 docker-compose logs -f frontend)",
+      "Bash(timeout 40 docker-compose logs -f frontend)",
+      "Bash(timeout 50 docker-compose logs -f frontend)",
+      "Bash(timeout 30 docker-compose logs -f frontend)",
+      "Bash(timeout 45 docker-compose logs -f frontend)"
     ],
     "deny": [],
     "ask": []

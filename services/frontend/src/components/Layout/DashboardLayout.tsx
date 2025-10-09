@@ -35,7 +35,7 @@ const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   { name: 'Propostas', href: '/dashboard/proposals', icon: DocumentTextIcon },
   { name: 'Clientes', href: '/dashboard/clients', icon: UserGroupIcon },
-  { name: 'Construtor', href: '/builder', icon: PencilSquareIcon },
+  { name: 'Builder', href: '/builder', icon: PencilSquareIcon },
   { name: 'Templates', href: '/dashboard/templates', icon: RectangleStackIcon },
   { name: 'Relatórios', href: '/dashboard/reports', icon: ChartBarIcon },
   { name: 'Configurações', href: '/dashboard/settings', icon: Cog6ToothIcon },

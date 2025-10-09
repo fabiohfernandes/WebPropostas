@@ -68,6 +68,9 @@ export const useBuilderStore = create<BuilderState>()(
         selectedCategory: null,
       },
 
+      // Insertion mode - for click-to-insert elements
+      insertionMode: null,
+
       // Computed Getters
       currentPage: () => {
         const state = get();
@@ -416,6 +419,10 @@ export const useBuilderStore = create<BuilderState>()(
             selectedCategory: category,
           },
         }));
+      },
+
+      setInsertionMode: (mode) => {
+        set({ insertionMode: mode });
       },
 
       // Actions - Utility

@@ -5,14 +5,13 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { useBuilderStore } from '@/store/builder';
 import { ElementsPanel } from './ElementsPanel';
 import { BuilderCanvas } from './BuilderCanvas';
 import { PropertiesPanel } from './PropertiesPanel';
 import { BuilderToolbar } from './BuilderToolbar';
-import { PagesPanel } from './PagesPanel';
 import type { Element } from '@/types/builder';
 
 interface BuilderLayoutProps {
@@ -20,9 +19,46 @@ interface BuilderLayoutProps {
 }
 
 export function BuilderLayout({ templateId }: BuilderLayoutProps) {
-  const { addElement, currentCanvasSize } = useBuilderStore();
+  const { addElement, currentCanvasSize, setZoom, zoom } = useBuilderStore();
   const [leftPanelWidth, setLeftPanelWidth] = useState(280);
   const [rightPanelWidth, setRightPanelWidth] = useState(320);
+  const canvasContainerRef = useRef<HTMLDivElement>(null);
+  const hasAutoFitted = useRef(false);
+
+  // Auto-fit zoom to screen on initial load
+  useEffect(() => {
+    if (hasAutoFitted.current || !canvasContainerRef.current) return;
+
+    const calculateFitZoom = () => {
+      const container = canvasContainerRef.current;
+      if (!container) return;
+
+      const canvasSize = currentCanvasSize();
+      const containerWidth = container.clientWidth;
+      const containerHeight = container.clientHeight;
+
+      // Calculate zoom to fit with padding (80px on each side for comfort)
+      const padding = 160; // Total horizontal padding
+      const verticalPadding = 120; // Total vertical padding
+
+      const zoomX = (containerWidth - padding) / canvasSize.width;
+      const zoomY = (containerHeight - verticalPadding) / canvasSize.height;
+
+      // Use the smaller zoom to ensure the entire canvas fits
+      const fitZoom = Math.min(zoomX, zoomY);
+
+      // Clamp between 0.1 and 1 (don't zoom in beyond 100%)
+      const finalZoom = Math.max(0.1, Math.min(1, fitZoom));
+
+      setZoom(finalZoom);
+      hasAutoFitted.current = true;
+    };
+
+    // Small delay to ensure container has rendered with correct dimensions
+    const timer = setTimeout(calculateFitZoom, 100);
+
+    return () => clearTimeout(timer);
+  }, [currentCanvasSize, setZoom]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -81,7 +117,7 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
         {/* Top Toolbar */}
         <BuilderToolbar templateId={templateId} />
 
-        {/* Main Builder Area - 3 Panels + Bottom Pages Panel */}
+        {/* Main Builder Area - 3 Panels */}
         <div className="flex flex-1 overflow-hidden">
           {/* Left Panel - Elements Library */}
           <div
@@ -91,15 +127,12 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
             <ElementsPanel />
           </div>
 
-          {/* Center Panel - Canvas + Pages Panel */}
-          <div className="flex-1 flex flex-col overflow-hidden">
-            {/* Canvas */}
-            <div className="flex-1 overflow-auto bg-gray-100 relative">
-              <BuilderCanvas />
-            </div>
-
-            {/* Pages Panel */}
-            <PagesPanel />
+          {/* Center Panel - Canvas */}
+          <div
+            ref={canvasContainerRef}
+            className="flex-1 overflow-auto bg-gray-100 relative"
+          >
+            <BuilderCanvas />
           </div>
 
           {/* Right Panel - Properties */}

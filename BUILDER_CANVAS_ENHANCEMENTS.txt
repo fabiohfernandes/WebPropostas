@@ -1,0 +1,177 @@
+# BuilderCanvas.tsx Enhancements
+
+## Features to Add:
+
+### 1. Canvas Panning
+Add at top of BuilderCanvas component (after existing imports):
+
+```typescript
+const [isPanning, setIsPanning] = useState(false);
+const [panStart, setPanStart] = useState({ x: 0, y: 0 });
+const [spacePressed, setSpacePressed] = useState(false);
+```
+
+Add Space key listener in useEffect:
+
+```typescript
+useEffect(() => {
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.code === 'Space' && e.target === document.body) {
+      e.preventDefault();
+      setSpacePressed(true);
+    }
+    // ESC to cancel insertion mode
+    if (e.key === 'Escape' && insertionMode) {
+      setInsertionMode(null);
+    }
+  };
+
+  const handleKeyUp = (e: KeyboardEvent) => {
+    if (e.code === 'Space') {
+      e.preventDefault();
+      setSpacePressed(false);
+      setIsPanning(false);
+    }
+  };
+
+  window.addEventListener('keydown', handleKeyDown);
+  window.addEventListener('keyup', handleKeyUp);
+
+  return () => {
+    window.removeEventListener('keydown', handleKeyDown);
+    window.removeEventListener('keyup', handleKeyUp);
+  };
+}, [insertionMode, setInsertionMode]);
+```
+
+Add pan handlers for Stage:
+
+```typescript
+const handleMouseDown = (e: any) => {
+  const isMiddleButton = e.evt.button === 1;
+
+  if (spacePressed || isMiddleButton) {
+    e.evt.preventDefault();
+    setIsPanning(true);
+    const container = e.target.getStage().container().parentElement;
+    setPanStart({
+      x: e.evt.clientX + container.scrollLeft,
+      y: e.evt.clientY + container.scrollTop,
+    });
+    return;
+  }
+
+  // Existing handleStageClick logic for non-panning
+  if (e.target === e.target.getStage()) {
+    if (insertionMode) {
+      handleCanvasClick(e);
+    } else {
+      selectElement(null);
+    }
+  }
+};
+
+const handleMouseMove = (e: any) => {
+  if (!isPanning) return;
+
+  const container = e.target.getStage().container().parentElement;
+  if (container) {
+    container.scrollLeft = panStart.x - e.evt.clientX;
+    container.scrollTop = panStart.y - e.evt.clientY;
+  }
+};
+
+const handleMouseUp = () => {
+  setIsPanning(false);
+};
+```
+
+###2. Click-to-Insert Mode
+
+Add insertion mode destructuring at top:
+
+```typescript
+const { insertionMode, setInsertionMode } = useBuilderStore();
+```
+
+Add canvas click handler:
+
+```typescript
+const handleCanvasClick = (e: any) => {
+  if (!insertionMode) return;
+
+  const stage = e.target.getStage();
+  const pointerPos = stage.getPointerPosition();
+
+  if (!pointerPos) return;
+
+  // Calculate position relative to canvas (accounting for zoom and scroll)
+  const container = stage.container().parentElement;
+  const scrollLeft = container?.scrollLeft || 0;
+  const scrollTop = container?.scrollTop || 0;
+
+  const x = (pointerPos.x + scrollLeft) / zoom;
+  const y = (pointerPos.y + scrollTop) / zoom;
+
+  // Create new element from insertion mode
+  const newElement = {
+    ...insertionMode.defaultProps,
+    id: `element-${Date.now()}`,
+    x,
+    y,
+  } as Element;
+
+  addElement(newElement);
+  selectElement(newElement.id);
+  setInsertionMode(null); // Exit insertion mode after placing
+};
+```
+
+Update Stage component props:
+
+```typescript
+<Stage
+  ref={stageRef}
+  width={currentCanvasSize.width}
+  height={currentCanvasSize.height}
+  onMouseDown={handleMouseDown}
+  onMouseMove={handleMouseMove}
+  onMouseUp={handleMouseUp}
+  onClick={handleStageClick}  // Keep existing
+  style={{
+    cursor: isPanning
+      ? 'grabbing'
+      : (spacePressed || insertionMode)
+        ? (spacePressed ? 'grab' : 'crosshair')
+        : 'default'
+  }}
+>
+```
+
+### 3. Container Style Update
+
+Update container div style to allow scrolling:
+
+```typescript
+<div
+  ref={setNodeRef}
+  className="w-full h-full flex items-center justify-center p-8 bg-gray-200"
+  style={{
+    position: 'relative',
+    overflow: 'auto',  // Enable scrolling for panning
+    cursor: spacePressed && !isPanning ? 'grab' : 'default'
+  }}
+>
+```
+
+## Integration Points:
+
+1. Import insertionMode and setInsertionMode from useBuilderStore
+2. Import addElement from useBuilderStore
+3. Add the 3 state variables at component top
+4. Add the useEffect for Space key handling
+5. Replace handleStageClick with new handleMouseDown logic
+6. Add handleMouseMove and handleMouseUp
+7. Add handleCanvasClick for insertion
+8. Update Stage props and style
+9. Update container div style

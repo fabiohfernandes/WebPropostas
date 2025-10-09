@@ -7,8 +7,9 @@
 
 import { useSelectedElement } from '@/store/builder';
 import { useBuilderStore } from '@/store/builder';
+import { useImageLibrary } from '@/store/imageLibrary';
 import { AVAILABLE_FONTS, getFontsByCategory, getFontFamily } from '@/utils/fonts';
-import type { TextElement, ShapeElement, ImageElement } from '@/types/builder';
+import type { TextElement, ShapeElement, ImageElement, FormElement } from '@/types/builder';
 import { useState } from 'react';
 import {
   AdjustmentsHorizontalIcon,
@@ -18,16 +19,18 @@ import {
   DocumentDuplicateIcon,
   LockClosedIcon,
   LockOpenIcon,
+  PhotoIcon,
 } from '@heroicons/react/24/outline';
+import { FormProperties } from './FormProperties';
 
 function TextProperties({ element }: { element: TextElement }) {
   const { updateElement } = useBuilderStore();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       {/* Content */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-xs font-medium text-gray-700 mb-1">
           Conteúdo
         </label>
         <textarea
@@ -38,14 +41,14 @@ function TextProperties({ element }: { element: TextElement }) {
             } as Partial<TextElement>)
           }
           onFocus={(e) => e.target.select()}
-          className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-          rows={3}
+          className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none"
+          rows={2}
         />
       </div>
 
       {/* Font Family */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-xs font-medium text-gray-700 mb-1">
           Fonte
         </label>
         <select
@@ -55,7 +58,7 @@ function TextProperties({ element }: { element: TextElement }) {
               properties: { ...element.properties, fontFamily: e.target.value },
             } as Partial<TextElement>)
           }
-          className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-2 py-1 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
           style={{ fontFamily: getFontFamily(element.properties.fontFamily) }}
         >
           <optgroup label="Sans-serif">
@@ -95,9 +98,9 @@ function TextProperties({ element }: { element: TextElement }) {
       </div>
 
       {/* Font Size & Weight */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-xs font-medium text-gray-700 mb-1">
             Tamanho
           </label>
           <input
@@ -111,11 +114,12 @@ function TextProperties({ element }: { element: TextElement }) {
                 },
               } as Partial<TextElement>)
             }
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onFocus={(e) => e.target.select()}
+            className="w-full px-2 py-1 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-xs font-medium text-gray-700 mb-1">
             Peso
           </label>
           <select
@@ -125,7 +129,7 @@ function TextProperties({ element }: { element: TextElement }) {
                 properties: { ...element.properties, fontWeight: e.target.value },
               } as Partial<TextElement>)
             }
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-2 py-1 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
           >
             <option value="normal">Normal</option>
             <option value="bold">Negrito</option>
@@ -137,7 +141,7 @@ function TextProperties({ element }: { element: TextElement }) {
 
       {/* Color */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-xs font-medium text-gray-700 mb-1">
           Cor
         </label>
         <div className="flex gap-2">
@@ -149,7 +153,7 @@ function TextProperties({ element }: { element: TextElement }) {
                 properties: { ...element.properties, color: e.target.value },
               } as Partial<TextElement>)
             }
-            className="w-12 h-10 rounded-lg border border-gray-200 cursor-pointer"
+            className="w-10 h-8 rounded border border-gray-200 cursor-pointer"
           />
           <input
             type="text"
@@ -159,14 +163,14 @@ function TextProperties({ element }: { element: TextElement }) {
                 properties: { ...element.properties, color: e.target.value },
               } as Partial<TextElement>)
             }
-            className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+            className="flex-1 px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono"
           />
         </div>
       </div>
 
       {/* Text Align */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-xs font-medium text-gray-700 mb-1">
           Alinhamento
         </label>
         <div className="flex gap-2">
@@ -181,7 +185,7 @@ function TextProperties({ element }: { element: TextElement }) {
                   },
                 } as Partial<TextElement>)
               }
-              className={`flex-1 px-3 py-2 text-xs font-medium rounded-lg border transition-colors ${
+              className={`flex-1 px-2 py-1 text-xs font-medium rounded border transition-colors ${
                 element.properties.textAlign === align
                   ? 'bg-blue-50 border-blue-500 text-blue-700'
                   : 'border-gray-200 text-gray-600 hover:bg-gray-50'
@@ -203,10 +207,10 @@ function ShapeProperties({ element }: { element: ShapeElement }) {
   const { updateElement } = useBuilderStore();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       {/* Shape Type */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-xs font-medium text-gray-700 mb-1">
           Forma
         </label>
         <select
@@ -219,7 +223,7 @@ function ShapeProperties({ element }: { element: ShapeElement }) {
               },
             } as Partial<ShapeElement>)
           }
-          className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-2 py-1 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
         >
           <option value="rectangle">Retângulo</option>
           <option value="circle">Círculo</option>
@@ -230,7 +234,7 @@ function ShapeProperties({ element }: { element: ShapeElement }) {
 
       {/* Fill Color */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-xs font-medium text-gray-700 mb-1">
           Cor de Preenchimento
         </label>
         <div className="flex gap-2">
@@ -242,7 +246,7 @@ function ShapeProperties({ element }: { element: ShapeElement }) {
                 properties: { ...element.properties, fill: e.target.value },
               } as Partial<ShapeElement>)
             }
-            className="w-12 h-10 rounded-lg border border-gray-200 cursor-pointer"
+            className="w-10 h-8 rounded border border-gray-200 cursor-pointer"
           />
           <input
             type="text"
@@ -252,54 +256,53 @@ function ShapeProperties({ element }: { element: ShapeElement }) {
                 properties: { ...element.properties, fill: e.target.value },
               } as Partial<ShapeElement>)
             }
-            className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+            className="flex-1 px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono"
           />
         </div>
       </div>
 
       {/* Stroke */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-xs font-medium text-gray-700 mb-1">
           Borda
         </label>
-        <div className="space-y-2">
-          <div className="flex gap-2">
-            <input
-              type="color"
-              value={element.properties.stroke?.color || '#000000'}
-              onChange={(e) =>
-                updateElement(element.id, {
-                  properties: {
-                    ...element.properties,
-                    stroke: {
-                      ...element.properties.stroke,
-                      color: e.target.value,
-                      width: element.properties.stroke?.width || 1,
-                    },
+        <div className="flex gap-2">
+          <input
+            type="color"
+            value={element.properties.stroke?.color || '#000000'}
+            onChange={(e) =>
+              updateElement(element.id, {
+                properties: {
+                  ...element.properties,
+                  stroke: {
+                    ...element.properties.stroke,
+                    color: e.target.value,
+                    width: element.properties.stroke?.width || 1,
                   },
-                } as Partial<ShapeElement>)
-              }
-              className="w-12 h-10 rounded-lg border border-gray-200 cursor-pointer"
-            />
-            <input
-              type="number"
-              value={element.properties.stroke?.width || 0}
-              onChange={(e) =>
-                updateElement(element.id, {
-                  properties: {
-                    ...element.properties,
-                    stroke: {
-                      ...element.properties.stroke,
-                      color: element.properties.stroke?.color || '#000000',
-                      width: parseInt(e.target.value),
-                    },
+                },
+              } as Partial<ShapeElement>)
+            }
+            className="w-10 h-8 rounded border border-gray-200 cursor-pointer"
+          />
+          <input
+            type="number"
+            value={element.properties.stroke?.width || 0}
+            onChange={(e) =>
+              updateElement(element.id, {
+                properties: {
+                  ...element.properties,
+                  stroke: {
+                    ...element.properties.stroke,
+                    color: element.properties.stroke?.color || '#000000',
+                    width: parseInt(e.target.value),
                   },
-                } as Partial<ShapeElement>)
-              }
-              placeholder="Largura"
-              className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+                },
+              } as Partial<ShapeElement>)
+            }
+            onFocus={(e) => e.target.select()}
+            placeholder="Largura"
+            className="flex-1 px-2 py-1 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
         </div>
       </div>
     </div>
@@ -308,121 +311,67 @@ function ShapeProperties({ element }: { element: ShapeElement }) {
 
 function ImageProperties({ element }: { element: ImageElement }) {
   const { updateElement } = useBuilderStore();
+  const { images } = useImageLibrary();
+  const [showLibrary, setShowLibrary] = useState(false);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const dataURL = event.target?.result as string;
-
-        // Load image to get natural dimensions
-        const img = new Image();
-        img.onload = () => {
-          updateElement(element.id, {
-            width: img.naturalWidth,
-            height: img.naturalHeight,
-            properties: {
-              ...element.properties,
-              src: dataURL,
-            },
-          } as Partial<ImageElement>);
-        };
-        img.src = dataURL;
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleURLChange = (url: string) => {
-    // Convert Google Drive sharing URLs to direct image URLs
-    let imageUrl = url;
-
-    // Google Drive formats:
-    // https://drive.google.com/file/d/FILE_ID/view
-    // https://drive.google.com/open?id=FILE_ID
-    // https://drive.google.com/uc?id=FILE_ID
-    // Convert all to: https://drive.google.com/thumbnail?id=FILE_ID&sz=w2000
-    if (url.includes('drive.google.com')) {
-      let fileId = null;
-
-      // Try /d/ format
-      const dMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-      if (dMatch) fileId = dMatch[1];
-
-      // Try id= format
-      if (!fileId) {
-        const idMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-        if (idMatch) fileId = idMatch[1];
-      }
-
-      if (fileId) {
-        // Use thumbnail endpoint with large size for better compatibility
-        imageUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`;
-      }
-    }
-
-    // Load image to get natural dimensions
-    const img = new Image();
-    // Don't use crossOrigin for Google Drive (causes CORS issues)
-    if (!url.includes('drive.google.com')) {
-      img.crossOrigin = 'anonymous';
-    }
-
-    img.onload = () => {
-      updateElement(element.id, {
-        width: img.naturalWidth,
-        height: img.naturalHeight,
-        properties: {
-          ...element.properties,
-          src: imageUrl,
-        },
-      } as Partial<ImageElement>);
-    };
-    img.onerror = () => {
-      console.error('Failed to load image from:', imageUrl);
-      // If image fails to load, just update URL without resizing
-      updateElement(element.id, {
-        properties: { ...element.properties, src: imageUrl },
-      } as Partial<ImageElement>);
-    };
-    img.src = imageUrl;
+  const handleLibraryImageSelect = (imageSrc: string, width: number, height: number) => {
+    updateElement(element.id, {
+      width,
+      height,
+      properties: {
+        ...element.properties,
+        src: imageSrc,
+      },
+    } as Partial<ImageElement>);
+    setShowLibrary(false);
   };
 
   return (
-    <div className="space-y-4">
-      {/* Image Upload */}
+    <div className="space-y-2">
+      {/* Image Library */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Imagem
+        <label className="block text-xs font-medium text-gray-700 mb-1">
+          Escolher Imagem
         </label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
-        />
-        <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF até 10MB</p>
-      </div>
+        <button
+          onClick={() => setShowLibrary(!showLibrary)}
+          className="w-full flex items-center justify-center gap-2 px-2 py-1.5 text-sm border border-gray-200 rounded hover:bg-gray-50 transition-colors"
+        >
+          <PhotoIcon className="w-3.5 h-3.5 text-gray-600" />
+          <span className="text-xs text-gray-700">
+            {showLibrary ? 'Fechar Biblioteca' : 'Abrir Biblioteca'}
+          </span>
+        </button>
 
-      {/* Image URL */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          URL da Imagem
-        </label>
-        <input
-          type="text"
-          value={element.properties.src}
-          onChange={(e) => handleURLChange(e.target.value)}
-          onBlur={(e) => handleURLChange(e.target.value)}
-          placeholder="https://exemplo.com/imagem.jpg"
-          className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-mono"
-        />
+        {showLibrary && (
+          <div className="mt-1.5 grid grid-cols-3 gap-1.5 p-1.5 border border-gray-200 rounded max-h-48 overflow-y-auto">
+            {images.length === 0 ? (
+              <div className="col-span-3 text-center py-4 text-xs text-gray-500">
+                Nenhuma imagem na biblioteca
+              </div>
+            ) : (
+              images.map((image) => (
+                <button
+                  key={image.id}
+                  onClick={() => handleLibraryImageSelect(image.src, image.width, image.height)}
+                  className="aspect-square rounded border border-gray-200 overflow-hidden hover:border-blue-500 transition-colors bg-white"
+                  title={image.name}
+                >
+                  <img
+                    src={image.thumbnail}
+                    alt={image.name}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ))
+            )}
+          </div>
+        )}
       </div>
 
       {/* Image Fit */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-xs font-medium text-gray-700 mb-1">
           Ajuste
         </label>
         <select
@@ -435,7 +384,7 @@ function ImageProperties({ element }: { element: ImageElement }) {
               },
             } as Partial<ImageElement>)
           }
-          className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-2 py-1 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
         >
           <option value="cover">Preencher (Cover)</option>
           <option value="contain">Conter (Contain)</option>
@@ -445,9 +394,9 @@ function ImageProperties({ element }: { element: ImageElement }) {
       </div>
 
       {/* Alpha Border (Moldura que respeita transparência PNG) */}
-      <div className="pt-4 border-t border-gray-200">
-        <div className="flex items-center justify-between mb-3">
-          <label className="text-sm font-medium text-gray-700">
+      <div className="pt-2 border-t border-gray-200">
+        <div className="flex items-center justify-between mb-1.5">
+          <label className="text-xs font-medium text-gray-700">
             Moldura PNG
           </label>
           <input
@@ -470,12 +419,13 @@ function ImageProperties({ element }: { element: ImageElement }) {
         </div>
 
         {element.properties.alphaBorder?.enabled && (
-          <div className="space-y-3 pl-2">
+          <div className="space-y-1.5 pl-2 mt-1.5">
             {/* Border Size */}
             <div>
-              <label className="block text-xs text-gray-600 mb-1">
-                Espessura: {element.properties.alphaBorder.size}px
-              </label>
+              <div className="flex justify-between items-center mb-0.5">
+                <label className="text-xs text-gray-600">Espessura</label>
+                <span className="text-xs text-gray-500">{element.properties.alphaBorder.size}px</span>
+              </div>
               <input
                 type="range"
                 min="1"
@@ -492,14 +442,14 @@ function ImageProperties({ element }: { element: ImageElement }) {
                     },
                   } as Partial<ImageElement>)
                 }
-                className="w-full"
+                className="w-full h-1.5"
               />
             </div>
 
             {/* Border Color */}
             <div>
-              <label className="block text-xs text-gray-600 mb-1">
-                Cor da Moldura
+              <label className="block text-xs text-gray-600 mb-0.5">
+                Cor
               </label>
               <div className="flex gap-2">
                 <input
@@ -516,7 +466,7 @@ function ImageProperties({ element }: { element: ImageElement }) {
                       },
                     } as Partial<ImageElement>)
                   }
-                  className="w-12 h-9 rounded cursor-pointer"
+                  className="w-10 h-7 rounded cursor-pointer"
                 />
                 <input
                   type="text"
@@ -532,7 +482,7 @@ function ImageProperties({ element }: { element: ImageElement }) {
                       },
                     } as Partial<ImageElement>)
                   }
-                  className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-mono"
+                  className="flex-1 px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono"
                 />
               </div>
             </div>
@@ -571,111 +521,109 @@ function CommonProperties({ element }: { element: any }) {
   };
 
   return (
-    <div className="space-y-4">
-      {/* Position */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+    <div className="space-y-1.5">
+      {/* Position - Label and inputs on same line */}
+      <div className="flex items-center gap-1.5">
+        <label className="text-xs font-medium text-gray-700 w-16 flex-shrink-0">
           Posição
         </label>
-        <div className="grid grid-cols-2 gap-2">
-          <input
-            type="number"
-            value={Math.round(element.x)}
-            onChange={(e) =>
-              updateElement(element.id, { x: parseInt(e.target.value) })
-            }
-            placeholder="X"
-            className="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <input
-            type="number"
-            value={Math.round(element.y)}
-            onChange={(e) =>
-              updateElement(element.id, { y: parseInt(e.target.value) })
-            }
-            placeholder="Y"
-            className="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+        <input
+          type="number"
+          value={Math.round(element.x)}
+          onChange={(e) =>
+            updateElement(element.id, { x: parseInt(e.target.value) })
+          }
+          onFocus={(e) => e.target.select()}
+          placeholder="X"
+          className="w-16 px-1.5 py-0.5 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+        <input
+          type="number"
+          value={Math.round(element.y)}
+          onChange={(e) =>
+            updateElement(element.id, { y: parseInt(e.target.value) })
+          }
+          onFocus={(e) => e.target.select()}
+          placeholder="Y"
+          className="w-16 px-1.5 py-0.5 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
       </div>
 
-      {/* Size with Lock */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <label className="block text-sm font-medium text-gray-700">
-            Tamanho
-          </label>
-          <button
-            onClick={() => setAspectRatioLocked(!aspectRatioLocked)}
-            className={`p-1.5 rounded-lg transition-colors ${
-              aspectRatioLocked
-                ? 'bg-blue-50 text-blue-600'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-            title={aspectRatioLocked ? 'Desbloquear proporção' : 'Bloquear proporção'}
-          >
-            {aspectRatioLocked ? (
-              <LockClosedIcon className="w-4 h-4" />
-            ) : (
-              <LockOpenIcon className="w-4 h-4" />
-            )}
-          </button>
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          <input
-            type="number"
-            value={Math.round(element.width)}
-            onChange={(e) => handleWidthChange(parseInt(e.target.value))}
-            placeholder="Largura"
-            className="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <input
-            type="number"
-            value={Math.round(element.height)}
-            onChange={(e) => handleHeightChange(parseInt(e.target.value))}
-            placeholder="Altura"
-            className="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+      {/* Size - Label, inputs, and lock on same line */}
+      <div className="flex items-center gap-1.5">
+        <label className="text-xs font-medium text-gray-700 w-16 flex-shrink-0">
+          Tamanho
+        </label>
+        <input
+          type="number"
+          value={Math.round(element.width)}
+          onChange={(e) => handleWidthChange(parseInt(e.target.value))}
+          onFocus={(e) => e.target.select()}
+          placeholder="L"
+          className="w-16 px-1.5 py-0.5 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+        <input
+          type="number"
+          value={Math.round(element.height)}
+          onChange={(e) => handleHeightChange(parseInt(e.target.value))}
+          onFocus={(e) => e.target.select()}
+          placeholder="A"
+          className="w-16 px-1.5 py-0.5 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+        <button
+          onClick={() => setAspectRatioLocked(!aspectRatioLocked)}
+          className={`p-0.5 rounded transition-colors flex-shrink-0 ${
+            aspectRatioLocked
+              ? 'bg-blue-50 text-blue-600'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          }`}
+          title={aspectRatioLocked ? 'Desbloquear proporção' : 'Bloquear proporção'}
+        >
+          {aspectRatioLocked ? (
+            <LockClosedIcon className="w-3 h-3" />
+          ) : (
+            <LockOpenIcon className="w-3 h-3" />
+          )}
+        </button>
       </div>
 
-      {/* Rotation & Opacity */}
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Rotação
-          </label>
-          <input
-            type="number"
-            value={Math.round(element.rotation)}
-            onChange={(e) =>
-              updateElement(element.id, { rotation: parseInt(e.target.value) })
-            }
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Opacidade (%)
-          </label>
-          <input
-            type="number"
-            min="0"
-            max="100"
-            step="1"
-            value={Math.round(element.opacity * 100)}
-            onChange={(e) =>
-              updateElement(element.id, { opacity: parseInt(e.target.value) / 100 })
-            }
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+      {/* Rotation & Opacity - Labels and inputs on same line */}
+      <div className="flex items-center gap-1.5">
+        <label className="text-xs font-medium text-gray-700 w-16 flex-shrink-0">
+          Rotação
+        </label>
+        <input
+          type="number"
+          value={Math.round(element.rotation)}
+          onChange={(e) =>
+            updateElement(element.id, { rotation: parseInt(e.target.value) })
+          }
+          onFocus={(e) => e.target.select()}
+          placeholder="°"
+          className="w-16 px-1.5 py-0.5 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+        <label className="text-xs font-medium text-gray-700 flex-shrink-0">
+          Opacidade
+        </label>
+        <input
+          type="number"
+          min="0"
+          max="100"
+          step="1"
+          value={Math.round(element.opacity * 100)}
+          onChange={(e) =>
+            updateElement(element.id, { opacity: parseInt(e.target.value) / 100 })
+          }
+          onFocus={(e) => e.target.select()}
+          placeholder="%"
+          className="w-16 px-1.5 py-0.5 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
       </div>
 
       {/* Shadow Controls */}
-      <div className="pt-4 border-t border-gray-200">
-        <div className="flex items-center justify-between mb-3">
-          <label className="text-sm font-medium text-gray-700">
+      <div className="pt-2 border-t border-gray-200">
+        <div className="flex items-center justify-between mb-1.5">
+          <label className="text-xs font-medium text-gray-700">
             Sombra
           </label>
           <input
@@ -706,12 +654,13 @@ function CommonProperties({ element }: { element: any }) {
         </div>
 
         {element.properties?.shadow && (
-          <div className="space-y-3 pl-2">
+          <div className="space-y-1.5 pl-2 mt-1.5">
             {/* Shadow Blur */}
             <div>
-              <label className="block text-xs text-gray-600 mb-1">
-                Desfoque: {element.properties.shadow.blur}px
-              </label>
+              <div className="flex justify-between items-center mb-0.5">
+                <label className="text-xs text-gray-600">Desfoque</label>
+                <span className="text-xs text-gray-500">{element.properties.shadow.blur}px</span>
+              </div>
               <input
                 type="range"
                 min="0"
@@ -728,64 +677,66 @@ function CommonProperties({ element }: { element: any }) {
                     },
                   })
                 }
-                className="w-full"
+                className="w-full h-1.5"
               />
             </div>
 
-            {/* Shadow Offset X */}
-            <div>
-              <label className="block text-xs text-gray-600 mb-1">
-                Deslocamento X: {element.properties.shadow.offsetX}px
-              </label>
-              <input
-                type="range"
-                min="-50"
-                max="50"
-                value={element.properties.shadow.offsetX}
-                onChange={(e) =>
-                  updateElement(element.id, {
-                    properties: {
-                      ...element.properties,
-                      shadow: {
-                        ...element.properties.shadow,
-                        offsetX: parseInt(e.target.value),
+            {/* Shadow Offsets Grid */}
+            <div className="grid grid-cols-2 gap-1.5">
+              <div>
+                <div className="flex justify-between items-center mb-0.5">
+                  <label className="text-xs text-gray-600">Offset X</label>
+                  <span className="text-xs text-gray-500">{element.properties.shadow.offsetX}px</span>
+                </div>
+                <input
+                  type="range"
+                  min="-50"
+                  max="50"
+                  value={element.properties.shadow.offsetX}
+                  onChange={(e) =>
+                    updateElement(element.id, {
+                      properties: {
+                        ...element.properties,
+                        shadow: {
+                          ...element.properties.shadow,
+                          offsetX: parseInt(e.target.value),
+                        },
                       },
-                    },
-                  })
-                }
-                className="w-full"
-              />
-            </div>
-
-            {/* Shadow Offset Y */}
-            <div>
-              <label className="block text-xs text-gray-600 mb-1">
-                Deslocamento Y: {element.properties.shadow.offsetY}px
-              </label>
-              <input
-                type="range"
-                min="-50"
-                max="50"
-                value={element.properties.shadow.offsetY}
-                onChange={(e) =>
-                  updateElement(element.id, {
-                    properties: {
-                      ...element.properties,
-                      shadow: {
-                        ...element.properties.shadow,
-                        offsetY: parseInt(e.target.value),
+                    })
+                  }
+                  className="w-full h-1.5"
+                />
+              </div>
+              <div>
+                <div className="flex justify-between items-center mb-0.5">
+                  <label className="text-xs text-gray-600">Offset Y</label>
+                  <span className="text-xs text-gray-500">{element.properties.shadow.offsetY}px</span>
+                </div>
+                <input
+                  type="range"
+                  min="-50"
+                  max="50"
+                  value={element.properties.shadow.offsetY}
+                  onChange={(e) =>
+                    updateElement(element.id, {
+                      properties: {
+                        ...element.properties,
+                        shadow: {
+                          ...element.properties.shadow,
+                          offsetY: parseInt(e.target.value),
+                        },
                       },
-                    },
-                  })
-                }
-                className="w-full"
-              />
+                    })
+                  }
+                  className="w-full h-1.5"
+                />
+              </div>
             </div>
 
             {/* Shadow Color */}
             <div>
-              <label className="block text-xs text-gray-600 mb-1">
-                Cor da Sombra
+              <label className="block text-xs text-gray-600 mb-0.5">
+                Cor
               </label>
               <div className="flex gap-2">
                 <input
@@ -804,7 +755,7 @@ function CommonProperties({ element }: { element: any }) {
                       },
                     })
                   }
-                  className="w-12 h-9 rounded cursor-pointer"
+                  className="w-10 h-7 rounded cursor-pointer"
                 />
                 <input
                   type="text"
@@ -821,7 +772,7 @@ function CommonProperties({ element }: { element: any }) {
                     })
                   }
                   placeholder="rgba(0, 0, 0, 0.5)"
-                  className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-mono"
+                  className="flex-1 px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono"
                 />
               </div>
             </div>
@@ -835,6 +786,8 @@ function CommonProperties({ element }: { element: any }) {
 export function PropertiesPanel() {
   const selectedElement = useSelectedElement();
   const { deleteElement, duplicateElement, currentPageId, updatePageBackground, pages } = useBuilderStore();
+  const { images } = useImageLibrary();
+  const [showBgLibrary, setShowBgLibrary] = useState(false);
   const currentPage = pages.find(p => p.id === currentPageId);
 
   if (!selectedElement) {
@@ -847,13 +800,13 @@ export function PropertiesPanel() {
 
     return (
       <div className="h-full flex flex-col">
-        <div className="p-4 border-b border-gray-200">
-          <h3 className="font-semibold text-gray-900">Fundo da Página</h3>
+        <div className="p-2 border-b border-gray-200">
+          <h3 className="text-sm font-semibold text-gray-900">Fundo da Página</h3>
         </div>
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto p-2 space-y-2">
           {/* Background Type */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs font-medium text-gray-700 mb-1">
               Tipo de Fundo
             </label>
             <select
@@ -874,7 +827,7 @@ export function PropertiesPanel() {
                   });
                 }
               }}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-2 py-1 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               <option value="color">Cor Sólida</option>
               <option value="image">Imagem</option>
@@ -884,7 +837,7 @@ export function PropertiesPanel() {
           {/* Color Background */}
           {bgType === 'color' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs text-gray-600 mb-1">
                 Cor
               </label>
               <div className="flex gap-2">
@@ -898,7 +851,7 @@ export function PropertiesPanel() {
                       opacity: bgOpacity,
                     })
                   }
-                  className="w-12 h-10 rounded cursor-pointer"
+                  className="w-10 h-8 rounded cursor-pointer"
                 />
                 <input
                   type="text"
@@ -910,7 +863,7 @@ export function PropertiesPanel() {
                       opacity: bgOpacity,
                     })
                   }
-                  className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                  className="flex-1 px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono"
                 />
               </div>
             </div>
@@ -918,31 +871,65 @@ export function PropertiesPanel() {
 
           {/* Image Background */}
           {bgType === 'image' && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                URL da Imagem
-              </label>
-              <input
-                type="text"
-                value={bgImage}
-                onChange={(e) =>
-                  updatePageBackground(currentPageId, {
-                    type: 'image',
-                    image: e.target.value,
-                    opacity: bgOpacity,
-                  })
-                }
-                placeholder="https://exemplo.com/imagem.jpg"
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-mono"
-              />
+            <div className="space-y-2">
+              {/* Image Library */}
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">
+                  Escolher Imagem
+                </label>
+                <button
+                  onClick={() => setShowBgLibrary(!showBgLibrary)}
+                  className="w-full flex items-center justify-center gap-2 px-2 py-1.5 text-sm border border-gray-200 rounded hover:bg-gray-50 transition-colors"
+                >
+                  <PhotoIcon className="w-3.5 h-3.5 text-gray-600" />
+                  <span className="text-xs text-gray-700">
+                    {showBgLibrary ? 'Fechar Biblioteca' : 'Abrir Biblioteca'}
+                  </span>
+                </button>
+
+                {showBgLibrary && (
+                  <div className="mt-1.5 grid grid-cols-3 gap-1.5 p-1.5 border border-gray-200 rounded max-h-48 overflow-y-auto">
+                    {images.length === 0 ? (
+                      <div className="col-span-3 text-center py-4 text-xs text-gray-500">
+                        Nenhuma imagem na biblioteca
+                      </div>
+                    ) : (
+                      images.map((image) => (
+                        <button
+                          key={image.id}
+                          onClick={() => {
+                            updatePageBackground(currentPageId, {
+                              type: 'image',
+                              image: image.src,
+                              opacity: bgOpacity,
+                            });
+                            setShowBgLibrary(false);
+                          }}
+                          className="aspect-square rounded border border-gray-200 overflow-hidden hover:border-blue-500 transition-colors bg-white"
+                          title={image.name}
+                        >
+                          <img
+                            src={image.thumbnail}
+                            alt={image.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </button>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
           {/* Opacity */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Opacidade: {Math.round(bgOpacity * 100)}%
-            </label>
+            <div className="flex justify-between items-center mb-0.5">
+              <label className="text-xs font-medium text-gray-700">
+                Opacidade
+              </label>
+              <span className="text-xs text-gray-500">{Math.round(bgOpacity * 100)}%</span>
+            </div>
             <input
               type="range"
               min="0"
@@ -964,7 +951,7 @@ export function PropertiesPanel() {
                   });
                 }
               }}
-              className="w-full"
+              className="w-full h-1.5"
             />
           </div>
         </div>
@@ -975,47 +962,48 @@ export function PropertiesPanel() {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold text-gray-900">Propriedades</h3>
-          <div className="flex gap-1">
+      <div className="p-2 border-b border-gray-200">
+        <div className="flex items-center justify-between mb-1.5">
+          <h3 className="text-sm font-semibold text-gray-900">Propriedades</h3>
+          <div className="flex gap-0.5">
             <button
               onClick={() => duplicateElement(selectedElement.id)}
-              className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+              className="p-1 rounded hover:bg-gray-100 transition-colors"
               title="Duplicar"
             >
-              <DocumentDuplicateIcon className="w-4 h-4 text-gray-600" />
+              <DocumentDuplicateIcon className="w-3.5 h-3.5 text-gray-600" />
             </button>
             <button
               onClick={() => deleteElement(selectedElement.id)}
-              className="p-1.5 rounded-lg hover:bg-red-50 transition-colors"
+              className="p-1 rounded hover:bg-red-50 transition-colors"
               title="Excluir"
             >
-              <TrashIcon className="w-4 h-4 text-red-600" />
+              <TrashIcon className="w-3.5 h-3.5 text-red-600" />
             </button>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-700 rounded-full">
+        <div className="flex items-center gap-1.5">
+          <span className="px-1.5 py-0.5 text-[10px] font-medium bg-blue-100 text-blue-700 rounded">
             {selectedElement.type === 'text' && 'Texto'}
             {selectedElement.type === 'image' && 'Imagem'}
             {selectedElement.type === 'shape' && 'Forma'}
             {selectedElement.type === 'icon' && 'Ícone'}
             {selectedElement.type === 'chart' && 'Gráfico'}
+            {selectedElement.type === 'form' && 'Forma'}
           </span>
-          <span className="text-xs text-gray-500">
+          <span className="text-[10px] text-gray-500">
             ID: {selectedElement.id.slice(0, 8)}...
           </span>
         </div>
       </div>
 
       {/* Properties */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-6">
+      <div className="flex-1 overflow-y-auto p-2 space-y-3">
         {/* Element-specific properties */}
         <div>
-          <div className="flex items-center gap-2 mb-4">
-            <PaintBrushIcon className="w-4 h-4 text-gray-500" />
-            <h4 className="text-sm font-semibold text-gray-900">Aparência</h4>
+          <div className="flex items-center gap-1.5 mb-1.5 pb-1 border-b border-gray-200">
+            <PaintBrushIcon className="w-3 h-3 text-gray-500" />
+            <h4 className="text-xs font-semibold text-gray-700">Aparência</h4>
           </div>
           {selectedElement.type === 'text' && (
             <TextProperties element={selectedElement as TextElement} />
@@ -1026,13 +1014,16 @@ export function PropertiesPanel() {
           {selectedElement.type === 'image' && (
             <ImageProperties element={selectedElement as ImageElement} />
           )}
+          {selectedElement.type === 'form' && (
+            <FormProperties element={selectedElement as FormElement} />
+          )}
         </div>
 
         {/* Common properties */}
         <div>
-          <div className="flex items-center gap-2 mb-4">
-            <SwatchIcon className="w-4 h-4 text-gray-500" />
-            <h4 className="text-sm font-semibold text-gray-900">Transformação</h4>
+          <div className="flex items-center gap-1.5 mb-1.5 pb-1 border-b border-gray-200">
+            <SwatchIcon className="w-3 h-3 text-gray-500" />
+            <h4 className="text-xs font-semibold text-gray-700">Transformação</h4>
           </div>
           <CommonProperties element={selectedElement} />
         </div>
