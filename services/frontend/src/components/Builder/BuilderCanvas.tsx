@@ -272,6 +272,8 @@ function ImageElement({ element }: { element: ImageElement }) {
       id: element.id,
       x: element.x,
       y: element.y,
+      offsetX: element.width / 2,  // Center pivot for rotation/transform
+      offsetY: element.height / 2, // Center pivot for rotation/transform
       rotation: element.rotation,
       opacity: element.opacity,
       draggable: !element.locked,
@@ -517,6 +519,8 @@ function FormElementRenderer({ element }: { element: FormElement }) {
       y={element.y}
       width={element.width}
       height={element.height}
+      offsetX={element.width / 2}  // Center pivot for rotation/transform
+      offsetY={element.height / 2} // Center pivot for rotation/transform
       rotation={element.rotation}
       opacity={element.opacity}
       draggable={!element.locked}
@@ -673,6 +677,8 @@ function CanvasElement({ element }: { element: Element }) {
     y: element.y,
     width: element.width,
     height: element.height,
+    offsetX: element.width / 2,  // Center pivot for rotation/transform
+    offsetY: element.height / 2, // Center pivot for rotation/transform
     rotation: element.rotation,
     opacity: element.opacity,
     draggable: !element.locked,
@@ -961,10 +967,10 @@ export function BuilderCanvas() {
       const width = insertionMode.defaultProps.width || 200;
       const height = insertionMode.defaultProps.height || 200;
 
-      // Without offset, x,y is top-left corner
-      // To center element on click, subtract half width/height
-      const x = pointerPos.x - (width / 2);
-      const y = pointerPos.y - (height / 2);
+      // With offsetX/offsetY set to width/2, height/2:
+      // x,y represents the CENTER, so we use click position directly
+      const x = pointerPos.x;
+      const y = pointerPos.y;
 
       console.log('Creating element at:', { x, y, width, height, zoom });
       console.log('Insertion mode config:', insertionMode);
@@ -1125,6 +1131,12 @@ export function BuilderCanvas() {
         position: 'relative',
         overflow: 'auto',
         cursor: cursorState
+      }}
+      onClick={(e) => {
+        // Deselect when clicking outside canvas (on gray background)
+        if (e.target === e.currentTarget) {
+          selectElement(null);
+        }
       }}
     >
       <div

@@ -8,14 +8,20 @@
 import { useState } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import {
-  DocumentTextIcon,
-  PhotoIcon,
-  Squares2X2Icon,
-  SparklesIcon,
-  ChartBarIcon,
-  RectangleGroupIcon,
-  ChevronDownIcon,
-} from '@heroicons/react/24/outline';
+  Type,
+  Heading1,
+  AlignLeft,
+  Image as ImageIcon,
+  ImagePlus,
+  Shapes,
+  Square,
+  Circle,
+  FormInput,
+  RectangleHorizontal,
+  Plus,
+  ChevronDown,
+  Sparkles,
+} from 'lucide-react';
 import { useBuilderStore } from '@/store/builder';
 import { useImageLibrary } from '@/store/imageLibrary';
 import { ImageLibrary } from './ImageLibrary';
@@ -25,13 +31,13 @@ const elementCategories: ElementCategory[] = [
   {
     id: 'text',
     label: 'Texto',
-    icon: <DocumentTextIcon className="w-5 h-5" />,
+    icon: <Type className="w-5 h-5 text-indigo-600" strokeWidth={2.5} />,
     elements: [
       {
         id: 'text-heading',
         type: 'text',
         label: 'Título',
-        icon: <DocumentTextIcon className="w-4 h-4" />,
+        icon: <Heading1 className="w-4 h-4 text-indigo-600" strokeWidth={2.5} />,
         defaultProps: {
           properties: {
             content: 'Título da Proposta',
@@ -50,7 +56,7 @@ const elementCategories: ElementCategory[] = [
         id: 'text-body',
         type: 'text',
         label: 'Parágrafo',
-        icon: <DocumentTextIcon className="w-4 h-4" />,
+        icon: <AlignLeft className="w-4 h-4 text-indigo-500" strokeWidth={2.5} />,
         defaultProps: {
           properties: {
             content: 'Adicione seu texto aqui...',
@@ -70,13 +76,13 @@ const elementCategories: ElementCategory[] = [
   {
     id: 'media',
     label: 'Mídia',
-    icon: <PhotoIcon className="w-5 h-5" />,
+    icon: <ImageIcon className="w-5 h-5 text-pink-600" strokeWidth={2.5} />,
     elements: [
       {
         id: 'image-placeholder',
         type: 'image',
         label: 'Imagem',
-        icon: <PhotoIcon className="w-4 h-4" />,
+        icon: <ImageIcon className="w-4 h-4 text-pink-600" strokeWidth={2.5} />,
         defaultProps: {
           properties: {
             src: '/placeholder.png',
@@ -90,13 +96,13 @@ const elementCategories: ElementCategory[] = [
   {
     id: 'shapes',
     label: 'Formas',
-    icon: <Squares2X2Icon className="w-5 h-5" />,
+    icon: <Shapes className="w-5 h-5 text-emerald-600" strokeWidth={2.5} />,
     elements: [
       {
         id: 'shape-rectangle',
         type: 'shape',
         label: 'Retângulo',
-        icon: <Squares2X2Icon className="w-4 h-4" />,
+        icon: <Square className="w-4 h-4 text-blue-600" strokeWidth={2.5} />,
         defaultProps: {
           properties: {
             shapeType: 'rectangle',
@@ -108,7 +114,7 @@ const elementCategories: ElementCategory[] = [
         id: 'shape-circle',
         type: 'shape',
         label: 'Círculo',
-        icon: <Squares2X2Icon className="w-4 h-4" />,
+        icon: <Circle className="w-4 h-4 text-emerald-600" strokeWidth={2.5} />,
         defaultProps: {
           properties: {
             shapeType: 'circle',
@@ -121,13 +127,13 @@ const elementCategories: ElementCategory[] = [
   {
     id: 'forms',
     label: 'Formulários',
-    icon: <RectangleGroupIcon className="w-5 h-5" />,
+    icon: <FormInput className="w-5 h-5 text-amber-600" strokeWidth={2.5} />,
     elements: [
       {
         id: 'form-bullet',
         type: 'form',
         label: 'Caixa de Título',
-        icon: <RectangleGroupIcon className="w-4 h-4" />,
+        icon: <RectangleHorizontal className="w-4 h-4 text-amber-600" strokeWidth={2.5} />,
         defaultProps: {
           width: 400,
           height: 80,
@@ -241,13 +247,13 @@ export function ElementsPanel() {
 
   const handleImageClick = (imageSrc: string, width: number, height: number) => {
     // Insert image element on canvas with actual image dimensions
-    // Without offset, x,y is top-left - subtract half width/height to center
+    // With offsetX/offsetY, x,y represents center - use canvas center directly
     const canvasSize = currentCanvasSize();
     const newElement = {
       id: `image-${Date.now()}`,
       type: 'image' as const,
-      x: (canvasSize.width / 2) - (width / 2),   // Center on canvas
-      y: (canvasSize.height / 2) - (height / 2), // Center on canvas
+      x: canvasSize.width / 2,   // Center on canvas
+      y: canvasSize.height / 2,  // Center on canvas
       width: width,
       height: height,
       rotation: 0,
@@ -288,7 +294,7 @@ export function ElementsPanel() {
                 <span className="text-gray-700">Todas as Categorias</span>
               )}
             </div>
-            <ChevronDownIcon className={`w-4 h-4 text-gray-500 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+            <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} strokeWidth={2.5} />
           </button>
 
           {/* Dropdown Menu */}
@@ -360,7 +366,7 @@ export function ElementsPanel() {
             {(!selectedCategory || selectedCategory === 'media') && (
               <div>
                 <div className="flex items-center gap-1.5 mb-1.5 px-1">
-                  <PhotoIcon className="text-gray-500 w-3.5 h-3.5" />
+                  <ImagePlus className="text-pink-600 w-4 h-4" strokeWidth={2.5} />
                   <h4 className="text-xs font-semibold text-gray-700">Imagens</h4>
                 </div>
                 <ImageLibrary
@@ -377,8 +383,8 @@ export function ElementsPanel() {
 
       {/* AI Assistant CTA */}
       <div className="p-2 border-t border-gray-200">
-        <button className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded hover:from-purple-600 hover:to-blue-600 transition-all">
-          <SparklesIcon className="w-4 h-4" />
+        <button className="w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg hover:from-purple-600 hover:to-blue-600 transition-all shadow-sm">
+          <Sparkles className="w-4 h-4" strokeWidth={2.5} />
           <span className="text-xs font-medium">Assistente IA</span>
         </button>
       </div>

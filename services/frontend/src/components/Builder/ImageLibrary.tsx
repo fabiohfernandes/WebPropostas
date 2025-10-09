@@ -5,7 +5,7 @@
 'use client';
 
 import { useState } from 'react';
-import { PhotoIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { Plus, Trash2, Upload } from 'lucide-react';
 import type { UploadedImage } from '@/types/builder';
 
 interface ImageLibraryProps {
@@ -70,8 +70,8 @@ export function ImageLibrary({ images, onImageClick, onImageUpload, onImageDelet
     <div>
       {/* Upload Button */}
       <div className="mb-2">
-        <label className="w-full flex items-center justify-center gap-1.5 px-2 py-1.5 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-600 transition-colors text-xs font-medium">
-          <PlusIcon className="w-3.5 h-3.5" />
+        <label className="w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg cursor-pointer hover:from-blue-600 hover:to-blue-700 transition-all shadow-sm text-xs font-medium">
+          <Upload className="w-4 h-4" strokeWidth={2.5} />
           {uploading ? 'Carregando...' : 'Carregar Imagem'}
           <input
             type="file"
@@ -100,10 +100,10 @@ export function ImageLibrary({ images, onImageClick, onImageUpload, onImageDelet
             </button>
             <button
               onClick={() => onImageDelete(image.id)}
-              className="absolute top-0.5 right-0.5 p-0.5 bg-red-500 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute top-0.5 right-0.5 p-1 bg-red-500 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
               title="Excluir"
             >
-              <TrashIcon className="w-3 h-3" />
+              <Trash2 className="w-3 h-3" strokeWidth={2.5} />
             </button>
           </div>
         ))}
@@ -111,7 +111,7 @@ export function ImageLibrary({ images, onImageClick, onImageUpload, onImageDelet
 
       {images.length === 0 && !uploading && (
         <div className="text-center py-6 text-gray-400">
-          <PhotoIcon className="w-8 h-8 mx-auto mb-2 opacity-50" />
+          <Upload className="w-8 h-8 mx-auto mb-2 opacity-50" strokeWidth={2} />
           <p className="text-xs">Nenhuma imagem carregada</p>
         </div>
       )}

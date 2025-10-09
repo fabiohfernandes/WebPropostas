@@ -9,14 +9,17 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useBuilderStore, useHistoryState } from '@/store/builder';
 import {
-  ArrowUturnLeftIcon,
-  ArrowUturnRightIcon,
-  MagnifyingGlassMinusIcon,
-  MagnifyingGlassPlusIcon,
-  TableCellsIcon,
-  ChevronDownIcon,
-  PlusIcon,
-} from '@heroicons/react/24/outline';
+  Undo2,
+  Redo2,
+  ZoomOut,
+  ZoomIn,
+  Grid3x3,
+  ChevronDown,
+  Plus,
+  Smartphone,
+  Monitor,
+  Palette,
+} from 'lucide-react';
 import { Button } from '@/components/UI';
 import { appConfig } from '@/config';
 
@@ -74,7 +77,7 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
             className="flex items-center gap-1 px-2 py-1 text-xs bg-gray-50 hover:bg-gray-100 rounded transition-colors"
           >
             <span className="text-gray-700">Página {currentPageIndex + 1} / {pages.length}</span>
-            <ChevronDownIcon className="w-3 h-3 text-gray-500" />
+            <ChevronDown className="w-3 h-3 text-gray-500" />
           </button>
 
           {pagesDropdownOpen && (
@@ -106,7 +109,7 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
                     }}
                     className="w-full text-left px-3 py-1.5 text-xs text-blue-600 hover:bg-blue-50 transition-colors flex items-center gap-1"
                   >
-                    <PlusIcon className="w-3 h-3" />
+                    <Plus className="w-3 h-3 text-blue-600" strokeWidth={2.5} />
                     Nova Página
                   </button>
                 </div>
@@ -131,7 +134,7 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
           className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           title="Desfazer (Ctrl+Z)"
         >
-          <ArrowUturnLeftIcon className="w-5 h-5 text-gray-700" />
+          <Undo2 className="w-5 h-5 text-purple-600" strokeWidth={2.5} />
         </button>
         <button
           onClick={redo}
@@ -139,7 +142,7 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
           className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           title="Refazer (Ctrl+Shift+Z)"
         >
-          <ArrowUturnRightIcon className="w-5 h-5 text-gray-700" />
+          <Redo2 className="w-5 h-5 text-purple-600" strokeWidth={2.5} />
         </button>
 
         <div className="w-px h-6 bg-gray-300 mx-2" />
@@ -151,7 +154,7 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
           className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           title="Diminuir Zoom"
         >
-          <MagnifyingGlassMinusIcon className="w-5 h-5 text-gray-700" />
+          <ZoomOut className="w-5 h-5 text-blue-600" strokeWidth={2.5} />
         </button>
         <button
           onClick={handleResetZoom}
@@ -166,7 +169,7 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
           className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           title="Aumentar Zoom"
         >
-          <MagnifyingGlassPlusIcon className="w-5 h-5 text-gray-700" />
+          <ZoomIn className="w-5 h-5 text-blue-600" strokeWidth={2.5} />
         </button>
 
         {/* Page Size Display */}
@@ -199,18 +202,19 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
           onClick={toggleGrid}
           className={`p-2 rounded-lg transition-colors ${
             gridVisible
-              ? 'bg-blue-50 text-blue-600'
-              : 'hover:bg-gray-100 text-gray-700'
+              ? 'bg-green-50'
+              : 'hover:bg-gray-100'
           }`}
           title="Mostrar Grade"
         >
-          <TableCellsIcon className="w-5 h-5" />
+          <Grid3x3 className={`w-5 h-5 ${gridVisible ? 'text-green-600' : 'text-gray-600'}`} strokeWidth={2.5} />
         </button>
 
         <div className="w-px h-6 bg-gray-300 mx-2" />
 
         {/* Canvas Background */}
         <div className="flex items-center gap-2">
+          <Palette className="w-4 h-4 text-pink-600" strokeWidth={2.5} />
           <span className="text-xs font-medium text-gray-600">Fundo:</span>
           <input
             type="color"
