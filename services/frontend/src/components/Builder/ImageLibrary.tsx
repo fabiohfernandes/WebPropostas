@@ -5,6 +5,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useDraggable } from '@dnd-kit/core';
 import { Plus, Trash2, Upload } from 'lucide-react';
 import type { UploadedImage } from '@/types/builder';
 
@@ -13,6 +14,58 @@ interface ImageLibraryProps {
   onImageClick: (imageSrc: string, width: number, height: number) => void;
   onImageUpload: (image: UploadedImage) => void;
   onImageDelete: (imageId: string) => void;
+}
+
+function DraggableImageItem({
+  image,
+  onImageClick,
+  onImageDelete
+}: {
+  image: UploadedImage;
+  onImageClick: (src: string, width: number, height: number) => void;
+  onImageDelete: (id: string) => void;
+}) {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: `image-${image.id}`,
+    data: {
+      type: 'image',
+      imageSrc: image.src,
+      width: image.width,
+      height: image.height,
+    },
+  });
+
+  return (
+    <div
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      className="relative group"
+      style={{ opacity: isDragging ? 0.5 : 1 }}
+    >
+      <button
+        onClick={() => onImageClick(image.src, image.width, image.height)}
+        className="w-full aspect-square rounded border border-gray-200 overflow-hidden hover:border-blue-500 transition-colors bg-white cursor-grab active:cursor-grabbing"
+        title={`${image.name} - Clique para inserir ou arraste para moldura`}
+      >
+        <img
+          src={image.thumbnail}
+          alt={image.name}
+          className="w-full h-full object-cover pointer-events-none"
+        />
+      </button>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onImageDelete(image.id);
+        }}
+        className="absolute top-0.5 right-0.5 p-1 bg-red-500 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 z-10"
+        title="Excluir"
+      >
+        <Trash2 className="w-3 h-3" strokeWidth={2.5} />
+      </button>
+    </div>
+  );
 }
 
 export function ImageLibrary({ images, onImageClick, onImageUpload, onImageDelete }: ImageLibraryProps) {
@@ -86,26 +139,12 @@ export function ImageLibrary({ images, onImageClick, onImageUpload, onImageDelet
       {/* Image Grid */}
       <div className="grid grid-cols-2 gap-1.5">
         {images.map((image) => (
-          <div key={image.id} className="relative group">
-            <button
-              onClick={() => onImageClick(image.src, image.width, image.height)}
-              className="w-full aspect-square rounded border border-gray-200 overflow-hidden hover:border-blue-500 transition-colors bg-white"
-              title={image.name}
-            >
-              <img
-                src={image.thumbnail}
-                alt={image.name}
-                className="w-full h-full object-cover"
-              />
-            </button>
-            <button
-              onClick={() => onImageDelete(image.id)}
-              className="absolute top-0.5 right-0.5 p-1 bg-red-500 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
-              title="Excluir"
-            >
-              <Trash2 className="w-3 h-3" strokeWidth={2.5} />
-            </button>
-          </div>
+          <DraggableImageItem
+            key={image.id}
+            image={image}
+            onImageClick={onImageClick}
+            onImageDelete={onImageDelete}
+          />
         ))}
       </div>
 

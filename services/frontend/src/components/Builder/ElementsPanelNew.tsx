@@ -9,7 +9,7 @@ import { useBuilderStore } from '@/store/builder';
 import { TemplatesSession } from './sessions/TemplatesSession';
 import { TextSessionEnhanced } from './sessions/TextSessionEnhanced';
 import { IconsSessionEnhanced } from './sessions/IconsSessionEnhanced';
-import { FramesSession } from './sessions/FramesSession';
+import { FramesSessionEnhanced } from './sessions/FramesSessionEnhanced';
 import { ImagesSession } from './sessions/ImagesSession';
 import { VideosSession } from './sessions/VideosSession';
 import { BulletsSession } from './sessions/BulletsSession';
@@ -28,7 +28,7 @@ export function ElementsPanelNew() {
       case 'icons':
         return <IconsSessionEnhanced />;
       case 'frames':
-        return <FramesSession />;
+        return <FramesSessionEnhanced />;
       case 'images':
         return <ImagesSession />;
       case 'videos':

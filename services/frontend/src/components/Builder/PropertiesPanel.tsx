@@ -9,7 +9,7 @@ import { useSelectedElement } from '@/store/builder';
 import { useBuilderStore } from '@/store/builder';
 import { useImageLibrary } from '@/store/imageLibrary';
 import { AVAILABLE_FONTS, getFontsByCategory, getFontFamily } from '@/utils/fonts';
-import type { TextElement, ShapeElement, ImageElement, FormElement } from '@/types/builder';
+import type { TextElement, ShapeElement, ImageElement, FormElement, FrameElement } from '@/types/builder';
 import { useState } from 'react';
 import {
   AdjustmentsHorizontalIcon,
@@ -22,6 +22,7 @@ import {
   PhotoIcon,
 } from '@heroicons/react/24/outline';
 import { FormProperties } from './FormProperties';
+import { FrameProperties } from './FrameProperties';
 
 function TextProperties({ element }: { element: TextElement }) {
   const { updateElement } = useBuilderStore();
@@ -990,6 +991,7 @@ export function PropertiesPanel() {
             {selectedElement.type === 'icon' && 'Ícone'}
             {selectedElement.type === 'chart' && 'Gráfico'}
             {selectedElement.type === 'form' && 'Forma'}
+            {selectedElement.type === 'frame' && 'Moldura'}
           </span>
           <span className="text-[10px] text-gray-500">
             ID: {selectedElement.id.slice(0, 8)}...
@@ -1016,6 +1018,9 @@ export function PropertiesPanel() {
           )}
           {selectedElement.type === 'form' && (
             <FormProperties element={selectedElement as FormElement} />
+          )}
+          {selectedElement.type === 'frame' && (
+            <FrameProperties element={selectedElement as FrameElement} />
           )}
         </div>
 
