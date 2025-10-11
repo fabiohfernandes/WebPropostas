@@ -6,25 +6,26 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { DndContext, DragEndEvent } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, useDndMonitor } from '@dnd-kit/core';
 import { useBuilderStore } from '@/store/builder';
 import { SessionNav } from './SessionNav';
 import { ElementsPanelNew } from './ElementsPanelNew';
 import { BuilderCanvas } from './BuilderCanvas';
 import { PropertiesPanel } from './PropertiesPanel';
 import { BuilderToolbar } from './BuilderToolbar';
-import type { Element } from '@/types/builder';
+import type { Element, FrameElement } from '@/types/builder';
 
 interface BuilderLayoutProps {
   templateId?: string;
 }
 
 export function BuilderLayout({ templateId }: BuilderLayoutProps) {
-  const { addElement, currentCanvasSize, setZoom, zoom } = useBuilderStore();
+  const { addElement, currentCanvasSize, setZoom, zoom, currentElements, updateElement } = useBuilderStore();
   const [leftPanelWidth, setLeftPanelWidth] = useState(280);
   const [rightPanelWidth, setRightPanelWidth] = useState(320);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const hasAutoFitted = useRef(false);
+  const [draggedOverFrame, setDraggedOverFrame] = useState<string | null>(null);
 
   // Auto-fit zoom to screen on initial load
   useEffect(() => {
@@ -62,11 +63,82 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
   }, [currentCanvasSize, setZoom]);
 
   const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
+    const { active, over, delta } = event;
 
-    // If dropped over canvas
-    if (over?.id === 'canvas-drop-zone') {
-      const elementData = active.data.current as {
+    if (!over) return;
+
+    const dragData = active.data.current as any;
+
+    // Check if dragging an image from library
+    const isImageDrag = dragData?.type === 'image' && dragData?.imageSrc;
+
+    // CASE 1: Image dropped on canvas - check if it was over a frame
+    if (isImageDrag && over.id === 'canvas-drop-zone') {
+      // If we tracked which frame was being hovered, load image into that frame
+      if (draggedOverFrame) {
+        console.log('✓ Image dropped on frame:', draggedOverFrame, dragData.imageSrc);
+
+        const frameElement = currentElements().find(el => el.id === draggedOverFrame);
+        if (frameElement && frameElement.type === 'frame') {
+          // Update the frame with the image, preserving all other properties
+          updateElement(draggedOverFrame, {
+            properties: {
+              ...frameElement.properties,
+              image: {
+                src: dragData.imageSrc,
+                fit: 'cover',
+                offsetX: 0,
+                offsetY: 0,
+                scale: 1,
+              },
+            },
+          } as any);
+
+          setDraggedOverFrame(null);
+          return;
+        }
+      }
+
+      console.log('✗ No frame hit, creating new image element');
+
+      // CASE 2: No frame hit - create new image element
+      const canvasSize = currentCanvasSize();
+
+      // Calculate size maintaining aspect ratio
+      const maxSize = 400;
+      const imgWidth = dragData.width || 300;
+      const imgHeight = dragData.height || 300;
+      const ratio = Math.min(maxSize / imgWidth, maxSize / imgHeight);
+      const finalWidth = imgWidth * ratio;
+      const finalHeight = imgHeight * ratio;
+
+      const newElement: Element = {
+        id: `image-${Date.now()}`,
+        type: 'image',
+        x: canvasSize.width / 2,
+        y: canvasSize.height / 2,
+        width: finalWidth,
+        height: finalHeight,
+        rotation: 0,
+        opacity: 1,
+        zIndex: 0,
+        locked: false,
+        visible: true,
+        properties: {
+          src: dragData.imageSrc,
+          alt: 'Imagem',
+          fit: 'cover',
+        },
+      } as Element;
+
+      console.log('Adding image element from drag:', newElement);
+      addElement(newElement);
+      return;
+    }
+
+    // CASE 3: Regular element drag (existing behavior)
+    if (over.id === 'canvas-drop-zone') {
+      const elementData = dragData as {
         type: string;
         defaultProps: Partial<Element>;
       };
@@ -112,6 +184,7 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
     }
   };
 
+
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="flex flex-col h-screen bg-gray-50">
@@ -129,7 +202,7 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
             ref={canvasContainerRef}
             className="flex-1 overflow-auto bg-gray-100 relative"
           >
-            <BuilderCanvas />
+            <BuilderCanvas onFrameHover={setDraggedOverFrame} />
           </div>
 
           {/* Right Panel - Properties */}
