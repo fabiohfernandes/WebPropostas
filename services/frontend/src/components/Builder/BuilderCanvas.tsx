@@ -12,7 +12,7 @@ import { useDroppable, useDndMonitor } from '@dnd-kit/core';
 import { useBuilderStore } from '@/store/builder';
 import { getFontFamily } from '@/utils/fonts';
 import { useElasticAnimation } from '@/hooks/useElasticAnimation';
-import type { Element, TextElement, ShapeElement, ImageElement, FormElement, IconElement } from '@/types/builder';
+import type { Element, TextElement, ShapeElement, ImageElement, FormElement, IconElement, FrameElement } from '@/types/builder';
 import Konva from 'konva';
 import { renderToString } from 'react-dom/server';
 import * as LucideIcons from 'lucide-react';
@@ -400,6 +400,9 @@ function ImageElement({ element }: { element: ImageElement }) {
       onDragStart={() => selectElement(element.id)}
       onDragEnd={handleDragEnd}
       onTransformEnd={handleTransformEnd}
+      onDragStart={() => selectElement(element.id)}
+      onDragEnd={handleDragEnd}
+      onTransformEnd={handleTransformEnd}
     >
       {/* Placeholder */}
       {!imageLoaded && (
@@ -657,6 +660,9 @@ function IconElementRenderer({ element }: { element: IconElement }) {
       onDragStart={() => selectElement(element.id)}
       onDragEnd={handleDragEnd}
       onTransformEnd={handleTransformEnd}
+      onDragStart={() => selectElement(element.id)}
+      onDragEnd={handleDragEnd}
+      onTransformEnd={handleTransformEnd}
     >
       {iconImage && (
         <KonvaImage
@@ -882,6 +888,235 @@ function FormElementRenderer({ element }: { element: FormElement }) {
 }
 
 
+
+function FrameElementRenderer({ element }: { element: FrameElement }) {
+  const { selectElement, updateElement, selectedElementId } = useBuilderStore();
+  const isSelected = selectedElementId === element.id;
+  const groupRef = useRef<any>(null);
+
+
+  const handleDragEnd = (e: any) => {
+    updateElement(element.id, {
+      x: e.target.x(),
+      y: e.target.y(),
+    });
+  };
+
+  const handleTransformEnd = (e: any) => {
+    const node = e.target;
+    const scaleX = node.scaleX();
+    const scaleY = node.scaleY();
+
+    node.scaleX(1);
+    node.scaleY(1);
+
+    updateElement(element.id, {
+      x: node.x(),
+      y: node.y(),
+      width: Math.max(5, node.width() * scaleX),
+      height: Math.max(5, node.height() * scaleY),
+      rotation: node.rotation(),
+    });
+  };
+
+  // Apply clip-path shape to canvas context
+  const applyClipPath = (ctx: any, width: number, height: number) => {
+    const clipPath = element.properties.clipPath;
+
+    if (clipPath.startsWith('circle')) {
+      // Circle shape
+      const radius = Math.min(width, height) / 2;
+      ctx.arc(width / 2, height / 2, radius, 0, Math.PI * 2);
+    }
+    else if (clipPath.startsWith('inset')) {
+      // Rounded rectangle
+      const insetMatch = clipPath.match(/inset\(([^)]+)\)/);
+      if (insetMatch) {
+        const parts = insetMatch[1].split(/\s+/);
+        let top = 0, right = 0, bottom = 0, left = 0;
+        let cornerRadius = 0;
+
+        const values = parts.filter(p => p.includes('%'));
+        if (values.length >= 1) top = parseFloat(values[0]) / 100 * height;
+        if (values.length >= 2) right = parseFloat(values[1]) / 100 * width;
+        if (values.length >= 3) bottom = parseFloat(values[2]) / 100 * height;
+        if (values.length >= 4) left = parseFloat(values[3]) / 100 * width;
+
+        if (values.length === 1) {
+          right = parseFloat(values[0]) / 100 * width;
+          bottom = top;
+          left = right;
+        }
+
+        const roundMatch = clipPath.match(/round\s+(\d+)px/);
+        cornerRadius = roundMatch ? parseInt(roundMatch[1]) : 0;
+
+        const insetWidth = width - left - right;
+        const insetHeight = height - top - bottom;
+        const maxRadius = Math.min(insetWidth, insetHeight) / 2;
+
+        if (cornerRadius >= 999 || cornerRadius > maxRadius) {
+          cornerRadius = maxRadius;
+        }
+
+        const x1 = left;
+        const y1 = top;
+        const x2 = width - right;
+        const y2 = height - bottom;
+
+        if (cornerRadius > 0) {
+          ctx.moveTo(x1 + cornerRadius, y1);
+          ctx.lineTo(x2 - cornerRadius, y1);
+          ctx.quadraticCurveTo(x2, y1, x2, y1 + cornerRadius);
+          ctx.lineTo(x2, y2 - cornerRadius);
+          ctx.quadraticCurveTo(x2, y2, x2 - cornerRadius, y2);
+          ctx.lineTo(x1 + cornerRadius, y2);
+          ctx.quadraticCurveTo(x1, y2, x1, y2 - cornerRadius);
+          ctx.lineTo(x1, y1 + cornerRadius);
+          ctx.quadraticCurveTo(x1, y1, x1 + cornerRadius, y1);
+        } else {
+          ctx.rect(x1, y1, x2 - x1, y2 - y1);
+        }
+      }
+    }
+    else if (clipPath.startsWith('polygon')) {
+      // Star or custom polygon
+      const pointsMatch = clipPath.match(/polygon\(([^)]+)\)/);
+      if (pointsMatch) {
+        const points = pointsMatch[1].split(',').map(p => {
+          const [x, y] = p.trim().split(/\s+/);
+          return {
+            x: parseFloat(x) / 100 * width,
+            y: parseFloat(y) / 100 * height,
+          };
+        });
+
+        if (points.length > 0) {
+          ctx.moveTo(points[0].x, points[0].y);
+          for (let i = 1; i < points.length; i++) {
+            ctx.lineTo(points[i].x, points[i].y);
+          }
+          ctx.closePath();
+        }
+      }
+    }
+    else if (clipPath.startsWith('path')) {
+      // Heart shape
+      if (clipPath.includes('21.35')) {
+        const cx = width / 2;
+        const cy = height / 2;
+        const scale = Math.min(width, height) / 24;
+
+        ctx.moveTo(cx, cy + 9 * scale);
+        ctx.bezierCurveTo(
+          cx - 5 * scale, cy + 5 * scale,
+          cx - 10 * scale, cy + 1 * scale,
+          cx - 10 * scale, cy - 3 * scale
+        );
+        ctx.bezierCurveTo(
+          cx - 10 * scale, cy - 7 * scale,
+          cx - 7.5 * scale, cy - 9 * scale,
+          cx - 5 * scale, cy - 9 * scale
+        );
+        ctx.bezierCurveTo(
+          cx - 2.5 * scale, cy - 9 * scale,
+          cx, cy - 7 * scale,
+          cx, cy - 5 * scale
+        );
+        ctx.bezierCurveTo(
+          cx, cy - 7 * scale,
+          cx + 2.5 * scale, cy - 9 * scale,
+          cx + 5 * scale, cy - 9 * scale
+        );
+        ctx.bezierCurveTo(
+          cx + 7.5 * scale, cy - 9 * scale,
+          cx + 10 * scale, cy - 7 * scale,
+          cx + 10 * scale, cy - 3 * scale
+        );
+        ctx.bezierCurveTo(
+          cx + 10 * scale, cy + 1 * scale,
+          cx + 5 * scale, cy + 5 * scale,
+          cx, cy + 9 * scale
+        );
+        ctx.closePath();
+      } else {
+        ctx.rect(0, 0, width, height);
+      }
+    }
+    else {
+      // Default rectangle
+      ctx.rect(0, 0, width, height);
+    }
+  };
+
+  return (
+    <Group
+      ref={groupRef}
+      id={element.id}
+      x={element.x}
+      y={element.y}
+      width={element.width}
+      height={element.height}
+      offsetX={element.width / 2}
+      offsetY={element.height / 2}
+      rotation={element.rotation}
+      opacity={element.opacity}
+      draggable={!element.locked}
+      onClick={() => selectElement(element.id)}
+      onTap={() => selectElement(element.id)}
+      onDragStart={() => selectElement(element.id)}
+      onDragEnd={handleDragEnd}
+      onTransformEnd={handleTransformEnd}
+    >
+      <Shape
+        x={0}
+        y={0}
+        width={element.width}
+        height={element.height}
+        sceneFunc={(ctx, shape) => {
+          const frameWidth = element.width;
+          const frameHeight = element.height;
+
+          ctx.beginPath();
+          applyClipPath(ctx, frameWidth, frameHeight);
+          ctx.closePath();
+
+          // Fill with background color
+          ctx.fillStyle = element.properties.fill;
+          ctx.fill();
+
+          // Border
+          if (element.properties.borderStyle) {
+            ctx.strokeStyle = element.properties.borderStyle.color;
+            ctx.lineWidth = element.properties.borderStyle.width;
+            ctx.stroke();
+          }
+        }}
+        hitFunc={(ctx, shape) => {
+          // Define hit area (same as visible shape for proper clicking)
+          const frameWidth = element.width;
+          const frameHeight = element.height;
+          ctx.beginPath();
+          applyClipPath(ctx, frameWidth, frameHeight);
+          ctx.closePath();
+          ctx.fillStrokeShape(shape);
+        }}
+      />
+
+      {isSelected && (
+        <Rect
+          x={0}
+          y={0}
+          width={element.width}
+          height={element.height}
+          stroke="#3B82F6"
+          strokeWidth={2}
+          listening={false}
+        />
+      )}
+    </Group>
+  );
+}
 function CanvasElement({ element, onFrameHover }: { element: Element; onFrameHover?: (frameId: string | null) => void }) {
   const { selectElement, updateElement, selectedElementId } = useBuilderStore();
   const isSelected = selectedElementId === element.id;
@@ -974,6 +1209,7 @@ function CanvasElement({ element, onFrameHover }: { element: Element; onFrameHov
     return <FormElementRenderer element={element as FormElement} />;
   }
 
+if (element.type === 'frame') {    return <FrameElementRenderer element={element as FrameElement} />;  }
   if (element.type === 'icon') {
     return <IconElementRenderer element={element as IconElement} />;
   }
