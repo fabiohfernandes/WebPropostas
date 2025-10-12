@@ -1546,13 +1546,13 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
       {isTransforming && (
         <Shape
           x={0}
+          y={0}
           width={transformDimensions?.width || element.width}
           height={transformDimensions?.height || element.height}
-          height={element.height}
           listening={false}
+          sceneFunc={(ctx, shape) => {
             const frameWidth = transformDimensions?.width || element.width;
             const frameHeight = transformDimensions?.height || element.height;
-            const frameHeight = element.height;
 
             ctx.beginPath();
             applyClipPath(ctx, frameWidth, frameHeight);
