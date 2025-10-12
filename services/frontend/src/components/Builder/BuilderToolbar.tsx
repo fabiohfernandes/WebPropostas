@@ -21,6 +21,7 @@ import {
   Palette,
 } from 'lucide-react';
 import { Button } from '@/components/UI';
+import { PreviewModal } from './PreviewModal';
 import { appConfig } from '@/config';
 
 interface BuilderToolbarProps {
@@ -45,6 +46,7 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
   } = useBuilderStore();
   const { canUndo, canRedo } = useHistoryState();
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const currentPage = pages.find(p => p.id === currentPageId);
   const currentPageIndex = pages.findIndex(p => p.id === currentPageId);
@@ -55,6 +57,11 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
   const handleZoomIn = () => setZoom(zoom + 0.1);
   const handleZoomOut = () => setZoom(zoom - 0.1);
   const handleResetZoom = () => setZoom(1); // Reset to 100% zoom
+
+  const handleSave = () => {
+    console.log('💾 Saving template...', { pages, templateId });
+    alert('Template salvo com sucesso! (Funcionalidade em desenvolvimento)');
+  };
 
   return (
     <div className="h-10 bg-white border-b border-gray-200 flex items-center justify-between px-3">
@@ -228,13 +235,29 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
 
       {/* Right Section - Save/Export */}
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" className="px-2 py-0.5 text-xs">
+        <Button
+          variant="outline"
+          size="sm"
+          className="px-2 py-0.5 text-xs"
+          onClick={() => setIsPreviewOpen(true)}
+        >
           Preview
         </Button>
-        <Button variant="primary" size="sm" className="px-2 py-0.5 text-xs">
+        <Button
+          variant="primary"
+          size="sm"
+          className="px-2 py-0.5 text-xs"
+          onClick={handleSave}
+        >
           Salvar
         </Button>
       </div>
+
+      {/* Preview Modal */}
+      <PreviewModal
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+      />
     </div>
   );
 }
