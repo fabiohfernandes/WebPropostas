@@ -3,10 +3,12 @@
 // SVG-based customizable bullets for infographics and presentations
 // ============================================================================
 
+import { ENRICHED_BULLET_TEMPLATES } from './bulletTemplatesEnriched';
+
 export interface BulletTemplate {
   id: string;
   name: string;
-  category: 'steps' | 'process' | 'timeline' | 'comparison' | 'hierarchy';
+  category: 'steps' | 'process' | 'timeline' | 'comparison' | 'hierarchy' | 'arrows' | 'badges' | '3d' | 'modern' | 'ribbons' | 'presentation';
   description: string;
   maxSteps: number; // Maximum number of steps supported
   defaultSteps: number; // Default number to show
@@ -348,6 +350,7 @@ export const BULLET_TEMPLATES: BulletTemplate[] = [
   HEXAGON_FLOW,
   PIN_MARKERS,
   STEPPED_BOXES,
+  ...ENRICHED_BULLET_TEMPLATES, // Add 8 more professional templates
 ];
 
 // Helper function to generate a complete sequence
