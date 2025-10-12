@@ -169,7 +169,10 @@ export interface FrameElement extends BaseElement {
       offsetX: number; // For repositioning image within frame
       offsetY: number;
       scale: number; // For zooming image within frame
+      pivotX: number; // Center pivot point relative to frame (0-1 normalized)
+      pivotY: number; // Center pivot point relative to frame (0-1 normalized)
     };
+    editMode?: boolean; // Double-click to enable image repositioning
   };
 }
 

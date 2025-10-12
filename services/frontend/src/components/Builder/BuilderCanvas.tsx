@@ -889,17 +889,44 @@ function FormElementRenderer({ element }: { element: FormElement }) {
 
 
 
-function FrameElementRenderer({ element }: { element: FrameElement }) {
-  const { selectElement, updateElement, selectedElementId } = useBuilderStore();
+function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement; isDropTarget?: boolean }) {
+  const { selectElement, updateElement, selectedElementId, elements } = useBuilderStore();
   const isSelected = selectedElementId === element.id;
   const groupRef = useRef<any>(null);
+  const [imageObj, setImageObj] = useState<HTMLImageElement | null>(null);
+  const [clickCount, setClickCount] = useState(0);
+  const clickTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Load image if present
+  useEffect(() => {
+    if (element.properties.image?.src) {
+      console.log('🖼️ Loading image for frame:', element.id, element.properties.image.src);
+      const img = new window.Image();
+      img.crossOrigin = 'anonymous';
+      img.src = element.properties.image.src;
+      img.onload = () => {
+        console.log('✅ Image loaded:', element.id, { width: img.width, height: img.height });
+        setImageObj(img);
+      };
+      img.onerror = (e) => {
+        console.error('❌ Image failed to load:', element.id, element.properties.image.src, e);
+      };
+    } else {
+      setImageObj(null);
+    }
+  }, [element.properties.image?.src]);
 
   const handleDragEnd = (e: any) => {
+    const newX = e.target.x();
+    const newY = e.target.y();
+
+    // Update frame position
     updateElement(element.id, {
-      x: e.target.x(),
-      y: e.target.y(),
+      x: newX,
+      y: newY,
     });
+
+    // Pivot stays in normalized coordinates (0-1), so no recalculation needed
   };
 
   const handleTransformEnd = (e: any) => {
@@ -910,26 +937,65 @@ function FrameElementRenderer({ element }: { element: FrameElement }) {
     node.scaleX(1);
     node.scaleY(1);
 
+    const newWidth = Math.max(5, node.width() * scaleX);
+    const newHeight = Math.max(5, node.height() * scaleY);
+
     updateElement(element.id, {
       x: node.x(),
       y: node.y(),
-      width: Math.max(5, node.width() * scaleX),
-      height: Math.max(5, node.height() * scaleY),
+      width: newWidth,
+      height: newHeight,
       rotation: node.rotation(),
     });
+
+    // Image stays pinned automatically via normalized pivot
   };
+
+  // Handle double-click to enter edit mode
+  const handleClick = () => {
+    selectElement(element.id);
+
+    // Detect double-click
+    setClickCount(prev => prev + 1);
+
+    if (clickTimerRef.current) {
+      clearTimeout(clickTimerRef.current);
+    }
+
+    clickTimerRef.current = setTimeout(() => {
+      if (clickCount >= 1) {
+        // Double-click detected - toggle edit mode
+        if (element.properties.image) {
+          updateElement(element.id, {
+            properties: {
+              ...element.properties,
+              editMode: !element.properties.editMode,
+            },
+          });
+        }
+      }
+      setClickCount(0);
+    }, 300);
+  };
+
+  // Cleanup timer
+  useEffect(() => {
+    return () => {
+      if (clickTimerRef.current) {
+        clearTimeout(clickTimerRef.current);
+      }
+    };
+  }, []);
 
   // Apply clip-path shape to canvas context
   const applyClipPath = (ctx: any, width: number, height: number) => {
     const clipPath = element.properties.clipPath;
 
     if (clipPath.startsWith('circle')) {
-      // Circle shape
       const radius = Math.min(width, height) / 2;
       ctx.arc(width / 2, height / 2, radius, 0, Math.PI * 2);
     }
     else if (clipPath.startsWith('inset')) {
-      // Rounded rectangle
       const insetMatch = clipPath.match(/inset\(([^)]+)\)/);
       if (insetMatch) {
         const parts = insetMatch[1].split(/\s+/);
@@ -980,7 +1046,6 @@ function FrameElementRenderer({ element }: { element: FrameElement }) {
       }
     }
     else if (clipPath.startsWith('polygon')) {
-      // Star or custom polygon
       const pointsMatch = clipPath.match(/polygon\(([^)]+)\)/);
       if (pointsMatch) {
         const points = pointsMatch[1].split(',').map(p => {
@@ -1001,7 +1066,6 @@ function FrameElementRenderer({ element }: { element: FrameElement }) {
       }
     }
     else if (clipPath.startsWith('path')) {
-      // Heart shape
       if (clipPath.includes('21.35')) {
         const cx = width / 2;
         const cy = height / 2;
@@ -1044,7 +1108,6 @@ function FrameElementRenderer({ element }: { element: FrameElement }) {
       }
     }
     else {
-      // Default rectangle
       ctx.rect(0, 0, width, height);
     }
   };
@@ -1061,9 +1124,9 @@ function FrameElementRenderer({ element }: { element: FrameElement }) {
       offsetY={element.height / 2}
       rotation={element.rotation}
       opacity={element.opacity}
-      draggable={!element.locked}
-      onClick={() => selectElement(element.id)}
-      onTap={() => selectElement(element.id)}
+      draggable={!element.locked && !element.properties.editMode}
+      onClick={handleClick}
+      onTap={handleClick}
       onDragStart={() => selectElement(element.id)}
       onDragEnd={handleDragEnd}
       onTransformEnd={handleTransformEnd}
@@ -1077,15 +1140,54 @@ function FrameElementRenderer({ element }: { element: FrameElement }) {
           const frameWidth = element.width;
           const frameHeight = element.height;
 
+          ctx.save();
+
+          ctx.beginPath();
+          applyClipPath(ctx, frameWidth, frameHeight);
+          ctx.closePath();
+          ctx.clip();
+
+          if (element.properties.image && imageObj) {
+            const img = element.properties.image;
+
+            const pivotAbsoluteX = img.pivotX * frameWidth;
+            const pivotAbsoluteY = img.pivotY * frameHeight;
+
+            const imgX = pivotAbsoluteX - (imageObj.width * img.scale) / 2 + img.offsetX;
+            const imgY = pivotAbsoluteY - (imageObj.height * img.scale) / 2 + img.offsetY;
+
+            console.log('🎨 Drawing image in frame:', {
+              frameId: element.id,
+              frameSize: { w: frameWidth, h: frameHeight },
+              pivot: { x: img.pivotX, y: img.pivotY },
+              pivotAbsolute: { x: pivotAbsoluteX, y: pivotAbsoluteY },
+              imageSize: { w: imageObj.width, h: imageObj.height },
+              scale: img.scale,
+              offset: { x: img.offsetX, y: img.offsetY },
+              drawPos: { x: imgX, y: imgY },
+              drawSize: { w: imageObj.width * img.scale, h: imageObj.height * img.scale }
+            });
+
+            ctx.drawImage(
+              imageObj,
+              imgX,
+              imgY,
+              imageObj.width * img.scale,
+              imageObj.height * img.scale
+            );
+          }
+
+          ctx.restore();
+
           ctx.beginPath();
           applyClipPath(ctx, frameWidth, frameHeight);
           ctx.closePath();
 
-          // Fill with background color
-          ctx.fillStyle = element.properties.fill;
-          ctx.fill();
+          if (!element.properties.image) {
+            ctx.fillStyle = element.properties.fill;
+            ctx.fill();
+          }
 
-          // Border
           if (element.properties.borderStyle) {
             ctx.strokeStyle = element.properties.borderStyle.color;
             ctx.lineWidth = element.properties.borderStyle.width;
@@ -1093,7 +1195,6 @@ function FrameElementRenderer({ element }: { element: FrameElement }) {
           }
         }}
         hitFunc={(ctx, shape) => {
-          // Define hit area (same as visible shape for proper clicking)
           const frameWidth = element.width;
           const frameHeight = element.height;
           ctx.beginPath();
@@ -1109,15 +1210,41 @@ function FrameElementRenderer({ element }: { element: FrameElement }) {
           y={0}
           width={element.width}
           height={element.height}
-          stroke="#3B82F6"
+          stroke={element.properties.editMode ? "#F59E0B" : "#3B82F6"}
           strokeWidth={2}
+          dash={element.properties.editMode ? [5, 5] : undefined}
+          listening={false}
+        />
+      )}
+
+      {isDropTarget && (
+        <Rect
+          x={-10}
+          y={-10}
+          width={element.width + 20}
+          height={element.height + 20}
+          stroke="#10B981"
+          strokeWidth={3}
+          dash={[10, 5]}
+          listening={false}
+        />
+      )}
+
+      {isSelected && element.properties.editMode && (
+        <KonvaText
+          x={-element.width / 2}
+          y={-element.height / 2 - 20}
+          text="Edit Mode: Double-click to exit"
+          fontSize={12}
+          fill="#F59E0B"
           listening={false}
         />
       )}
     </Group>
   );
 }
-function CanvasElement({ element, onFrameHover }: { element: Element; onFrameHover?: (frameId: string | null) => void }) {
+
+function CanvasElement({ element, onFrameHover, hoverFrameId }: { element: Element; onFrameHover?: (frameId: string | null) => void; hoverFrameId?: string | null }) {
   const { selectElement, updateElement, selectedElementId } = useBuilderStore();
   const isSelected = selectedElementId === element.id;
   const elementRef = useRef<any>(null);
@@ -1209,7 +1336,14 @@ function CanvasElement({ element, onFrameHover }: { element: Element; onFrameHov
     return <FormElementRenderer element={element as FormElement} />;
   }
 
-if (element.type === 'frame') {    return <FrameElementRenderer element={element as FrameElement} />;  }
+  if (element.type === 'frame') {
+    return (
+      <FrameElementRenderer
+        element={element as FrameElement}
+        isDropTarget={hoverFrameId === element.id}
+      />
+    );
+  }
   if (element.type === 'icon') {
     return <IconElementRenderer element={element as IconElement} />;
   }
@@ -1265,9 +1399,10 @@ if (element.type === 'frame') {    return <FrameElementRenderer element={element
 
 interface BuilderCanvasProps {
   onFrameHover?: (frameId: string | null) => void;
+  hoveredFrameFromLibrary?: string | null;
 }
 
-export function BuilderCanvas({ onFrameHover }: BuilderCanvasProps) {
+export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: BuilderCanvasProps) {
   const stageRef = useRef<any>(null);
   const transformerRef = useRef<any>(null);
 
@@ -1279,6 +1414,11 @@ export function BuilderCanvas({ onFrameHover }: BuilderCanvasProps) {
   const { setNodeRef } = useDroppable({ id: 'canvas-drop-zone' });
 
   const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [hoverFrameId, setHoverFrameId] = useState<string | null>(null);
+  const [draggingImageId, setDraggingImageId] = useState<string | null>(null);
+
+  // Merge hover state from library drag and canvas element drag
+  const activeHoverFrameId = hoveredFrameFromLibrary || hoverFrameId;
 
   // Pan state - using refs to avoid effect re-runs
   const isPanningRef = useRef(false);
@@ -1440,6 +1580,197 @@ export function BuilderCanvas({ onFrameHover }: BuilderCanvasProps) {
       }
     }
   }, [selectedElementId]);
+
+  // IMAGE DROP ON FRAME DETECTION
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) {
+      console.log('⚠️ No stage ref available');
+      return;
+    }
+
+    console.log('✅ Setting up drag event listeners on stage');
+
+    const DROP_ZONE_PADDING = 50; // Bigger drop zone
+    let currentDraggingImageId: string | null = null;
+
+    const handleElementDragStart = (e: any) => {
+      console.log('🟢 DRAG START EVENT FIRED', e);
+      const draggedNode = e.target;
+      const elementId = draggedNode.id();
+      console.log('🟢 Element ID:', elementId);
+      const element = currentElements.find(el => el.id === elementId);
+      console.log('🟢 Found element:', element);
+
+      if (element && element.type === 'image') {
+        currentDraggingImageId = elementId;
+        setDraggingImageId(elementId);
+        console.log('✅ Started dragging IMAGE:', elementId);
+      } else {
+        console.log('❌ Not an image, ignoring. Type:', element?.type);
+      }
+    };
+
+    const handleElementDragMove = (e: any) => {
+      console.log('🔵 DRAG MOVE EVENT', { currentDraggingImageId });
+      if (!currentDraggingImageId) {
+        console.log('⚠️ No currentDraggingImageId set, skipping');
+        return;
+      }
+
+      const draggedNode = e.target;
+      const imageX = draggedNode.x();
+      const imageY = draggedNode.y();
+      console.log('🔵 Image position:', { imageX, imageY });
+
+      // Check which frame we're hovering over
+      let hoveredFrame: string | null = null;
+      console.log('🔍 Checking frames...', currentElements.filter(el => el.type === 'frame').length);
+
+      for (const el of currentElements) {
+        if (el.type === 'frame') {
+          const frame = el as FrameElement;
+
+          // Calculate frame bounds with BIGGER drop zone
+          const frameLeft = frame.x - frame.width / 2 - DROP_ZONE_PADDING;
+          const frameRight = frame.x + frame.width / 2 + DROP_ZONE_PADDING;
+          const frameTop = frame.y - frame.height / 2 - DROP_ZONE_PADDING;
+          const frameBottom = frame.y + frame.height / 2 + DROP_ZONE_PADDING;
+
+          // Check if image center is within expanded frame bounds
+          if (imageX >= frameLeft && imageX <= frameRight &&
+              imageY >= frameTop && imageY <= frameBottom) {
+            hoveredFrame = frame.id;
+            console.log('✅ Image is over frame:', frame.id);
+            break;
+          }
+        }
+      }
+
+      setHoverFrameId(hoveredFrame);
+    };
+
+    const handleElementDragEnd = (e: any) => {
+      console.log('🔴 DRAG END EVENT FIRED', e);
+      const draggedNode = e.target;
+
+      // Check if dragged element is an image
+      const elementId = draggedNode.id();
+      const element = currentElements.find(el => el.id === elementId);
+
+      console.log('🔴 Drag end:', { elementId, elementType: element?.type });
+
+      currentDraggingImageId = null;
+      setDraggingImageId(null);
+      setHoverFrameId(null);
+
+      if (!element || element.type !== 'image') {
+        console.log('❌ Not an image element, skipping');
+        return;
+      }
+
+      const imageElement = element as ImageElement;
+
+      // Get final position of dragged image
+      const imageX = draggedNode.x();
+      const imageY = draggedNode.y();
+
+      console.log('📍 Image dropped at:', { imageX, imageY });
+
+      // Check collision with all frames (using bigger drop zone)
+      let targetFrame: FrameElement | null = null;
+
+      for (const el of currentElements) {
+        if (el.type === 'frame') {
+          const frame = el as FrameElement;
+
+          // Calculate frame bounds with BIGGER drop zone
+          const frameLeft = frame.x - frame.width / 2 - DROP_ZONE_PADDING;
+          const frameRight = frame.x + frame.width / 2 + DROP_ZONE_PADDING;
+          const frameTop = frame.y - frame.height / 2 - DROP_ZONE_PADDING;
+          const frameBottom = frame.y + frame.height / 2 + DROP_ZONE_PADDING;
+
+          console.log('🔍 Checking frame:', {
+            frameId: frame.id,
+            bounds: { frameLeft, frameRight, frameTop, frameBottom },
+            imagePos: { imageX, imageY },
+            padding: DROP_ZONE_PADDING
+          });
+
+          // Check if image center is within expanded frame bounds
+          if (imageX >= frameLeft && imageX <= frameRight &&
+              imageY >= frameTop && imageY <= frameBottom) {
+            targetFrame = frame;
+            console.log('✅ Found target frame:', frame.id);
+            break;
+          }
+        }
+      }
+
+      if (targetFrame) {
+        console.log('🎯 Inserting image into frame:', targetFrame.id);
+
+        // Calculate pivot point (normalized 0-1 relative to frame)
+        const imageCenterX = imageX;
+        const imageCenterY = imageY;
+        const frameCenterX = targetFrame.x;
+        const frameCenterY = targetFrame.y;
+
+        // Relative position from frame center
+        const relativeX = imageCenterX - frameCenterX;
+        const relativeY = imageCenterY - frameCenterY;
+
+        // Convert to normalized coordinates (0 to 1)
+        // Center of frame is 0.5, 0.5
+        const pivotX = 0.5 + (relativeX / targetFrame.width);
+        const pivotY = 0.5 + (relativeY / targetFrame.height);
+
+        console.log('📐 Calculated pivot:', { pivotX, pivotY, relativeX, relativeY });
+
+        // Update frame with image
+        const { updateElement, deleteElement } = useBuilderStore.getState();
+
+        updateElement(targetFrame.id, {
+          properties: {
+            ...targetFrame.properties,
+            image: {
+              src: imageElement.properties.src,
+              fit: imageElement.properties.fit || 'cover',
+              offsetX: 0,
+              offsetY: 0,
+              scale: 1,
+              pivotX: pivotX,
+              pivotY: pivotY,
+            },
+            editMode: false,
+          },
+        });
+
+        // Delete the original image element
+        deleteElement(imageElement.id);
+
+        // Select the frame
+        selectElement(targetFrame.id);
+
+        console.log('✅ Image inserted successfully');
+      } else {
+        console.log('❌ No frame found at drop position');
+      }
+    };
+
+    stage.on('dragstart', handleElementDragStart);
+    stage.on('dragmove', handleElementDragMove);
+    stage.on('dragend', handleElementDragEnd);
+
+    console.log('✅ Drag event listeners attached');
+
+    return () => {
+      console.log('🧹 Cleaning up drag event listeners');
+      stage.off('dragstart', handleElementDragStart);
+      stage.off('dragmove', handleElementDragMove);
+      stage.off('dragend', handleElementDragEnd);
+    };
+  }, [currentElements, selectElement]);
 
   // PAN & CLICK-TO-INSERT HANDLERS
   const handleStageClick = (e: any) => {
@@ -1665,7 +1996,7 @@ export function BuilderCanvas({ onFrameHover }: BuilderCanvasProps) {
               .filter((el) => el.visible)
               .sort((a, b) => a.zIndex - b.zIndex)
               .map((element) => (
-                <CanvasElement key={element.id} element={element} onFrameHover={onFrameHover} />
+                <CanvasElement key={element.id} element={element} onFrameHover={onFrameHover} hoverFrameId={activeHoverFrameId} />
               ))}
           </Layer>
           <Layer>
