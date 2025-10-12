@@ -141,87 +141,76 @@ export function IndividualBulletsSession() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="p-3 border-b border-gray-200">
-        <h3 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
-          <Circle className="w-4 h-4 text-violet-600" strokeWidth={2.5} />
-          Bullets Individuais
-        </h3>
-        <p className="text-xs text-gray-500 mt-0.5">Elementos únicos reutilizáveis</p>
+      {/* Compact Header */}
+      <div className="px-2 py-1.5 border-b border-gray-200">
+        <h3 className="text-xs font-semibold text-gray-800">Bullets Individuais</h3>
       </div>
 
-      {/* Search */}
-      <div className="p-3 border-b border-gray-200">
+      {/* Compact Controls */}
+      <div className="p-2 border-b border-gray-200 space-y-1.5">
+        {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
           <input
             type="text"
-            placeholder="Buscar bullets..."
+            placeholder="Buscar..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+            className="w-full pl-8 pr-2 py-1.5 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-violet-500"
           />
         </div>
-      </div>
 
-      {/* Category Dropdown */}
-      <div className="p-3 border-b border-gray-200">
-        <label className="text-xs font-semibold text-gray-700 mb-2 block">Categoria</label>
-        <div className="relative">
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value as BulletCategory | 'all')}
-            className="w-full px-3 py-2 pr-8 text-sm border border-gray-300 rounded-lg appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-violet-500 cursor-pointer"
-          >
-            {CATEGORIES.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.label}
-              </option>
-            ))}
-          </select>
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+        {/* Category + Color in one row */}
+        <div className="grid grid-cols-2 gap-1.5">
+          <div className="relative">
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value as BulletCategory | 'all')}
+              className="w-full px-2 py-1.5 pr-6 text-xs border border-gray-300 rounded appearance-none bg-white focus:outline-none focus:ring-1 focus:ring-violet-500 cursor-pointer"
+            >
+              {CATEGORIES.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.label}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" />
+          </div>
+
+          <div className="relative">
+            <select
+              value={selectedColor}
+              onChange={(e) => setSelectedColor(e.target.value as ColorScaleName)}
+              className="w-full px-2 py-1.5 pr-6 text-xs border border-gray-300 rounded appearance-none focus:outline-none focus:ring-1 focus:ring-violet-500 cursor-pointer"
+              style={{
+                backgroundImage: `linear-gradient(90deg, ${COLOR_SCALES[selectedColor].light} 0%, ${COLOR_SCALES[selectedColor].medium} 50%, ${COLOR_SCALES[selectedColor].dark} 100%)`,
+                color: ['navy', 'emerald'].includes(selectedColor) ? 'white' : 'black',
+                fontWeight: '600'
+              }}
+            >
+              {(Object.keys(COLOR_SCALES) as ColorScaleName[]).map((colorKey) => (
+                <option key={colorKey} value={colorKey}>
+                  {colorKey === 'limeGreen' ? 'Verde Limão' :
+                   colorKey === 'teal' ? 'Verde Água' :
+                   colorKey === 'navy' ? 'Azul Marinho' :
+                   colorKey === 'lightBlue' ? 'Azul Claro' :
+                   colorKey === 'emerald' ? 'Esmeralda' :
+                   colorKey === 'orange' ? 'Laranja' :
+                   colorKey === 'pink' ? 'Rosa' :
+                   colorKey === 'purple' ? 'Roxo' : colorKey}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 pointer-events-none"
+              style={{ color: ['navy', 'emerald'].includes(selectedColor) ? 'white' : 'rgba(0,0,0,0.4)' }} />
+          </div>
         </div>
-      </div>
 
-      {/* Color Picker */}
-      <div className="p-3 border-b border-gray-200">
-        <label className="text-xs font-semibold text-gray-700 mb-2 block">Cor do Bullet</label>
-        <div className="relative">
-          <select
-            value={selectedColor}
-            onChange={(e) => setSelectedColor(e.target.value as ColorScaleName)}
-            className="w-full px-3 py-2 pr-8 text-sm border border-gray-300 rounded-lg appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-violet-500 cursor-pointer"
-            style={{
-              backgroundImage: `linear-gradient(90deg, ${COLOR_SCALES[selectedColor].light} 0%, ${COLOR_SCALES[selectedColor].medium} 50%, ${COLOR_SCALES[selectedColor].dark} 100%)`,
-              color: ['navy', 'emerald'].includes(selectedColor) ? 'white' : 'black',
-              fontWeight: '600'
-            }}
-          >
-            {(Object.keys(COLOR_SCALES) as ColorScaleName[]).map((colorKey) => (
-              <option key={colorKey} value={colorKey}>
-                {colorKey === 'limeGreen' ? 'Verde Limão' :
-                 colorKey === 'teal' ? 'Verde Água' :
-                 colorKey === 'navy' ? 'Azul Marinho' :
-                 colorKey === 'lightBlue' ? 'Azul Claro' :
-                 colorKey === 'emerald' ? 'Esmeralda' :
-                 colorKey === 'orange' ? 'Laranja' :
-                 colorKey === 'pink' ? 'Rosa' :
-                 colorKey === 'purple' ? 'Roxo' : colorKey}
-              </option>
-            ))}
-          </select>
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-            style={{ color: ['navy', 'emerald'].includes(selectedColor) ? 'white' : 'rgba(0,0,0,0.4)' }} />
-        </div>
-      </div>
-
-      {/* Number selector */}
-      <div className="p-3 border-b border-gray-200">
-        <p className="text-xs font-semibold text-gray-700 mb-2">Número</p>
-        <div className="flex items-center gap-2">
+        {/* Compact Number selector */}
+        <div className="flex items-center gap-1.5">
           <button
             onClick={() => setCurrentNumber(Math.max(1, currentNumber - 1))}
-            className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium"
+            className="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium"
           >
             −
           </button>
@@ -229,13 +218,13 @@ export function IndividualBulletsSession() {
             type="number"
             value={currentNumber}
             onChange={(e) => setCurrentNumber(Math.max(1, parseInt(e.target.value) || 1))}
-            className="w-16 px-2 py-1 text-center border border-gray-300 rounded-lg text-sm"
+            className="flex-1 px-2 py-1 text-center border border-gray-300 rounded text-xs"
             min="1"
             max="99"
           />
           <button
             onClick={() => setCurrentNumber(Math.min(99, currentNumber + 1))}
-            className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium"
+            className="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium"
           >
             +
           </button>
