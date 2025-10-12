@@ -23,6 +23,7 @@ import {
 import { Button } from '@/components/UI';
 import { PreviewModal } from './PreviewModal';
 import { SaveTemplateModal } from './SaveTemplateModal';
+import { SuccessToast } from './SuccessToast';
 import { appConfig } from '@/config';
 
 interface BuilderToolbarProps {
@@ -49,6 +50,8 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [savedTemplateName, setSavedTemplateName] = useState('');
 
   const currentPage = pages.find(p => p.id === currentPageId);
   const currentPageIndex = pages.findIndex(p => p.id === currentPageId);
@@ -63,7 +66,8 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
   const handleSaveTemplate = (data: { title: string; category: string; description?: string }) => {
     console.log('💾 Saving template...', { ...data, pages, templateId });
     // TODO: Implement actual API call to save template
-    alert(`Template "${data.title}" salvo com sucesso!\nCategoria: ${data.category}\n(Funcionalidade em desenvolvimento)`);
+    setSavedTemplateName(data.title);
+    setShowSuccessToast(true);
   };
 
   return (
@@ -268,6 +272,15 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
         onClose={() => setIsSaveModalOpen(false)}
         onSave={handleSaveTemplate}
         defaultTitle={`Template ${new Date().toLocaleDateString()}`}
+      />
+
+      {/* Success Toast */}
+      <SuccessToast
+        isVisible={showSuccessToast}
+        onClose={() => setShowSuccessToast(false)}
+        title="Template salvo com sucesso!"
+        message={`"${savedTemplateName}" foi salvo e está disponível nos seus templates.`}
+        duration={5000}
       />
     </div>
   );
