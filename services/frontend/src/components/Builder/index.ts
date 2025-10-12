@@ -12,3 +12,5 @@ export { BuilderCanvas } from './BuilderCanvas';
 export { PropertiesPanel } from './PropertiesPanel';
 export { LayersPanel } from './LayersPanel';
 export { PagesPanel } from './PagesPanel';
+export { LayerSelector } from './LayerSelector';
+export { LayerAssignment } from './LayerAssignment';

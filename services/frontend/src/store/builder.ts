@@ -12,6 +12,7 @@ import type {
   CanvasSize,
   HistoryState,
   Page,
+  Layer,
 } from '@/types/builder';
 
 const HISTORY_LIMIT = 50;
@@ -51,6 +52,7 @@ export const useBuilderStore = create<BuilderState>()(
 
       // Initial State - Pages
       pages: [createInitialPage()],
+      layers: [], // Layer groups for organizing elements
       currentPageId: createInitialPage().id,
 
       // Initial State - Selection
@@ -484,6 +486,80 @@ export const useBuilderStore = create<BuilderState>()(
           selectedElementId: null,
           history: [],
           historyIndex: -1,
+        });
+        get().saveHistory();
+      },
+
+
+      // ============================================================================
+      // Layer Management
+      // ============================================================================
+      
+      addLayer: (layer: Layer) => {
+        set((state) => ({
+          layers: [...state.layers, layer],
+        }));
+      },
+
+      updateLayer: (layerId: string, updates: Partial<Layer>) => {
+        set((state) => ({
+          layers: state.layers.map((layer) =>
+            layer.id === layerId ? { ...layer, ...updates } : layer
+          ),
+        }));
+      },
+
+      deleteLayer: (layerId: string) => {
+        set((state) => {
+          const page = state.pages.find((p) => p.id === state.currentPageId);
+          if (!page) return state;
+
+          // Remove layerId from all elements in this layer
+          const updatedPage = {
+            ...page,
+            elements: page.elements.map((el) =>
+              el.layerId === layerId ? { ...el, layerId: undefined } : el
+            ),
+          };
+
+          return {
+            layers: state.layers.filter((layer) => layer.id !== layerId),
+            pages: state.pages.map((p) =>
+              p.id === state.currentPageId ? updatedPage : p
+            ),
+          };
+        });
+      },
+
+      reorderLayers: (updates: Array<{ id: string; zIndex: number }>) => {
+        set((state) => {
+          const page = state.pages.find((p) => p.id === state.currentPageId);
+          if (!page) return state;
+
+          // Update layer z-indexes
+          const updatedLayers = state.layers.map((layer) => {
+            const update = updates.find((u) => u.id === layer.id);
+            return update ? { ...layer, zIndex: update.zIndex } : layer;
+          });
+
+          // Update element z-indexes to match their layer
+          const updatedPage = {
+            ...page,
+            elements: page.elements.map((el) => {
+              if (el.layerId) {
+                const layer = updatedLayers.find((l) => l.id === el.layerId);
+                return layer ? { ...el, zIndex: layer.zIndex } : el;
+              }
+              return el;
+            }),
+          };
+
+          return {
+            layers: updatedLayers,
+            pages: state.pages.map((p) =>
+              p.id === state.currentPageId ? updatedPage : p
+            ),
+          };
         });
         get().saveHistory();
       },

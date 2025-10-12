@@ -24,6 +24,7 @@ import {
 import { FormProperties } from './FormProperties';
 import { FrameProperties } from './FrameProperties';
 
+
 function TextProperties({ element }: { element: TextElement }) {
   const { updateElement } = useBuilderStore();
 
@@ -1024,7 +1025,7 @@ export function PropertiesPanel() {
           )}
         </div>
 
-        {/* Common properties */}
+{/* Common properties */}
         <div>
           <div className="flex items-center gap-1.5 mb-1.5 pb-1 border-b border-gray-200">
             <SwatchIcon className="w-3 h-3 text-gray-500" />

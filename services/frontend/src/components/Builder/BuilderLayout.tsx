@@ -12,7 +12,7 @@ import { SessionNav } from './SessionNav';
 import { ElementsPanelNew } from './ElementsPanelNew';
 import { BuilderCanvas } from './BuilderCanvas';
 import { PropertiesPanel } from './PropertiesPanel';
-import { LayersPanel } from './LayersPanel';
+import { LayersPanel } from './LayersPanelNew';
 import { BuilderToolbar } from './BuilderToolbar';
 import type { Element, FrameElement } from '@/types/builder';
 import Image from 'next/image';

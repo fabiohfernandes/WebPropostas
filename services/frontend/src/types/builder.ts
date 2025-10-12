@@ -24,6 +24,18 @@ export type TextAlign = 'left' | 'center' | 'right' | 'justify';
 export type TextStyle = 'heading1' | 'heading2' | 'heading3' | 'body' | 'caption' | 'quote';
 
 /**
+ * Layer definition for grouping elements
+ */
+export interface Layer {
+  id: string;
+  name: string;
+  zIndex: number;
+  visible: boolean;
+  locked: boolean;
+  color?: string; // Optional color for layer identification
+}
+
+/**
  * Base element properties shared by all element types
  */
 export interface BaseElement {
@@ -36,6 +48,7 @@ export interface BaseElement {
   rotation: number;
   opacity: number;
   zIndex: number;
+  layerId?: string; // Optional layer ID for grouping elements
   locked: boolean;
   visible: boolean;
 }
