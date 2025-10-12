@@ -622,6 +622,7 @@ function IconElementRenderer({ element }: { element: IconElement }) {
 
   const handleDragEnd = (e: any) => {
     updateElement(element.id, {
+      zIndex: element.zIndex + 10000, // Move frame above to stay visible
       x: e.target.x(),
       y: e.target.y(),
     });
@@ -641,6 +642,7 @@ function IconElementRenderer({ element }: { element: IconElement }) {
     node.scaleY(1);
 
     updateElement(element.id, {
+      zIndex: element.zIndex + 10000, // Move frame above to stay visible
       x: node.x(),
       y: node.y(),
       width: newWidth,
@@ -729,6 +731,7 @@ function FormElementRenderer({ element }: { element: FormElement }) {
 
   const handleDragEnd = (e: any) => {
     updateElement(element.id, {
+      zIndex: element.zIndex + 10000, // Move frame above to stay visible
       x: e.target.x(),
       y: e.target.y(),
     });
@@ -743,6 +746,7 @@ function FormElementRenderer({ element }: { element: FormElement }) {
     node.scaleY(1);
 
     updateElement(element.id, {
+      zIndex: element.zIndex + 10000, // Move frame above to stay visible
       x: node.x(),
       y: node.y(),
       width: Math.max(5, node.width() * scaleX),
@@ -931,6 +935,7 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
 
     // Update frame position
     updateElement(element.id, {
+      zIndex: element.zIndex + 10000, // Move frame above to stay visible
       x: newX,
       y: newY,
     });
@@ -981,7 +986,7 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
       height: imageHeight,
       rotation: element.rotation,
       opacity: 0.5, // Semi-transparent to show it's temporary
-      zIndex: 9999, // Way above everything else
+      zIndex: element.zIndex - 1, // Place BELOW frame so frame border is visible // Way above everything else
       locked: true, // Lock it so user can't drag it
       visible: true,
       properties: {
@@ -1044,6 +1049,7 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
 
         // Update frame with new size and updated pivot
         updateElement(element.id, {
+      zIndex: element.zIndex + 10000, // Move frame above to stay visible
           x: newX,
           y: newY,
           width: newWidth,
@@ -1067,6 +1073,7 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
     } else {
       // No image, just update frame
       updateElement(element.id, {
+      zIndex: element.zIndex + 10000, // Move frame above to stay visible
         x: newX,
         y: newY,
         width: newWidth,
@@ -1138,7 +1145,7 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
       height: imageHeight,
       rotation: element.rotation,
       opacity: 1, // Full opacity for editing
-      zIndex: 9999,
+      zIndex: element.zIndex - 1, // Place BELOW frame so frame border is visible
       locked: false, // NOT locked - user can drag and scale
       visible: true,
       properties: {
@@ -1156,8 +1163,9 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
       console.log('🎯 Selected temporary image for editing:', tempImageId);
     }, 50);
 
-    // Mark frame as in edit mode
+    // Mark frame as in edit mode and boost its z-index
     updateElement(element.id, {
+      zIndex: element.zIndex + 10000, // Move frame above to stay visible
       properties: {
         ...element.properties,
         editMode: true,
@@ -1231,6 +1239,7 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
 
       // Update frame with new image position and scale
       updateElement(element.id, {
+      zIndex: element.zIndex - 10000, // Restore original z-index
         properties: {
           ...element.properties,
           image: {
@@ -1391,6 +1400,7 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
       rotation={element.rotation}
       opacity={element.opacity}
       draggable={!element.locked && !element.properties.editMode}
+      listening={!element.properties.editMode}
       onClick={handleClick}
       onTap={handleClick}
       onDragStart={() => selectElement(element.id)}
@@ -1472,6 +1482,31 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
         }}
       />
 
+      {/* Frame overlay during edit mode - always visible */}
+      {element.properties.editMode && (
+        <Shape
+          x={0}
+          y={0}
+          width={element.width}
+          height={element.height}
+          listening={false}
+          sceneFunc={(ctx, shape) => {
+            const frameWidth = element.width;
+            const frameHeight = element.height;
+
+            ctx.beginPath();
+            applyClipPath(ctx, frameWidth, frameHeight);
+            ctx.closePath();
+
+            // Semi-transparent frame border
+            ctx.strokeStyle = "#F59E0B";
+            ctx.lineWidth = 3;
+            ctx.setLineDash([8, 4]);
+            ctx.stroke();
+          }}
+        />
+      )}
+
       {isSelected && (
         <Rect
           x={0}
@@ -1526,6 +1561,7 @@ function CanvasElement({ element, onFrameHover, hoverFrameId }: { element: Eleme
 
   const handleDragEnd = (e: any) => {
     updateElement(element.id, {
+      zIndex: element.zIndex + 10000, // Move frame above to stay visible
       x: e.target.x(),
       y: e.target.y(),
     });
@@ -1540,6 +1576,7 @@ function CanvasElement({ element, onFrameHover, hoverFrameId }: { element: Eleme
     node.scaleY(1);
 
     updateElement(element.id, {
+      zIndex: element.zIndex + 10000, // Move frame above to stay visible
       x: node.x(),
       y: node.y(),
       width: Math.max(5, node.width() * scaleX),
@@ -1880,7 +1917,6 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
     };
 
     const handleElementDragMove = (e: any) => {
-      console.log('🔵 DRAG MOVE EVENT', { currentDraggingImageId });
       if (!currentDraggingImageId) {
         console.log('⚠️ No currentDraggingImageId set, skipping');
         return;
@@ -1889,11 +1925,9 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
       const draggedNode = e.target;
       const imageX = draggedNode.x();
       const imageY = draggedNode.y();
-      console.log('🔵 Image position:', { imageX, imageY });
 
       // Check which frame we're hovering over
       let hoveredFrame: string | null = null;
-      console.log('🔍 Checking frames...', currentElements.filter(el => el.type === 'frame').length);
 
       for (const el of currentElements) {
         if (el.type === 'frame') {
@@ -1909,7 +1943,6 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
           if (imageX >= frameLeft && imageX <= frameRight &&
               imageY >= frameTop && imageY <= frameBottom) {
             hoveredFrame = frame.id;
-            console.log('✅ Image is over frame:', frame.id);
             break;
           }
         }
@@ -1938,6 +1971,12 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
       }
 
       const imageElement = element as ImageElement;
+
+      // Skip frame insertion if this is a temporary edit-mode image
+      if (imageElement.id.startsWith("temp-image-")) {
+        console.log("⏭️ Skipping frame insertion for temporary edit-mode image");
+        return;
+      }
 
       // Get final position of dragged image
       const imageX = draggedNode.x();
@@ -2089,6 +2128,7 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
           const { updateElement, deleteElement, selectElement } = useBuilderStore.getState();
 
           updateElement(frameElement.id, {
+            zIndex: frameElement.zIndex - 10000, // Restore original z-index
             properties: {
               ...frameElement.properties,
               image: {
