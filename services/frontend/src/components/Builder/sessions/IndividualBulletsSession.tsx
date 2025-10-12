@@ -148,16 +148,42 @@ export function IndividualBulletsSession() {
 
       {/* Compact Controls */}
       <div className="p-2 border-b border-gray-200 space-y-1.5">
-        {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Buscar..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-8 pr-2 py-1.5 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-violet-500"
-          />
+        {/* Search (75%) + Number (25%) */}
+        <div className="flex items-center gap-1.5">
+          <div className="relative flex-[3]">
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Buscar..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-8 pr-2 py-1.5 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-violet-500"
+            />
+          </div>
+
+          {/* Compact Number selector (25%) */}
+          <div className="flex items-center gap-1 flex-1">
+            <button
+              onClick={() => setCurrentNumber(Math.max(1, currentNumber - 1))}
+              className="px-1.5 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium"
+            >
+              −
+            </button>
+            <input
+              type="number"
+              value={currentNumber}
+              onChange={(e) => setCurrentNumber(Math.max(1, parseInt(e.target.value) || 1))}
+              className="w-10 px-1 py-1 text-center border border-gray-300 rounded text-xs"
+              min="1"
+              max="99"
+            />
+            <button
+              onClick={() => setCurrentNumber(Math.min(99, currentNumber + 1))}
+              className="px-1.5 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium"
+            >
+              +
+            </button>
+          </div>
         </div>
 
         {/* Category + Color in one row */}
@@ -204,30 +230,6 @@ export function IndividualBulletsSession() {
             <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 pointer-events-none"
               style={{ color: ['navy', 'emerald'].includes(selectedColor) ? 'white' : 'rgba(0,0,0,0.4)' }} />
           </div>
-        </div>
-
-        {/* Compact Number selector */}
-        <div className="flex items-center gap-1.5">
-          <button
-            onClick={() => setCurrentNumber(Math.max(1, currentNumber - 1))}
-            className="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium"
-          >
-            −
-          </button>
-          <input
-            type="number"
-            value={currentNumber}
-            onChange={(e) => setCurrentNumber(Math.max(1, parseInt(e.target.value) || 1))}
-            className="flex-1 px-2 py-1 text-center border border-gray-300 rounded text-xs"
-            min="1"
-            max="99"
-          />
-          <button
-            onClick={() => setCurrentNumber(Math.min(99, currentNumber + 1))}
-            className="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium"
-          >
-            +
-          </button>
         </div>
       </div>
 
