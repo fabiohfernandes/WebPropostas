@@ -156,6 +156,9 @@ function ImageElement({ element }: { element: ImageElement }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [loadedImage, setLoadedImage] = useState<HTMLImageElement | null>(null);
 
+  // Check if this is a temporary image (created during frame transform)
+  const isTemporaryImage = element.id.startsWith('temp-image-');
+
   // Apply elastic animation after image loads
   useEffect(() => {
     if (imageLoaded && imageRef.current) {
@@ -394,13 +397,11 @@ function ImageElement({ element }: { element: ImageElement }) {
       offsetY={element.height / 2}
       rotation={element.rotation}
       opacity={element.opacity}
-      draggable={!element.locked}
-      onClick={() => selectElement(element.id)}
-      onTap={() => selectElement(element.id)}
-      onDragStart={() => selectElement(element.id)}
-      onDragEnd={handleDragEnd}
-      onTransformEnd={handleTransformEnd}
-      onDragStart={() => selectElement(element.id)}
+      draggable={!element.locked && !isTemporaryImage}
+      listening={!isTemporaryImage} // Temporary images don't respond to events
+      onClick={() => !isTemporaryImage && selectElement(element.id)}
+      onTap={() => !isTemporaryImage && selectElement(element.id)}
+      onDragStart={() => !isTemporaryImage && selectElement(element.id)}
       onDragEnd={handleDragEnd}
       onTransformEnd={handleTransformEnd}
     >
@@ -890,12 +891,14 @@ function FormElementRenderer({ element }: { element: FormElement }) {
 
 
 function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement; isDropTarget?: boolean }) {
-  const { selectElement, updateElement, selectedElementId, elements } = useBuilderStore();
+  const { selectElement, updateElement, selectedElementId, elements, addElement, deleteElement } = useBuilderStore();
   const isSelected = selectedElementId === element.id;
   const groupRef = useRef<any>(null);
   const [imageObj, setImageObj] = useState<HTMLImageElement | null>(null);
   const [clickCount, setClickCount] = useState(0);
   const clickTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [isTransforming, setIsTransforming] = useState(false);
+  const tempImageIdRef = useRef<string | null>(null);
 
   // Load image if present
   useEffect(() => {
@@ -929,6 +932,66 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
     // Pivot stays in normalized coordinates (0-1), so no recalculation needed
   };
 
+  const handleTransformStart = (e: any) => {
+    console.log('🔄 Transform started - extracting image to canvas');
+
+    if (!element.properties.image || !imageObj) {
+      console.log('⚠️ No image to extract');
+      return;
+    }
+
+    setIsTransforming(true);
+
+    const img = element.properties.image;
+
+    // Calculate absolute canvas position of image
+    const pivotAbsoluteX = element.x - element.width / 2 + (img.pivotX * element.width);
+    const pivotAbsoluteY = element.y - element.height / 2 + (img.pivotY * element.height);
+
+    const imageCenterX = pivotAbsoluteX;
+    const imageCenterY = pivotAbsoluteY;
+
+    const imageWidth = imageObj.width * img.scale;
+    const imageHeight = imageObj.height * img.scale;
+
+    console.log('📤 Extracting image:', {
+      frameCenter: { x: element.x, y: element.y },
+      frameSize: { w: element.width, h: element.height },
+      pivot: { x: img.pivotX, y: img.pivotY },
+      imageCenterOnCanvas: { x: imageCenterX, y: imageCenterY },
+      imageSize: { w: imageWidth, h: imageHeight }
+    });
+
+    // Create temporary standalone image element at same position
+    const tempImageId = `temp-image-${Date.now()}`;
+    tempImageIdRef.current = tempImageId;
+
+    const tempImageElement: ImageElement = {
+      id: tempImageId,
+      type: 'image',
+      x: imageCenterX,
+      y: imageCenterY,
+      width: imageWidth,
+      height: imageHeight,
+      rotation: element.rotation,
+      opacity: 0.5, // Semi-transparent to show it's temporary
+      zIndex: 9999, // Way above everything else
+      locked: true, // Lock it so user can't drag it
+      visible: true,
+      properties: {
+        src: img.src,
+        fit: img.fit,
+      },
+    };
+
+    addElement(tempImageElement);
+
+    // IMPORTANT: Re-select the frame immediately so transformer stays on frame
+    selectElement(element.id);
+
+    console.log('✅ Temporary image created on canvas:', tempImageId);
+  };
+
   const handleTransformEnd = (e: any) => {
     const node = e.target;
     const scaleX = node.scaleX();
@@ -939,16 +1002,74 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
 
     const newWidth = Math.max(5, node.width() * scaleX);
     const newHeight = Math.max(5, node.height() * scaleY);
+    const newX = node.x();
+    const newY = node.y();
 
-    updateElement(element.id, {
-      x: node.x(),
-      y: node.y(),
-      width: newWidth,
-      height: newHeight,
-      rotation: node.rotation(),
-    });
+    console.log('✅ Transform ended - re-inserting image into frame');
 
-    // Image stays pinned automatically via normalized pivot
+    // Get temporary image element from store
+    if (tempImageIdRef.current) {
+      const { currentElements } = useBuilderStore.getState();
+      const tempImage = currentElements().find(el => el.id === tempImageIdRef.current) as ImageElement | undefined;
+
+      if (tempImage) {
+        // Calculate new pivot based on temp image's absolute position
+        const imageCenterX = tempImage.x;
+        const imageCenterY = tempImage.y;
+
+        // New frame bounds (center-registered)
+        const newFrameCenterX = newX;
+        const newFrameCenterY = newY;
+
+        // Relative position from new frame center
+        const relativeX = imageCenterX - newFrameCenterX;
+        const relativeY = imageCenterY - newFrameCenterY;
+
+        // Convert to normalized coordinates (0-1)
+        const newPivotX = 0.5 + (relativeX / newWidth);
+        const newPivotY = 0.5 + (relativeY / newHeight);
+
+        console.log('📐 Re-calculated pivot:', {
+          newFrameCenter: { x: newFrameCenterX, y: newFrameCenterY },
+          newFrameSize: { w: newWidth, h: newHeight },
+          imageCenter: { x: imageCenterX, y: imageCenterY },
+          newPivot: { x: newPivotX, y: newPivotY }
+        });
+
+        // Update frame with new size and updated pivot
+        updateElement(element.id, {
+          x: newX,
+          y: newY,
+          width: newWidth,
+          height: newHeight,
+          rotation: node.rotation(),
+          properties: {
+            ...element.properties,
+            image: {
+              ...element.properties.image!,
+              pivotX: newPivotX,
+              pivotY: newPivotY,
+            },
+          },
+        });
+
+        // Delete temporary image
+        deleteElement(tempImageIdRef.current);
+        console.log('🗑️ Deleted temporary image:', tempImageIdRef.current);
+        tempImageIdRef.current = null;
+      }
+    } else {
+      // No image, just update frame
+      updateElement(element.id, {
+        x: newX,
+        y: newY,
+        width: newWidth,
+        height: newHeight,
+        rotation: node.rotation(),
+      });
+    }
+
+    setIsTransforming(false);
   };
 
   // Handle double-click to enter edit mode
@@ -1129,6 +1250,7 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
       onTap={handleClick}
       onDragStart={() => selectElement(element.id)}
       onDragEnd={handleDragEnd}
+      onTransformStart={handleTransformStart}
       onTransformEnd={handleTransformEnd}
     >
       <Shape
@@ -1147,7 +1269,8 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
           ctx.closePath();
           ctx.clip();
 
-          if (element.properties.image && imageObj) {
+          // Only render image if NOT transforming (image is extracted to canvas during transform)
+          if (element.properties.image && imageObj && !isTransforming) {
             const img = element.properties.image;
 
             const pivotAbsoluteX = img.pivotX * frameWidth;

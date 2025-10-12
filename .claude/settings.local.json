@@ -53,7 +53,11 @@
       "Bash(timeout 25 docker-compose logs frontend)",
       "Bash(timeout 60 docker logs -f webpropostas-frontend)",
       "Bash(timeout 2 tail -f src/components/Builder/BuilderCanvas.tsx)",
-      "Bash(iconv:*)"
+      "Bash(iconv:*)",
+      "Bash(timeout 20 docker-compose logs -f frontend --tail=30)",
+      "Bash(timeout 30 docker-compose logs -f frontend --tail=50)",
+      "Bash(timeout 25 docker-compose logs -f frontend --tail=50)",
+      "Bash(timeout 30 docker-compose logs -f frontend --tail=30)"
     ],
     "deny": [],
     "ask": []
