@@ -111,7 +111,17 @@ function BorderFilter(this: any, imageData: ImageData) {
   ctx.shadowColor = color;
   ctx.shadowBlur = size;
   ctx.drawImage(tempCanvas, 0, 0);
+            
+            // Restore context if rotation was applied
+            if (img.rotation) {
+              ctx.restore();
+            }
   ctx.restore();
+            
+            // Restore context if rotation was applied
+            if (img.rotation) {
+              ctx.restore();
+            }
 
   // Get processed data
   const shadowData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -1143,7 +1153,7 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
       y: imageCenterY,
       width: imageWidth,
       height: imageHeight,
-      rotation: element.rotation,
+      rotation: img.rotation || 0,
       opacity: 1, // Full opacity for editing
       zIndex: element.zIndex - 1, // Place BELOW frame so frame border is visible
       locked: false, // NOT locked - user can drag and scale
@@ -1247,6 +1257,7 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
             pivotX: newPivotX,
             pivotY: newPivotY,
             scale: newScale,
+            rotation: tempImage.rotation,
           },
           editMode: false,
         },
@@ -1445,6 +1456,14 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
               drawPos: { x: imgX, y: imgY },
               drawSize: { w: imageObj.width * img.scale, h: imageObj.height * img.scale }
             });
+            // Apply rotation if specified
+            if (img.rotation) {
+              ctx.save();
+              ctx.translate(pivotAbsoluteX, pivotAbsoluteY);
+              ctx.rotate((img.rotation * Math.PI) / 180);
+              ctx.translate(-pivotAbsoluteX, -pivotAbsoluteY);
+            }
+
 
             ctx.drawImage(
               imageObj,
@@ -1453,6 +1472,11 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
               imageObj.width * img.scale,
               imageObj.height * img.scale
             );
+            
+            // Restore context if rotation was applied
+            if (img.rotation) {
+              ctx.restore();
+            }
           }
 
           ctx.restore();
@@ -2144,6 +2168,7 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
               ...frameElement.properties.image!,
               pivotX: newPivotX,
               pivotY: newPivotY,
+              rotation: tempImage.rotation,
               scale: newScale,
             },
             editMode: false,
