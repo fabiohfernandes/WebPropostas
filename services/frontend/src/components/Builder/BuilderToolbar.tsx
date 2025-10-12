@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/UI';
 import { PreviewModal } from './PreviewModal';
+import { SaveTemplateModal } from './SaveTemplateModal';
 import { appConfig } from '@/config';
 
 interface BuilderToolbarProps {
@@ -47,6 +48,7 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
   const { canUndo, canRedo } = useHistoryState();
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
 
   const currentPage = pages.find(p => p.id === currentPageId);
   const currentPageIndex = pages.findIndex(p => p.id === currentPageId);
@@ -58,9 +60,10 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
   const handleZoomOut = () => setZoom(zoom - 0.1);
   const handleResetZoom = () => setZoom(1); // Reset to 100% zoom
 
-  const handleSave = () => {
-    console.log('💾 Saving template...', { pages, templateId });
-    alert('Template salvo com sucesso! (Funcionalidade em desenvolvimento)');
+  const handleSaveTemplate = (data: { title: string; category: string; description?: string }) => {
+    console.log('💾 Saving template...', { ...data, pages, templateId });
+    // TODO: Implement actual API call to save template
+    alert(`Template "${data.title}" salvo com sucesso!\nCategoria: ${data.category}\n(Funcionalidade em desenvolvimento)`);
   };
 
   return (
@@ -247,7 +250,7 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
           variant="primary"
           size="sm"
           className="px-2 py-0.5 text-xs"
-          onClick={handleSave}
+          onClick={() => setIsSaveModalOpen(true)}
         >
           Salvar
         </Button>
@@ -257,6 +260,14 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
       <PreviewModal
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
+      />
+
+      {/* Save Template Modal */}
+      <SaveTemplateModal
+        isOpen={isSaveModalOpen}
+        onClose={() => setIsSaveModalOpen(false)}
+        onSave={handleSaveTemplate}
+        defaultTitle={`Template ${new Date().toLocaleDateString()}`}
       />
     </div>
   );
