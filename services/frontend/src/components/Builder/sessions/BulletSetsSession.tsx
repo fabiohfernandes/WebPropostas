@@ -6,7 +6,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Layers, Search, Sparkles, Workflow, GitCompare, TrendingUp } from 'lucide-react';
+import { Layers, Search, Sparkles, Workflow, GitCompare, TrendingUp, ChevronDown } from 'lucide-react';
 import { useDraggable } from '@dnd-kit/core';
 import { useBuilderStore } from '@/store/builder';
 import { BULLET_SETS_LIBRARY } from '@/data/bulletSetsLibrary';
@@ -153,12 +153,20 @@ export function BulletSetsSession() {
     return matchesCategory && matchesSearch;
   });
 
-  // Color scheme presets
+  // Color scheme presets - EXPANDED
   const colorSchemePresets: { name: string; colors: ColorScaleName[] }[] = [
     { name: 'Clássico', colors: ['limeGreen', 'teal', 'navy'] },
     { name: 'Quente', colors: ['orange', 'pink', 'purple'] },
     { name: 'Frio', colors: ['lightBlue', 'teal', 'navy'] },
     { name: 'Vibrante', colors: ['emerald', 'purple', 'pink'] },
+    { name: 'Pastel', colors: ['lightBlue', 'pink', 'purple'] },
+    { name: 'Terra', colors: ['orange', 'emerald', 'navy'] },
+    { name: 'Oceano', colors: ['lightBlue', 'teal', 'emerald'] },
+    { name: 'Pôr do Sol', colors: ['orange', 'pink', 'limeGreen'] },
+    { name: 'Floresta', colors: ['emerald', 'limeGreen', 'teal'] },
+    { name: 'Ametista', colors: ['purple', 'pink', 'lightBlue'] },
+    { name: 'Tropical', colors: ['limeGreen', 'orange', 'pink'] },
+    { name: 'Profissional', colors: ['navy', 'teal', 'emerald'] },
   ];
 
   return (
@@ -186,60 +194,53 @@ export function BulletSetsSession() {
         </div>
       </div>
 
-      {/* Categories */}
+      {/* Category Dropdown */}
       <div className="p-3 border-b border-gray-200">
-        <div className="flex flex-wrap gap-2">
-          {CATEGORIES.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              className={`
-                flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium
-                transition-all duration-200
-                ${
-                  selectedCategory === category.id
-                    ? 'bg-violet-600 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }
-              `}
-            >
-              {category.icon}
-              {category.label}
-            </button>
-          ))}
+        <label className="text-xs font-semibold text-gray-700 mb-2 block">Categoria</label>
+        <div className="relative">
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value as BulletSet['category'] | 'all')}
+            className="w-full px-3 py-2 pr-8 text-sm border border-gray-300 rounded-lg appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer"
+          >
+            {CATEGORIES.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.label}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
       </div>
 
-      {/* Color scheme selector */}
+      {/* Color Scheme Dropdown */}
       <div className="p-3 border-b border-gray-200">
-        <p className="text-xs font-semibold text-gray-700 mb-2">Esquema de Cores</p>
-        <div className="grid grid-cols-2 gap-2">
-          {colorSchemePresets.map((preset) => (
-            <button
-              key={preset.name}
-              onClick={() => setColorScheme(preset.colors)}
-              className={`
-                flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium
-                transition-all duration-200
-                ${
-                  JSON.stringify(colorScheme) === JSON.stringify(preset.colors)
-                    ? 'bg-violet-100 border-2 border-violet-600 text-violet-900'
-                    : 'bg-gray-50 border-2 border-gray-200 text-gray-700 hover:border-gray-300'
-                }
-              `}
-            >
-              <div className="flex gap-1">
-                {preset.colors.map((color, idx) => (
-                  <div
-                    key={idx}
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: COLOR_SCALES[color].medium }}
-                  />
-                ))}
-              </div>
-              <span>{preset.name}</span>
-            </button>
-          ))}
+        <label className="text-xs font-semibold text-gray-700 mb-2 block">Esquema de Cores</label>
+        <div className="relative">
+          <select
+            value={colorSchemePresets.findIndex(p => JSON.stringify(p.colors) === JSON.stringify(colorScheme))}
+            onChange={(e) => setColorScheme(colorSchemePresets[parseInt(e.target.value)].colors)}
+            className="w-full px-3 py-2 pr-8 text-sm border border-gray-300 rounded-lg appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer"
+          >
+            {colorSchemePresets.map((preset, idx) => (
+              <option key={preset.name} value={idx}>
+                {preset.name}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+
+          {/* Color preview dots */}
+          <div className="flex gap-1 mt-2">
+            {colorScheme.map((color, idx) => (
+              <div
+                key={idx}
+                className="flex-1 h-6 rounded-md"
+                style={{ backgroundColor: COLOR_SCALES[color].medium }}
+                title={color}
+              />
+            ))}
+          </div>
         </div>
       </div>
 

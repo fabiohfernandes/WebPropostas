@@ -6,7 +6,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Circle, Hexagon, Diamond, Pill, Search, Sparkles } from 'lucide-react';
+import { Circle, Hexagon, Diamond, Pill, Search, Sparkles, ChevronDown } from 'lucide-react';
 import { useDraggable } from '@dnd-kit/core';
 import { useBuilderStore } from '@/store/builder';
 import { INDIVIDUAL_BULLETS_LIBRARY } from '@/data/individualBulletsLibrary';
@@ -164,47 +164,54 @@ export function IndividualBulletsSession() {
         </div>
       </div>
 
-      {/* Categories */}
+      {/* Category Dropdown */}
       <div className="p-3 border-b border-gray-200">
-        <div className="flex flex-wrap gap-2">
-          {CATEGORIES.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              className={`
-                flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium
-                transition-all duration-200
-                ${
-                  selectedCategory === category.id
-                    ? 'bg-violet-600 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }
-              `}
-            >
-              {category.icon}
-              {category.label}
-            </button>
-          ))}
+        <label className="text-xs font-semibold text-gray-700 mb-2 block">Categoria</label>
+        <div className="relative">
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value as BulletCategory | 'all')}
+            className="w-full px-3 py-2 pr-8 text-sm border border-gray-300 rounded-lg appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-violet-500 cursor-pointer"
+          >
+            {CATEGORIES.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.label}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
       </div>
 
-      {/* Color selector */}
+      {/* Color Picker */}
       <div className="p-3 border-b border-gray-200">
-        <p className="text-xs font-semibold text-gray-700 mb-2">Cor do Bullet</p>
-        <div className="flex flex-wrap gap-2">
-          {(Object.keys(COLOR_SCALES) as ColorScaleName[]).map((colorKey) => (
-            <button
-              key={colorKey}
-              onClick={() => setSelectedColor(colorKey)}
-              className={`
-                w-8 h-8 rounded-lg
-                transition-all duration-200
-                ${selectedColor === colorKey ? 'ring-2 ring-violet-600 ring-offset-2 scale-110' : 'hover:scale-110'}
-              `}
-              style={{ backgroundColor: COLOR_SCALES[colorKey].medium }}
-              title={colorKey}
-            />
-          ))}
+        <label className="text-xs font-semibold text-gray-700 mb-2 block">Cor do Bullet</label>
+        <div className="relative">
+          <select
+            value={selectedColor}
+            onChange={(e) => setSelectedColor(e.target.value as ColorScaleName)}
+            className="w-full px-3 py-2 pr-8 text-sm border border-gray-300 rounded-lg appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-violet-500 cursor-pointer"
+            style={{
+              backgroundImage: `linear-gradient(90deg, ${COLOR_SCALES[selectedColor].light} 0%, ${COLOR_SCALES[selectedColor].medium} 50%, ${COLOR_SCALES[selectedColor].dark} 100%)`,
+              color: ['navy', 'emerald'].includes(selectedColor) ? 'white' : 'black',
+              fontWeight: '600'
+            }}
+          >
+            {(Object.keys(COLOR_SCALES) as ColorScaleName[]).map((colorKey) => (
+              <option key={colorKey} value={colorKey}>
+                {colorKey === 'limeGreen' ? 'Verde Limão' :
+                 colorKey === 'teal' ? 'Verde Água' :
+                 colorKey === 'navy' ? 'Azul Marinho' :
+                 colorKey === 'lightBlue' ? 'Azul Claro' :
+                 colorKey === 'emerald' ? 'Esmeralda' :
+                 colorKey === 'orange' ? 'Laranja' :
+                 colorKey === 'pink' ? 'Rosa' :
+                 colorKey === 'purple' ? 'Roxo' : colorKey}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+            style={{ color: ['navy', 'emerald'].includes(selectedColor) ? 'white' : 'rgba(0,0,0,0.4)' }} />
         </div>
       </div>
 
