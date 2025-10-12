@@ -9,7 +9,7 @@ import { useSelectedElement } from '@/store/builder';
 import { useBuilderStore } from '@/store/builder';
 import { useImageLibrary } from '@/store/imageLibrary';
 import { AVAILABLE_FONTS, getFontsByCategory, getFontFamily } from '@/utils/fonts';
-import type { TextElement, ShapeElement, ImageElement, FormElement, FrameElement, IconElement, VideoElement } from '@/types/builder';
+import type { TextElement, ShapeElement, ImageElement, FormElement, FrameElement, IconElement, VideoElement, BulletElement } from '@/types/builder';
 import { useState } from 'react';
 import {
   AdjustmentsHorizontalIcon,
@@ -450,6 +450,145 @@ function VideoProperties({ element }: { element: VideoElement }) {
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function BulletProperties({ element }: { element: BulletElement }) {
+  const { updateElement } = useBuilderStore();
+
+  return (
+    <div className="space-y-2">
+      {/* Bullet Preview */}
+      <div>
+        <label className="block text-xs font-medium text-gray-700 mb-1">
+          Visualização
+        </label>
+        <div className="w-full aspect-square bg-slate-50 rounded-lg border border-gray-200 flex items-center justify-center p-4">
+          <img
+            src={element.properties.imageUrl}
+            alt={element.properties.name}
+            className="max-w-full max-h-full object-contain"
+          />
+        </div>
+        <p className="text-xs text-gray-600 mt-1 text-center font-medium">
+          {element.properties.name}
+        </p>
+      </div>
+
+      {/* Shadow */}
+      <div>
+        <label className="block text-xs font-medium text-gray-700 mb-1">
+          Sombra
+        </label>
+        <div className="space-y-1.5">
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <label className="text-xs text-gray-600 mb-0.5 block">Desfoque</label>
+              <input
+                type="number"
+                min="0"
+                max="50"
+                value={element.properties.shadow?.blur || 0}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        blur: parseInt(e.target.value) || 0,
+                        color: element.properties.shadow?.color || '#000000',
+                        offsetX: element.properties.shadow?.offsetX || 0,
+                        offsetY: element.properties.shadow?.offsetY || 0,
+                      },
+                    },
+                  } as Partial<BulletElement>)
+                }
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="text-xs text-gray-600 mb-0.5 block">Cor</label>
+              <input
+                type="color"
+                value={element.properties.shadow?.color || '#000000'}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        blur: element.properties.shadow?.blur || 0,
+                        color: e.target.value,
+                        offsetX: element.properties.shadow?.offsetX || 0,
+                        offsetY: element.properties.shadow?.offsetY || 0,
+                      },
+                    },
+                  } as Partial<BulletElement>)
+                }
+                className="w-full h-8 rounded border border-gray-200 cursor-pointer"
+              />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <label className="text-xs text-gray-600 mb-0.5 block">Offset X</label>
+              <input
+                type="number"
+                min="-50"
+                max="50"
+                value={element.properties.shadow?.offsetX || 0}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        blur: element.properties.shadow?.blur || 0,
+                        color: element.properties.shadow?.color || '#000000',
+                        offsetX: parseInt(e.target.value) || 0,
+                        offsetY: element.properties.shadow?.offsetY || 0,
+                      },
+                    },
+                  } as Partial<BulletElement>)
+                }
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="text-xs text-gray-600 mb-0.5 block">Offset Y</label>
+              <input
+                type="number"
+                min="-50"
+                max="50"
+                value={element.properties.shadow?.offsetY || 0}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        blur: element.properties.shadow?.blur || 0,
+                        color: element.properties.shadow?.color || '#000000',
+                        offsetX: element.properties.shadow?.offsetX || 0,
+                        offsetY: parseInt(e.target.value) || 0,
+                      },
+                    },
+                  } as Partial<BulletElement>)
+                }
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Info */}
+      <div className="pt-2 border-t border-gray-200">
+        <p className="text-xs text-gray-500">
+          ID: {element.properties.bulletId}
+        </p>
       </div>
     </div>
   );
@@ -1587,6 +1726,7 @@ export function PropertiesPanel() {
               {selectedElement.type === 'form' && 'Forma'}
               {selectedElement.type === 'frame' && 'Moldura'}
               {selectedElement.type === 'video' && 'Vídeo'}
+              {selectedElement.type === 'bullet' && 'Bullet'}
             </span>
             <span className="text-[10px] text-gray-500">
               {selectedElement.id.slice(0, 8)}...
@@ -1637,6 +1777,9 @@ export function PropertiesPanel() {
           )}
           {selectedElement.type === 'video' && (
             <VideoProperties element={selectedElement as VideoElement} />
+          )}
+          {selectedElement.type === 'bullet' && (
+            <BulletProperties element={selectedElement as BulletElement} />
           )}
         </div>
 

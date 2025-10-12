@@ -12,7 +12,7 @@ import { useDroppable, useDndMonitor } from '@dnd-kit/core';
 import { useBuilderStore } from '@/store/builder';
 import { getFontFamily } from '@/utils/fonts';
 import { useElasticAnimation } from '@/hooks/useElasticAnimation';
-import type { Element, TextElement, ShapeElement, ImageElement, FormElement, IconElement, FrameElement, VideoElement } from '@/types/builder';
+import type { Element, TextElement, ShapeElement, ImageElement, FormElement, IconElement, FrameElement, VideoElement, BulletElement } from '@/types/builder';
 import Konva from 'konva';
 import { renderToString } from 'react-dom/server';
 import * as LucideIcons from 'lucide-react';
@@ -619,6 +619,97 @@ function getIconComponentName(iconName: string): string {
     .split('-')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join('');
+}
+
+// Bullet Element Renderer - Renders graphic bullet images
+function BulletElementRenderer({ element }: { element: BulletElement }) {
+  const { selectElement, updateElement, selectedElementId } = useBuilderStore();
+  const isSelected = selectedElementId === element.id;
+  const groupRef = useRef<any>(null);
+  const [bulletImage, setBulletImage] = useState<HTMLImageElement | null>(null);
+
+  // Apply elastic animation
+  useElasticAnimation(groupRef, isSelected, {
+    scaleFactor: 1.02,
+    duration: 0.5,
+    shadowOffset: 8,
+  });
+
+  // Load bullet graphic image
+  useEffect(() => {
+    if (!element.properties.imageUrl) return;
+
+    const img = new window.Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      setBulletImage(img);
+    };
+    img.onerror = () => {
+      console.error('Failed to load bullet image');
+    };
+    img.src = element.properties.imageUrl;
+  }, [element.properties.imageUrl]);
+
+  const handleDragEnd = (e: any) => {
+    updateElement(element.id, {
+      zIndex: element.zIndex + 10000,
+      x: e.target.x(),
+      y: e.target.y(),
+    });
+  };
+
+  const handleTransformEnd = (e: any) => {
+    const node = e.target;
+    const scaleX = node.scaleX();
+    const scaleY = node.scaleY();
+
+    const newWidth = Math.max(12, element.width * scaleX);
+    const newHeight = Math.max(12, element.height * scaleY);
+
+    node.scaleX(1);
+    node.scaleY(1);
+
+    updateElement(element.id, {
+      zIndex: element.zIndex + 10000,
+      x: node.x(),
+      y: node.y(),
+      width: newWidth,
+      height: newHeight,
+      rotation: node.rotation(),
+    });
+  };
+
+  return (
+    <Group
+      ref={groupRef}
+      id={element.id}
+      x={element.x}
+      y={element.y}
+      width={element.width}
+      height={element.height}
+      offsetX={element.width / 2}
+      offsetY={element.height / 2}
+      rotation={element.rotation}
+      opacity={element.opacity}
+      draggable
+      onDragEnd={handleDragEnd}
+      onTransformEnd={handleTransformEnd}
+      onClick={() => selectElement(element.id)}
+      onTap={() => selectElement(element.id)}
+    >
+      {bulletImage && (
+        <KonvaImage
+          image={bulletImage}
+          width={element.width}
+          height={element.height}
+          shadowColor={element.properties.shadow?.color}
+          shadowBlur={element.properties.shadow?.blur}
+          shadowOffsetX={element.properties.shadow?.offsetX}
+          shadowOffsetY={element.properties.shadow?.offsetY}
+        />
+      )}
+    </Group>
+  );
 }
 
 // Video Element Renderer - Shows placeholder with play icon
@@ -1983,6 +2074,10 @@ function CanvasElement({ element, onFrameHover, hoverFrameId, onVideoDoubleClick
         onDoubleClick={() => onVideoDoubleClick?.(element as VideoElement)}
       />
     );
+  }
+
+  if (element.type === 'bullet') {
+    return <BulletElementRenderer element={element as BulletElement} />;
   }
 
   if (element.type === 'form') {

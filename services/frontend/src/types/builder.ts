@@ -6,7 +6,7 @@
 /**
  * Element Types supported in the builder
  */
-export type ElementType = 'text' | 'image' | 'shape' | 'icon' | 'chart' | 'form' | 'frame' | 'video';
+export type ElementType = 'text' | 'image' | 'shape' | 'icon' | 'chart' | 'form' | 'frame' | 'video' | 'bullet';
 
 /**
  * Shape Types for shape elements
@@ -218,6 +218,24 @@ export interface VideoElement extends BaseElement {
 }
 
 /**
+ * Bullet element for decorative bullets (graphics-based)
+ */
+export interface BulletElement extends BaseElement {
+  type: 'bullet';
+  properties: {
+    bulletId: string;    // ID from bullet library
+    imageUrl: string;    // URL or base64 data URL of bullet graphic
+    name: string;        // Bullet name for reference
+    shadow?: {
+      blur: number;
+      color: string;
+      offsetX: number;
+      offsetY: number;
+    };
+  };
+}
+
+/**
  * Union type of all element types
  */
-export type Element = TextElement | ImageElement | ShapeElement | IconElement | ChartElement | FormElement | FrameElement | VideoElement;
+export type Element = TextElement | ImageElement | ShapeElement | IconElement | ChartElement | FormElement | FrameElement | VideoElement | BulletElement;
