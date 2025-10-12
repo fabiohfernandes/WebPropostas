@@ -2443,7 +2443,10 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
               anchorSize={8}
               anchorCornerRadius={4}
               ignoreStroke={true}
-              keepRatio={selectedElementId?.startsWith("temp-image-") || false}
+              keepRatio={(() => {
+                const selectedEl = currentElements.find(el => el.id === selectedElementId);
+                return selectedEl?.type === 'image';
+              })()}
             />
           </Layer>
         </Stage>
