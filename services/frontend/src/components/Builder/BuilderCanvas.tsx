@@ -2443,7 +2443,7 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
               anchorSize={8}
               anchorCornerRadius={4}
               ignoreStroke={true}
-              keepRatio={false}
+              keepRatio={selectedElementId?.startsWith("temp-image-") || false}
             />
           </Layer>
         </Stage>
