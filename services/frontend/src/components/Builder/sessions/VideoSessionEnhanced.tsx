@@ -8,8 +8,9 @@
 
 import { useState } from 'react';
 import { useDraggable } from '@dnd-kit/core';
-import { Video, Play, Plus, Search, Youtube } from 'lucide-react';
+import { Video, Play, Plus, Search, Youtube, Save } from 'lucide-react';
 import { useBuilderStore } from '@/store/builder';
+import { SaveVideoTemplateModal } from '../SaveVideoTemplateModal';
 import type { VideoElement } from '@/types/builder';
 
 interface VideoPreset {
@@ -22,114 +23,8 @@ interface VideoPreset {
   defaultProps: Partial<VideoElement>;
 }
 
-const VIDEO_PRESETS: VideoPreset[] = [
-  {
-    id: 'explainer-video',
-    label: 'Vídeo Explicativo',
-    videoType: 'youtube',
-    src: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg',
-    category: 'business',
-    defaultProps: {
-      width: 640,
-      height: 360,
-      properties: {
-        src: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-        videoType: 'youtube',
-        autoPlay: false,
-        loop: false,
-        muted: false,
-        controls: true,
-        border: {
-          width: 0,
-          color: '#000000',
-          radius: 12,
-        },
-      },
-    },
-  },
-  {
-    id: 'product-demo',
-    label: 'Demo de Produto',
-    videoType: 'youtube',
-    src: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg',
-    category: 'marketing',
-    defaultProps: {
-      width: 640,
-      height: 360,
-      properties: {
-        src: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-        videoType: 'youtube',
-        autoPlay: true,
-        loop: true,
-        muted: true,
-        controls: false,
-        border: {
-          width: 2,
-          color: '#3B82F6',
-          radius: 16,
-        },
-      },
-    },
-  },
-  {
-    id: 'testimonial',
-    label: 'Depoimento',
-    videoType: 'youtube',
-    src: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg',
-    category: 'business',
-    defaultProps: {
-      width: 480,
-      height: 270,
-      properties: {
-        src: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-        videoType: 'youtube',
-        autoPlay: false,
-        loop: false,
-        muted: false,
-        controls: true,
-        border: {
-          width: 0,
-          color: '#000000',
-          radius: 20,
-        },
-        shadow: {
-          blur: 20,
-          color: 'rgba(0, 0, 0, 0.3)',
-          offsetX: 0,
-          offsetY: 8,
-        },
-      },
-    },
-  },
-  {
-    id: 'tutorial',
-    label: 'Tutorial',
-    videoType: 'youtube',
-    src: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg',
-    category: 'education',
-    defaultProps: {
-      width: 800,
-      height: 450,
-      properties: {
-        src: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-        videoType: 'youtube',
-        autoPlay: false,
-        loop: false,
-        muted: false,
-        controls: true,
-        border: {
-          width: 1,
-          color: '#E5E7EB',
-          radius: 8,
-        },
-      },
-    },
-  },
-];
+// Default empty - user creates their own templates
+const INITIAL_VIDEO_PRESETS: VideoPreset[] = [];
 
 function DraggableVideoPreset({ preset }: { preset: VideoPreset }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
@@ -186,11 +81,44 @@ export function VideoSessionEnhanced() {
   const [searchTerm, setSearchTerm] = useState('');
   const [customUrl, setCustomUrl] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [videoPresets, setVideoPresets] = useState<VideoPreset[]>(INITIAL_VIDEO_PRESETS);
 
-  const filteredPresets = VIDEO_PRESETS.filter((preset) =>
+  const filteredPresets = videoPresets.filter((preset) =>
     preset.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
     preset.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleSaveVideoTemplate = (template: { title: string; url: string; thumbnail: string; videoType: 'youtube' | 'direct' }) => {
+    const newPreset: VideoPreset = {
+      id: `custom-${Date.now()}`,
+      label: template.title,
+      videoType: template.videoType,
+      src: template.url,
+      thumbnail: template.thumbnail,
+      category: 'business',
+      defaultProps: {
+        width: 640,
+        height: 360,
+        properties: {
+          src: template.url,
+          videoType: template.videoType,
+          autoPlay: false,
+          loop: false,
+          muted: false,
+          controls: true,
+          thumbnail: template.thumbnail,
+          border: {
+            width: 0,
+            color: '#000000',
+            radius: 12,
+          },
+        },
+      },
+    };
+
+    setVideoPresets([...videoPresets, newPreset]);
+  };
 
   const handleAddCustomVideo = () => {
     if (!customUrl.trim()) return;
@@ -312,11 +240,11 @@ export function VideoSessionEnhanced() {
           </div>
         ) : (
           <button
-            onClick={() => setShowCustomInput(true)}
+            onClick={() => setShowSaveModal(true)}
             className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-rose-50 text-rose-700 text-xs font-medium rounded-lg hover:bg-rose-100 transition-colors"
           >
-            <Plus className="w-4 h-4" strokeWidth={2.5} />
-            URL Personalizada
+            <Save className="w-4 h-4" strokeWidth={2.5} />
+            Salvar Template
           </button>
         )}
       </div>
@@ -334,13 +262,22 @@ export function VideoSessionEnhanced() {
             <div className="w-16 h-16 rounded-full bg-rose-100 flex items-center justify-center mb-3">
               <Video className="w-8 h-8 text-rose-600" strokeWidth={2} />
             </div>
-            <h4 className="text-sm font-semibold text-gray-800 mb-1">Nenhum vídeo encontrado</h4>
+            <h4 className="text-sm font-semibold text-gray-800 mb-1">
+              {searchTerm ? 'Nenhum vídeo encontrado' : 'Nenhum template salvo'}
+            </h4>
             <p className="text-xs text-gray-500">
-              Tente outro termo de busca
+              {searchTerm ? 'Tente outro termo de busca' : 'Clique em "Salvar Template" para criar seu primeiro vídeo'}
             </p>
           </div>
         )}
       </div>
+
+      {/* Save Video Template Modal */}
+      <SaveVideoTemplateModal
+        isOpen={showSaveModal}
+        onClose={() => setShowSaveModal(false)}
+        onSave={handleSaveVideoTemplate}
+      />
     </div>
   );
 }

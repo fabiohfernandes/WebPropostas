@@ -231,6 +231,86 @@ function VideoProperties({ element }: { element: VideoElement }) {
         )}
       </div>
 
+      {/* Custom Thumbnail */}
+      <div>
+        <label className="block text-xs font-medium text-gray-700 mb-1">
+          Miniatura Personalizada
+        </label>
+        {element.properties.thumbnail ? (
+          <div className="space-y-2">
+            <div className="relative w-full aspect-video rounded border border-gray-200 overflow-hidden">
+              <img
+                src={element.properties.thumbnail}
+                alt="Thumbnail"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex gap-2">
+              <label className="flex-1 px-2 py-1.5 text-xs bg-rose-50 text-rose-700 rounded hover:bg-rose-100 transition-colors cursor-pointer text-center font-medium">
+                Alterar
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = (event) => {
+                        const result = event.target?.result as string;
+                        updateElement(element.id, {
+                          properties: { ...element.properties, thumbnail: result },
+                        } as Partial<VideoElement>);
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                  className="hidden"
+                />
+              </label>
+              <button
+                onClick={() => {
+                  updateElement(element.id, {
+                    properties: { ...element.properties, thumbnail: undefined },
+                  } as Partial<VideoElement>);
+                }}
+                className="px-2 py-1.5 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors font-medium"
+              >
+                Remover
+              </button>
+            </div>
+          </div>
+        ) : (
+          <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-gray-300 rounded-lg hover:border-rose-400 transition-colors cursor-pointer bg-gray-50 hover:bg-rose-50">
+            <div className="flex flex-col items-center justify-center">
+              <PhotoIcon className="w-8 h-8 text-gray-400 mb-1" />
+              <p className="text-xs text-gray-600 font-medium">Carregar miniatura</p>
+              <p className="text-xs text-gray-400">PNG, JPG até 5MB</p>
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onload = (event) => {
+                    const result = event.target?.result as string;
+                    updateElement(element.id, {
+                      properties: { ...element.properties, thumbnail: result },
+                    } as Partial<VideoElement>);
+                  };
+                  reader.readAsDataURL(file);
+                }
+              }}
+              className="hidden"
+            />
+          </label>
+        )}
+        <p className="text-xs text-gray-500 mt-1">
+          A miniatura aparecerá apenas na visualização do canvas
+        </p>
+      </div>
+
       {/* Playback Controls */}
       <div className="space-y-1.5">
         <label className="block text-xs font-medium text-gray-700">

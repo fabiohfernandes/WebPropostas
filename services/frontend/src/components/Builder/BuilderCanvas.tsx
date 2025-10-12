@@ -627,6 +627,7 @@ function VideoElementRenderer({ element, onDoubleClick }: { element: VideoElemen
   const isSelected = selectedElementId === element.id;
   const groupRef = useRef<any>(null);
   const [playIconImage, setPlayIconImage] = useState<HTMLImageElement | null>(null);
+  const [thumbnailImage, setThumbnailImage] = useState<HTMLImageElement | null>(null);
 
   // Apply elastic animation
   useElasticAnimation(groupRef, isSelected, {
@@ -634,6 +635,24 @@ function VideoElementRenderer({ element, onDoubleClick }: { element: VideoElemen
     duration: 0.5,
     shadowOffset: 15,
   });
+
+  // Load custom thumbnail if provided
+  useEffect(() => {
+    if (element.properties.thumbnail) {
+      const img = new window.Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        setThumbnailImage(img);
+      };
+      img.onerror = () => {
+        console.error('Failed to load custom thumbnail');
+        setThumbnailImage(null);
+      };
+      img.src = element.properties.thumbnail;
+    } else {
+      setThumbnailImage(null);
+    }
+  }, [element.properties.thumbnail]);
 
   // Create play icon image
   useEffect(() => {
@@ -711,21 +730,38 @@ function VideoElementRenderer({ element, onDoubleClick }: { element: VideoElemen
       onDragEnd={handleDragEnd}
       onTransformEnd={handleTransformEnd}
     >
-      {/* Video background rectangle */}
-      <Rect
-        x={0}
-        y={0}
-        width={element.width}
-        height={element.height}
-        fill="#1F2937"
-        cornerRadius={borderRadius}
-        shadowColor={element.properties.shadow?.color || 'rgba(0,0,0,0.3)'}
-        shadowBlur={element.properties.shadow?.blur || 20}
-        shadowOffsetX={element.properties.shadow?.offsetX || 0}
-        shadowOffsetY={element.properties.shadow?.offsetY || 8}
-        stroke={element.properties.border?.color || '#374151'}
-        strokeWidth={element.properties.border?.width || 2}
-      />
+      {/* Custom thumbnail or dark background */}
+      {thumbnailImage ? (
+        <KonvaImage
+          x={0}
+          y={0}
+          width={element.width}
+          height={element.height}
+          image={thumbnailImage}
+          cornerRadius={borderRadius}
+          shadowColor={element.properties.shadow?.color || 'rgba(0,0,0,0.3)'}
+          shadowBlur={element.properties.shadow?.blur || 20}
+          shadowOffsetX={element.properties.shadow?.offsetX || 0}
+          shadowOffsetY={element.properties.shadow?.offsetY || 8}
+          stroke={element.properties.border?.color || '#374151'}
+          strokeWidth={element.properties.border?.width || 2}
+        />
+      ) : (
+        <Rect
+          x={0}
+          y={0}
+          width={element.width}
+          height={element.height}
+          fill="#1F2937"
+          cornerRadius={borderRadius}
+          shadowColor={element.properties.shadow?.color || 'rgba(0,0,0,0.3)'}
+          shadowBlur={element.properties.shadow?.blur || 20}
+          shadowOffsetX={element.properties.shadow?.offsetX || 0}
+          shadowOffsetY={element.properties.shadow?.offsetY || 8}
+          stroke={element.properties.border?.color || '#374151'}
+          strokeWidth={element.properties.border?.width || 2}
+        />
+      )}
 
       {/* YouTube badge */}
       {element.properties.videoType === 'youtube' && (

@@ -35,6 +35,11 @@ export function VideoPlayerModal({ isOpen, onClose, videoElement }: VideoPlayerM
 
   const borderRadius = videoElement.properties.border?.radius || 12;
 
+  // Add autoplay parameter to YouTube URL
+  const youtubeUrlWithAutoplay = videoElement.properties.videoType === 'youtube'
+    ? `${videoElement.properties.src}${videoElement.properties.src.includes('?') ? '&' : '?'}autoplay=1`
+    : videoElement.properties.src;
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
@@ -69,7 +74,7 @@ export function VideoPlayerModal({ isOpen, onClose, videoElement }: VideoPlayerM
       >
         {videoElement.properties.videoType === 'youtube' ? (
           <iframe
-            src={videoElement.properties.src}
+            src={youtubeUrlWithAutoplay}
             className="w-full h-full"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -82,7 +87,7 @@ export function VideoPlayerModal({ isOpen, onClose, videoElement }: VideoPlayerM
           <video
             src={videoElement.properties.src}
             controls={videoElement.properties.controls}
-            autoPlay={videoElement.properties.autoPlay}
+            autoPlay={true}
             loop={videoElement.properties.loop}
             muted={videoElement.properties.muted}
             className="w-full h-full object-cover"
