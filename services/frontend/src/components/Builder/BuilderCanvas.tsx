@@ -952,6 +952,8 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
 
     // Pivot stays in normalized coordinates (0-1), so no recalculation needed
   };
+  const overlayRef = useRef<any>(null);
+  const animationFrameRef = useRef<number | null>(null);
 
   const handleTransformStart = (e: any) => {
     console.log('🔄 Transform started - extracting image to canvas');
@@ -962,6 +964,7 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
     }
 
     setIsTransforming(true);
+// Start animation loop to redraw overlay    const animate = () => {      if (overlayRef.current) {        overlayRef.current.getLayer()?.batchDraw();      }      animationFrameRef.current = requestAnimationFrame(animate);    };    animate();
 
     const img = element.properties.image;
 
@@ -1093,6 +1096,7 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
     }
 
     setIsTransforming(false);
+// Stop animation loop    if (animationFrameRef.current) {      cancelAnimationFrame(animationFrameRef.current);      animationFrameRef.current = null;    }
   };
 
   // Handle double-click to enter edit mode (extract image for repositioning)
@@ -1531,6 +1535,7 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
         />
       )}
 
+{/* Frame overlay during transform */}      {isTransforming && (        <Shape          ref={overlayRef}          listening={false}          sceneFunc={(ctx, shape) => {            // Get parent group node to read current transform            const group = groupRef.current;            if (!group) return;                        const scaleX = group.scaleX();            const scaleY = group.scaleY();            const frameWidth = element.width * scaleX;            const frameHeight = element.height * scaleY;                        ctx.beginPath();            applyClipPath(ctx, frameWidth, frameHeight);            ctx.closePath();                        ctx.strokeStyle = "#F59E0B";            ctx.lineWidth = 3 / Math.min(scaleX, scaleY);            ctx.setLineDash([8, 4]);            ctx.stroke();          }}        />      )}
 
       {isSelected && (
         <Rect
