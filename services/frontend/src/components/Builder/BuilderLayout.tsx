@@ -434,6 +434,28 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
               className="w-32 h-32 object-cover rounded"
             />
           </div>
+        ) : activeId && activeDragData?.type === 'video' ? (
+          <div className="bg-gray-900 rounded-lg shadow-2xl border-2 border-rose-400 overflow-hidden opacity-90" style={{ width: '160px', height: '90px' }}>
+            {/* Video thumbnail with play icon */}
+            <div className="relative w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
+              {/* Play icon */}
+              <div className="w-12 h-12 rounded-full bg-rose-600 flex items-center justify-center shadow-lg">
+                <svg className="w-6 h-6 text-white fill-white ml-0.5" viewBox="0 0 24 24">
+                  <polygon points="8,5 19,12 8,19" />
+                </svg>
+              </div>
+              {/* YouTube badge */}
+              {activeDragData?.defaultProps?.properties?.videoType === 'youtube' && (
+                <div className="absolute top-2 right-2 px-2 py-0.5 bg-rose-600 text-white text-xs font-bold rounded shadow">
+                  YouTube
+                </div>
+              )}
+              {/* Video label */}
+              <div className="absolute bottom-2 left-2 text-white text-xs font-medium">
+                Vídeo
+              </div>
+            </div>
+          </div>
         ) : null}
       </DragOverlay>
     </DndContext>

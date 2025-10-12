@@ -36,7 +36,10 @@ export function VideoPlayerModal({ isOpen, onClose, videoElement }: VideoPlayerM
   const borderRadius = videoElement.properties.border?.radius || 12;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+      onClick={onClose}
+    >
       {/* Close Button */}
       <button
         onClick={onClose}
@@ -49,6 +52,7 @@ export function VideoPlayerModal({ isOpen, onClose, videoElement }: VideoPlayerM
       {/* Video Container */}
       <div
         className="relative bg-gray-900 overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
         style={{
           maxWidth: '90vw',
           maxHeight: '90vh',
@@ -90,8 +94,8 @@ export function VideoPlayerModal({ isOpen, onClose, videoElement }: VideoPlayerM
       </div>
 
       {/* Video Info */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-medium">
-        {videoElement.properties.videoType === 'youtube' ? 'YouTube Video' : 'Vídeo'} • Duplo clique para fechar
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-medium pointer-events-none">
+        {videoElement.properties.videoType === 'youtube' ? 'YouTube Video' : 'Vídeo'} • Clique fora para fechar
       </div>
     </div>
   );

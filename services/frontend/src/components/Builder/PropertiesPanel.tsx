@@ -9,7 +9,7 @@ import { useSelectedElement } from '@/store/builder';
 import { useBuilderStore } from '@/store/builder';
 import { useImageLibrary } from '@/store/imageLibrary';
 import { AVAILABLE_FONTS, getFontsByCategory, getFontFamily } from '@/utils/fonts';
-import type { TextElement, ShapeElement, ImageElement, FormElement, FrameElement, IconElement } from '@/types/builder';
+import type { TextElement, ShapeElement, ImageElement, FormElement, FrameElement, IconElement, VideoElement } from '@/types/builder';
 import { useState } from 'react';
 import {
   AdjustmentsHorizontalIcon,
@@ -185,6 +185,195 @@ const iconLibrary = [
   { id: 'crown', label: 'Coroa', icon: Crown },
   { id: 'tag', label: 'Etiqueta', icon: Tag },
 ];
+
+function VideoProperties({ element }: { element: VideoElement }) {
+  const { updateElement } = useBuilderStore();
+
+  return (
+    <div className="space-y-2">
+      {/* Video URL */}
+      <div>
+        <label className="block text-xs font-medium text-gray-700 mb-1">
+          URL do Vídeo
+        </label>
+        <input
+          type="text"
+          value={element.properties.src}
+          onChange={(e) => {
+            const url = e.target.value;
+            // Auto-detect YouTube URLs and convert to embed format
+            const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const match = url.match(youtubeRegex);
+
+            if (match && match[1]) {
+              updateElement(element.id, {
+                properties: {
+                  ...element.properties,
+                  src: `https://www.youtube.com/embed/${match[1]}`,
+                  videoType: 'youtube',
+                },
+              } as Partial<VideoElement>);
+            } else {
+              updateElement(element.id, {
+                properties: {
+                  ...element.properties,
+                  src: url,
+                  videoType: 'direct',
+                },
+              } as Partial<VideoElement>);
+            }
+          }}
+          className="w-full px-2 py-1.5 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-rose-500"
+          placeholder="Cole o link do YouTube ou URL do vídeo"
+        />
+        {element.properties.videoType === 'youtube' && (
+          <p className="text-xs text-rose-600 mt-1">✓ YouTube detectado</p>
+        )}
+      </div>
+
+      {/* Playback Controls */}
+      <div className="space-y-1.5">
+        <label className="block text-xs font-medium text-gray-700">
+          Controles de Reprodução
+        </label>
+
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={element.properties.autoPlay}
+            onChange={(e) =>
+              updateElement(element.id, {
+                properties: { ...element.properties, autoPlay: e.target.checked },
+              } as Partial<VideoElement>)
+            }
+            className="w-3.5 h-3.5 text-rose-600 border-gray-300 rounded focus:ring-rose-500"
+          />
+          <span className="text-xs text-gray-700">Reproduzir automaticamente</span>
+        </label>
+
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={element.properties.loop}
+            onChange={(e) =>
+              updateElement(element.id, {
+                properties: { ...element.properties, loop: e.target.checked },
+              } as Partial<VideoElement>)
+            }
+            className="w-3.5 h-3.5 text-rose-600 border-gray-300 rounded focus:ring-rose-500"
+          />
+          <span className="text-xs text-gray-700">Repetir em loop</span>
+        </label>
+
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={element.properties.muted}
+            onChange={(e) =>
+              updateElement(element.id, {
+                properties: { ...element.properties, muted: e.target.checked },
+              } as Partial<VideoElement>)
+            }
+            className="w-3.5 h-3.5 text-rose-600 border-gray-300 rounded focus:ring-rose-500"
+          />
+          <span className="text-xs text-gray-700">Sem áudio (mudo)</span>
+        </label>
+
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={element.properties.controls}
+            onChange={(e) =>
+              updateElement(element.id, {
+                properties: { ...element.properties, controls: e.target.checked },
+              } as Partial<VideoElement>)
+            }
+            className="w-3.5 h-3.5 text-rose-600 border-gray-300 rounded focus:ring-rose-500"
+          />
+          <span className="text-xs text-gray-700">Mostrar controles</span>
+        </label>
+      </div>
+
+      {/* Border */}
+      <div>
+        <label className="block text-xs font-medium text-gray-700 mb-1">
+          Borda
+        </label>
+        <div className="space-y-1.5">
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <label className="text-xs text-gray-600 mb-0.5 block">Espessura</label>
+              <input
+                type="number"
+                min="0"
+                max="20"
+                value={element.properties.border?.width || 0}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      border: {
+                        ...element.properties.border,
+                        width: parseInt(e.target.value) || 0,
+                        color: element.properties.border?.color || '#000000',
+                        radius: element.properties.border?.radius || 12,
+                      },
+                    },
+                  } as Partial<VideoElement>)
+                }
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="text-xs text-gray-600 mb-0.5 block">Cor</label>
+              <input
+                type="color"
+                value={element.properties.border?.color || '#000000'}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      border: {
+                        ...element.properties.border,
+                        width: element.properties.border?.width || 2,
+                        color: e.target.value,
+                        radius: element.properties.border?.radius || 12,
+                      },
+                    },
+                  } as Partial<VideoElement>)
+                }
+                className="w-full h-8 rounded border border-gray-200 cursor-pointer"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="text-xs text-gray-600 mb-0.5 block">Raio</label>
+              <input
+                type="number"
+                min="0"
+                max="50"
+                value={element.properties.border?.radius || 12}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      border: {
+                        ...element.properties.border,
+                        width: element.properties.border?.width || 0,
+                        color: element.properties.border?.color || '#000000',
+                        radius: parseInt(e.target.value) || 12,
+                      },
+                    },
+                  } as Partial<VideoElement>)
+                }
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function IconProperties({ element }: { element: IconElement }) {
   const { updateElement, favoriteIcons, toggleFavoriteIcon } = useBuilderStore();
@@ -1317,6 +1506,7 @@ export function PropertiesPanel() {
               {selectedElement.type === 'chart' && 'Gráfico'}
               {selectedElement.type === 'form' && 'Forma'}
               {selectedElement.type === 'frame' && 'Moldura'}
+              {selectedElement.type === 'video' && 'Vídeo'}
             </span>
             <span className="text-[10px] text-gray-500">
               {selectedElement.id.slice(0, 8)}...
@@ -1364,6 +1554,9 @@ export function PropertiesPanel() {
           )}
           {selectedElement.type === 'icon' && (
             <IconProperties element={selectedElement as IconElement} />
+          )}
+          {selectedElement.type === 'video' && (
+            <VideoProperties element={selectedElement as VideoElement} />
           )}
         </div>
 
