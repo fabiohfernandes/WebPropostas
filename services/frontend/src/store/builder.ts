@@ -278,6 +278,28 @@ export const useBuilderStore = create<BuilderState>()(
         set({ selectedElementId: id });
       },
 
+      reorderElements: (updates: Array<{ id: string; zIndex: number }>) => {
+        set((state) => {
+          const page = state.pages.find((p) => p.id === state.currentPageId);
+          if (!page) return state;
+
+          const updatedPage = {
+            ...page,
+            elements: page.elements.map((el) => {
+              const update = updates.find((u) => u.id === el.id);
+              return update ? { ...el, zIndex: update.zIndex } : el;
+            }),
+          };
+
+          return {
+            pages: state.pages.map((p) =>
+              p.id === state.currentPageId ? updatedPage : p
+            ),
+          };
+        });
+        get().saveHistory();
+      },
+
       // Actions - Session Navigation
       setActiveSession: (session: 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets' | 'ai' | 'tips') => {
         set({ activeSession: session });

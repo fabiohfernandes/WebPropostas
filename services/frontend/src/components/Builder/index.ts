@@ -10,4 +10,5 @@ export { ElementsPanelNew } from './ElementsPanelNew';
 export { SessionNav } from './SessionNav';
 export { BuilderCanvas } from './BuilderCanvas';
 export { PropertiesPanel } from './PropertiesPanel';
+export { LayersPanel } from './LayersPanel';
 export { PagesPanel } from './PagesPanel';

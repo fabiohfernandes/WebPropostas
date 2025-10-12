@@ -12,6 +12,7 @@ import { SessionNav } from './SessionNav';
 import { ElementsPanelNew } from './ElementsPanelNew';
 import { BuilderCanvas } from './BuilderCanvas';
 import { PropertiesPanel } from './PropertiesPanel';
+import { LayersPanel } from './LayersPanel';
 import { BuilderToolbar } from './BuilderToolbar';
 import type { Element, FrameElement } from '@/types/builder';
 import Image from 'next/image';
@@ -190,12 +191,17 @@ function BuilderLayoutInner({
           />
         </div>
 
-        {/* Right Panel - Properties */}
+        {/* Right Panel - Properties + Layers */}
         <div
-          className="flex-shrink-0 bg-white border-l border-gray-200 overflow-y-auto"
+          className="flex-shrink-0 bg-white border-l border-gray-200 flex flex-col"
           style={{ width: `${rightPanelWidth}px` }}
         >
-          <PropertiesPanel />
+          <div className="flex-1 overflow-y-auto">
+            <PropertiesPanel />
+          </div>
+          <div className="border-t border-gray-200 h-80 flex-shrink-0">
+            <LayersPanel />
+          </div>
         </div>
       </div>
     </>
