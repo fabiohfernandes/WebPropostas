@@ -9,7 +9,7 @@ import { useSelectedElement } from '@/store/builder';
 import { useBuilderStore } from '@/store/builder';
 import { useImageLibrary } from '@/store/imageLibrary';
 import { AVAILABLE_FONTS, getFontsByCategory, getFontFamily } from '@/utils/fonts';
-import type { TextElement, ShapeElement, ImageElement, FormElement, FrameElement } from '@/types/builder';
+import type { TextElement, ShapeElement, ImageElement, FormElement, FrameElement, IconElement } from '@/types/builder';
 import { useState } from 'react';
 import {
   AdjustmentsHorizontalIcon,
@@ -23,6 +23,506 @@ import {
 } from '@heroicons/react/24/outline';
 import { FormProperties } from './FormProperties';
 import { FrameProperties } from './FrameProperties';
+import {
+  // Shapes
+  Square,
+  Circle,
+  Triangle,
+  Pentagon,
+  Hexagon,
+  Star,
+  Heart,
+  Diamond,
+
+  // Arrows
+  ArrowUp,
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  ArrowDownLeft,
+  MoveUpRight,
+  CornerUpRight,
+  TrendingUp,
+  TrendingDown,
+
+  // Business
+  Briefcase,
+  BarChart3,
+  PieChart,
+  Target,
+  Award,
+  Users,
+  Building2,
+  Landmark,
+
+  // Real Estate
+  Home,
+  Building,
+  MapPin,
+  Key,
+  DoorOpen,
+  Bed,
+  Bath,
+  Car,
+  Trees,
+  Warehouse,
+
+  // Automotive
+  Fuel,
+  Gauge,
+  Settings,
+  Wrench,
+  Zap,
+  Shield,
+
+  // Nature
+  Sun,
+  Moon,
+  Cloud,
+  CloudRain,
+  Leaf,
+  Flower2,
+
+  // UI Elements
+  Check,
+  X,
+  Plus,
+  Minus,
+  ChevronRight,
+  ChevronLeft,
+  Info,
+  AlertCircle,
+  AlertTriangle,
+
+  // Social & Contact
+  Phone,
+  Mail,
+  MessageCircle,
+  Share2,
+  Link2,
+
+  // Decorative
+  Sparkles,
+  Flame,
+  Crown,
+  Tag,
+  Search,
+} from 'lucide-react';
+
+
+
+
+// Icon Library Definition (same as IconsSessionEnhanced)
+const iconLibrary = [
+  // ARROWS (8)
+  { id: 'arrow-up', label: 'Seta Cima', icon: ArrowUp },
+  { id: 'arrow-down', label: 'Seta Baixo', icon: ArrowDown },
+  { id: 'arrow-left', label: 'Seta Esquerda', icon: ArrowLeft },
+  { id: 'arrow-right', label: 'Seta Direita', icon: ArrowRight },
+  { id: 'arrow-up-right', label: 'Diagonal', icon: ArrowUpRight },
+  { id: 'arrow-down-left', label: 'Diagonal', icon: ArrowDownLeft },
+  { id: 'trending-up', label: 'Tendência Alta', icon: TrendingUp },
+  { id: 'trending-down', label: 'Tendência Baixa', icon: TrendingDown },
+
+  // BUSINESS (7)
+  { id: 'briefcase', label: 'Maleta', icon: Briefcase },
+  { id: 'chart-bar', label: 'Gráfico Barras', icon: BarChart3 },
+  { id: 'chart-pie', label: 'Gráfico Pizza', icon: PieChart },
+  { id: 'target', label: 'Alvo', icon: Target },
+  { id: 'award', label: 'Prêmio', icon: Award },
+  { id: 'users', label: 'Pessoas', icon: Users },
+  { id: 'building', label: 'Prédio', icon: Building2 },
+
+  // REAL ESTATE (10)
+  { id: 're-home', label: 'Casa', icon: Home },
+  { id: 're-building', label: 'Prédio', icon: Building },
+  { id: 're-location', label: 'Localização', icon: MapPin },
+  { id: 're-key', label: 'Chave', icon: Key },
+  { id: 're-door', label: 'Porta', icon: DoorOpen },
+  { id: 're-bed', label: 'Quarto', icon: Bed },
+  { id: 're-bath', label: 'Banheiro', icon: Bath },
+  { id: 're-car', label: 'Garagem', icon: Car },
+  { id: 're-trees', label: 'Área Verde', icon: Trees },
+  { id: 're-warehouse', label: 'Armazém', icon: Warehouse },
+
+  // AUTOMOTIVE (7)
+  { id: 'auto-car', label: 'Carro', icon: Car },
+  { id: 'auto-fuel', label: 'Combustível', icon: Fuel },
+  { id: 'auto-gauge', label: 'Velocímetro', icon: Gauge },
+  { id: 'auto-settings', label: 'Configurações', icon: Settings },
+  { id: 'auto-wrench', label: 'Chave Inglesa', icon: Wrench },
+  { id: 'auto-zap', label: 'Elétrico', icon: Zap },
+  { id: 'auto-shield', label: 'Proteção', icon: Shield },
+
+  // NATURE (6)
+  { id: 'sun', label: 'Sol', icon: Sun },
+  { id: 'moon', label: 'Lua', icon: Moon },
+  { id: 'cloud', label: 'Nuvem', icon: Cloud },
+  { id: 'rain', label: 'Chuva', icon: CloudRain },
+  { id: 'leaf', label: 'Folha', icon: Leaf },
+  { id: 'flower', label: 'Flor', icon: Flower2 },
+
+  // UI ELEMENTS (7)
+  { id: 'check', label: 'Check', icon: Check },
+  { id: 'x-mark', label: 'X', icon: X },
+  { id: 'plus', label: 'Mais', icon: Plus },
+  { id: 'minus', label: 'Menos', icon: Minus },
+  { id: 'info', label: 'Informação', icon: Info },
+  { id: 'alert', label: 'Alerta', icon: AlertCircle },
+  { id: 'warning', label: 'Perigo', icon: AlertTriangle },
+
+  // SOCIAL & CONTACT (5)
+  { id: 'phone', label: 'Telefone', icon: Phone },
+  { id: 'mail', label: 'Email', icon: Mail },
+  { id: 'message', label: 'Mensagem', icon: MessageCircle },
+  { id: 'share', label: 'Compartilhar', icon: Share2 },
+  { id: 'link', label: 'Link', icon: Link2 },
+
+  // DECORATIVE (4)
+  { id: 'sparkles', label: 'Brilho', icon: Sparkles },
+  { id: 'flame', label: 'Fogo', icon: Flame },
+  { id: 'crown', label: 'Coroa', icon: Crown },
+  { id: 'tag', label: 'Etiqueta', icon: Tag },
+];
+
+function IconProperties({ element }: { element: IconElement }) {
+  const { updateElement, favoriteIcons, toggleFavoriteIcon } = useBuilderStore();
+  const [iconPickerOpen, setIconPickerOpen] = useState(false);
+  const [favoritesPickerOpen, setFavoritesPickerOpen] = useState(false);
+  const [colorPickerOpen, setColorPickerOpen] = useState(false);
+
+  const currentIcon = iconLibrary.find((icon) => icon.id === element.properties.iconName);
+  const IconComponent = currentIcon?.icon;
+
+  return (
+    <div className="space-y-2">
+      {/* Color Picker and Stroke Width */}
+      <div>
+        <label className="block text-xs font-medium text-gray-700 mb-1">
+          Cor
+        </label>
+        <div className="flex items-center gap-2">
+          <input
+            type="color"
+            value={element.properties.color}
+            onChange={(e) =>
+              updateElement(element.id, {
+                properties: { ...element.properties, color: e.target.value },
+              } as Partial<IconElement>)
+            }
+            onClick={(e) => {
+              if (colorPickerOpen) {
+                e.preventDefault();
+              }
+              setColorPickerOpen(!colorPickerOpen);
+            }}
+            className="w-10 h-8 rounded border border-gray-200 cursor-pointer"
+          />
+          <input
+            type="text"
+            value={element.properties.color}
+            onChange={(e) =>
+              updateElement(element.id, {
+                properties: { ...element.properties, color: e.target.value },
+              } as Partial<IconElement>)
+            }
+            onFocus={(e) => e.target.select()}
+            className="w-20 px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+            placeholder="#000000"
+          />
+          <div className="flex-1">
+            <div className="flex justify-between items-center mb-1">
+              <label className="text-xs font-medium text-gray-700">Espessura</label>
+              <span className="text-xs text-gray-500">{element.properties.strokeWidth || 2}px</span>
+            </div>
+            <input
+              type="range"
+              min="1"
+              max="6"
+              step="0.5"
+              value={element.properties.strokeWidth || 2}
+              onChange={(e) =>
+                updateElement(element.id, {
+                  properties: { ...element.properties, strokeWidth: parseFloat(e.target.value) },
+                } as Partial<IconElement>)
+              }
+              className="w-full h-1.5"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Icon & Favorites Pickers */}
+      <div className="grid grid-cols-2 gap-2">
+        {/* Icon Picker */}
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1">
+            Ícone
+          </label>
+          <div className="relative">
+            <button
+              onClick={() => setIconPickerOpen(!iconPickerOpen)}
+              className="w-full px-2 py-2 text-sm border border-gray-200 rounded hover:bg-gray-50 transition-colors flex items-center justify-between"
+            >
+              <div className="flex items-center gap-2">
+                {IconComponent && <IconComponent className="w-5 h-5" style={{ color: element.properties.color }} strokeWidth={element.properties.strokeWidth || 2} />}
+                <span className="text-gray-700 truncate text-xs">{currentIcon?.label || 'Selecionar'}</span>
+              </div>
+              <ChevronRight className={`w-4 h-4 text-gray-400 transition-transform ${iconPickerOpen ? 'rotate-90' : ''}`} />
+            </button>
+
+            {iconPickerOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setIconPickerOpen(false)}
+                />
+                <div className="absolute top-full left-0 right-0 mt-1 max-h-64 bg-white rounded-lg shadow-lg border border-gray-200 overflow-y-auto z-20">
+                  <div className="grid grid-cols-5 gap-1 p-2">
+                    {iconLibrary.map((iconDef) => {
+                      const Icon = iconDef.icon;
+                      const isFavorite = favoriteIcons.includes(iconDef.id);
+                      return (
+                        <button
+                          key={iconDef.id}
+                          onClick={() => {
+                            updateElement(element.id, {
+                              properties: { ...element.properties, iconName: iconDef.id },
+                            } as Partial<IconElement>);
+                            setIconPickerOpen(false);
+                          }}
+                          onContextMenu={(e) => {
+                            e.preventDefault();
+                            toggleFavoriteIcon(iconDef.id);
+                          }}
+                          className={`relative p-1.5 rounded hover:bg-gray-100 transition-colors ${
+                            element.properties.iconName === iconDef.id ? 'bg-blue-50 ring-2 ring-blue-500' : ''
+                          }`}
+                          title={`${iconDef.label} (clique direito para favoritar)`}
+                        >
+                          {isFavorite && (
+                            <div className="absolute top-0 right-0 w-2 h-2 bg-yellow-400 rounded-full"></div>
+                          )}
+                          <Icon className="w-4 h-4 mx-auto" style={{ color: element.properties.color }} strokeWidth={element.properties.strokeWidth || 2} />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Favorites Picker */}
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1">
+            Favoritos
+          </label>
+          <div className="relative">
+            <button
+              onClick={() => setFavoritesPickerOpen(!favoritesPickerOpen)}
+              className="w-full px-2 py-2 text-sm border border-gray-200 rounded hover:bg-gray-50 transition-colors flex items-center justify-between"
+              disabled={favoriteIcons.length === 0}
+            >
+              <span className="text-gray-700 text-xs truncate">
+                {favoriteIcons.length === 0 ? 'Sem favoritos' : `${favoriteIcons.length} favoritos`}
+              </span>
+              <ChevronRight className={`w-4 h-4 text-gray-400 transition-transform ${favoritesPickerOpen ? 'rotate-90' : ''}`} />
+            </button>
+
+            {favoritesPickerOpen && favoriteIcons.length > 0 && (
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setFavoritesPickerOpen(false)}
+                />
+                <div className="absolute top-full left-0 right-0 mt-1 max-h-64 bg-white rounded-lg shadow-lg border border-gray-200 overflow-y-auto z-20">
+                  <div className="grid grid-cols-5 gap-1 p-2">
+                    {iconLibrary.filter(iconDef => favoriteIcons.includes(iconDef.id)).map((iconDef) => {
+                      const Icon = iconDef.icon;
+                      return (
+                        <button
+                          key={iconDef.id}
+                          onClick={() => {
+                            updateElement(element.id, {
+                              properties: { ...element.properties, iconName: iconDef.id },
+                            } as Partial<IconElement>);
+                            setFavoritesPickerOpen(false);
+                          }}
+                          className={`p-1.5 rounded hover:bg-gray-100 transition-colors ${
+                            element.properties.iconName === iconDef.id ? 'bg-blue-50 ring-2 ring-blue-500' : ''
+                          }`}
+                          title={iconDef.label}
+                        >
+                          <Icon className="w-4 h-4 mx-auto" style={{ color: element.properties.color }} strokeWidth={element.properties.strokeWidth || 2} />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Shadow Controls */}
+      <div className="pt-2 border-t border-gray-200">
+        <div className="flex items-center gap-2 mb-1.5">
+          <label className="text-xs font-medium text-gray-700">
+            Sombra
+          </label>
+          <input
+            type="checkbox"
+            checked={!!element.properties?.shadow}
+            onChange={(e) => {
+              if (e.target.checked) {
+                updateElement(element.id, {
+                  properties: {
+                    ...element.properties,
+                    shadow: {
+                      blur: 2,
+                      color: 'rgba(0, 0, 0, 0.5)',
+                      offsetX: 2,
+                      offsetY: 2,
+                    },
+                  } as Partial<IconElement>['properties'],
+                });
+              } else {
+                const { shadow, ...restProperties } = element.properties;
+                updateElement(element.id, {
+                  properties: restProperties,
+                } as Partial<IconElement>);
+              }
+            }}
+            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+          />
+          <input
+            type="color"
+            value={element.properties?.shadow?.color.startsWith('rgba') ? '#000000' : (element.properties?.shadow?.color || '#000000')}
+            onChange={(e) => {
+              if (!element.properties?.shadow) return;
+              const hex = e.target.value;
+              const rgba = `rgba(${parseInt(hex.slice(1, 3), 16)}, ${parseInt(hex.slice(3, 5), 16)}, ${parseInt(hex.slice(5, 7), 16)}, 0.5)`;
+              updateElement(element.id, {
+                properties: {
+                  ...element.properties,
+                  shadow: {
+                    ...element.properties.shadow,
+                    color: rgba,
+                  },
+                } as Partial<IconElement>['properties'],
+              });
+            }}
+            disabled={!element.properties?.shadow}
+            className="w-8 h-6 rounded border border-gray-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          />
+          <input
+            type="text"
+            value={element.properties?.shadow?.color.startsWith('rgba') ? '#000000' : (element.properties?.shadow?.color || '#000000')}
+            onChange={(e) => {
+              if (!element.properties?.shadow) return;
+              updateElement(element.id, {
+                properties: {
+                  ...element.properties,
+                  shadow: {
+                    ...element.properties.shadow,
+                    color: e.target.value,
+                  },
+                } as Partial<IconElement>['properties'],
+              });
+            }}
+            onFocus={(e) => e.target.select()}
+            disabled={!element.properties?.shadow}
+            placeholder="#000000"
+            className="w-20 px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed font-mono"
+          />
+        </div>
+
+        {element.properties?.shadow && (
+          <div className="grid grid-cols-3 gap-1.5 pl-2">
+            <div>
+              <div className="flex justify-between items-center mb-0.5">
+                <label className="text-xs text-gray-600">Desfoque</label>
+                <span className="text-xs text-gray-500">{element.properties.shadow.blur}px</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="10"
+                value={element.properties.shadow.blur}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        blur: parseInt(e.target.value),
+                      },
+                    } as Partial<IconElement>['properties'],
+                  })
+                }
+                className="w-full h-1.5"
+              />
+            </div>
+
+            <div>
+              <div className="flex justify-between items-center mb-0.5">
+                <label className="text-xs text-gray-600">Offset X</label>
+                <span className="text-xs text-gray-500">{element.properties.shadow.offsetX}px</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="10"
+                value={element.properties.shadow.offsetX}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        offsetX: parseInt(e.target.value),
+                      },
+                    } as Partial<IconElement>['properties'],
+                  })
+                }
+                className="w-full h-1.5"
+              />
+            </div>
+
+            <div>
+              <div className="flex justify-between items-center mb-0.5">
+                <label className="text-xs text-gray-600">Offset Y</label>
+                <span className="text-xs text-gray-500">{element.properties.shadow.offsetY}px</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="10"
+                value={element.properties.shadow.offsetY}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        offsetY: parseInt(e.target.value),
+                      },
+                    } as Partial<IconElement>['properties'],
+                  })
+                }
+                className="w-full h-1.5"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 
 function TextProperties({ element }: { element: TextElement }) {
@@ -537,7 +1037,7 @@ function CommonProperties({ element }: { element: any }) {
           }
           onFocus={(e) => e.target.select()}
           placeholder="X"
-          className="w-16 px-1.5 py-0.5 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-16 px-1.5 py-0.5 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
         <input
           type="number"
@@ -547,7 +1047,7 @@ function CommonProperties({ element }: { element: any }) {
           }
           onFocus={(e) => e.target.select()}
           placeholder="Y"
-          className="w-16 px-1.5 py-0.5 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-16 px-1.5 py-0.5 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
       </div>
 
@@ -562,7 +1062,7 @@ function CommonProperties({ element }: { element: any }) {
           onChange={(e) => handleWidthChange(parseInt(e.target.value))}
           onFocus={(e) => e.target.select()}
           placeholder="L"
-          className="w-16 px-1.5 py-0.5 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-16 px-1.5 py-0.5 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
         <input
           type="number"
@@ -570,7 +1070,7 @@ function CommonProperties({ element }: { element: any }) {
           onChange={(e) => handleHeightChange(parseInt(e.target.value))}
           onFocus={(e) => e.target.select()}
           placeholder="A"
-          className="w-16 px-1.5 py-0.5 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-16 px-1.5 py-0.5 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
         <button
           onClick={() => setAspectRatioLocked(!aspectRatioLocked)}
@@ -602,7 +1102,7 @@ function CommonProperties({ element }: { element: any }) {
           }
           onFocus={(e) => e.target.select()}
           placeholder="°"
-          className="w-16 px-1.5 py-0.5 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-16 px-1.5 py-0.5 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
         <label className="text-xs font-medium text-gray-700 flex-shrink-0">
           Opacidade
@@ -618,169 +1118,10 @@ function CommonProperties({ element }: { element: any }) {
           }
           onFocus={(e) => e.target.select()}
           placeholder="%"
-          className="w-16 px-1.5 py-0.5 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-16 px-1.5 py-0.5 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
       </div>
 
-      {/* Shadow Controls */}
-      <div className="pt-2 border-t border-gray-200">
-        <div className="flex items-center justify-between mb-1.5">
-          <label className="text-xs font-medium text-gray-700">
-            Sombra
-          </label>
-          <input
-            type="checkbox"
-            checked={!!element.properties?.shadow}
-            onChange={(e) => {
-              if (e.target.checked) {
-                updateElement(element.id, {
-                  properties: {
-                    ...element.properties,
-                    shadow: {
-                      blur: 10,
-                      color: 'rgba(0, 0, 0, 0.5)',
-                      offsetX: 5,
-                      offsetY: 5,
-                    },
-                  },
-                });
-              } else {
-                const { shadow, ...restProperties } = element.properties;
-                updateElement(element.id, {
-                  properties: restProperties,
-                });
-              }
-            }}
-            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-          />
-        </div>
-
-        {element.properties?.shadow && (
-          <div className="space-y-1.5 pl-2 mt-1.5">
-            {/* Shadow Blur */}
-            <div>
-              <div className="flex justify-between items-center mb-0.5">
-                <label className="text-xs text-gray-600">Desfoque</label>
-                <span className="text-xs text-gray-500">{element.properties.shadow.blur}px</span>
-              </div>
-              <input
-                type="range"
-                min="0"
-                max="50"
-                value={element.properties.shadow.blur}
-                onChange={(e) =>
-                  updateElement(element.id, {
-                    properties: {
-                      ...element.properties,
-                      shadow: {
-                        ...element.properties.shadow,
-                        blur: parseInt(e.target.value),
-                      },
-                    },
-                  })
-                }
-                className="w-full h-1.5"
-              />
-            </div>
-
-            {/* Shadow Offsets Grid */}
-            <div className="grid grid-cols-2 gap-1.5">
-              <div>
-                <div className="flex justify-between items-center mb-0.5">
-                  <label className="text-xs text-gray-600">Offset X</label>
-                  <span className="text-xs text-gray-500">{element.properties.shadow.offsetX}px</span>
-                </div>
-                <input
-                  type="range"
-                  min="-50"
-                  max="50"
-                  value={element.properties.shadow.offsetX}
-                  onChange={(e) =>
-                    updateElement(element.id, {
-                      properties: {
-                        ...element.properties,
-                        shadow: {
-                          ...element.properties.shadow,
-                          offsetX: parseInt(e.target.value),
-                        },
-                      },
-                    })
-                  }
-                  className="w-full h-1.5"
-                />
-              </div>
-              <div>
-                <div className="flex justify-between items-center mb-0.5">
-                  <label className="text-xs text-gray-600">Offset Y</label>
-                  <span className="text-xs text-gray-500">{element.properties.shadow.offsetY}px</span>
-                </div>
-                <input
-                  type="range"
-                  min="-50"
-                  max="50"
-                  value={element.properties.shadow.offsetY}
-                  onChange={(e) =>
-                    updateElement(element.id, {
-                      properties: {
-                        ...element.properties,
-                        shadow: {
-                          ...element.properties.shadow,
-                          offsetY: parseInt(e.target.value),
-                        },
-                      },
-                    })
-                  }
-                  className="w-full h-1.5"
-                />
-              </div>
-            </div>
-
-            {/* Shadow Color */}
-            <div>
-              <label className="block text-xs text-gray-600 mb-0.5">
-                Cor
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="color"
-                  value={element.properties.shadow.color.startsWith('rgba')
-                    ? '#000000'
-                    : element.properties.shadow.color}
-                  onChange={(e) =>
-                    updateElement(element.id, {
-                      properties: {
-                        ...element.properties,
-                        shadow: {
-                          ...element.properties.shadow,
-                          color: e.target.value,
-                        },
-                      },
-                    })
-                  }
-                  className="w-10 h-7 rounded cursor-pointer"
-                />
-                <input
-                  type="text"
-                  value={element.properties.shadow.color}
-                  onChange={(e) =>
-                    updateElement(element.id, {
-                      properties: {
-                        ...element.properties,
-                        shadow: {
-                          ...element.properties.shadow,
-                          color: e.target.value,
-                        },
-                      },
-                    })
-                  }
-                  placeholder="rgba(0, 0, 0, 0.5)"
-                  className="flex-1 px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono"
-                />
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
     </div>
   );
 }
@@ -964,39 +1305,37 @@ export function PropertiesPanel() {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="p-2 border-b border-gray-200">
-        <div className="flex items-center justify-between mb-1.5">
-          <h3 className="text-sm font-semibold text-gray-900">Propriedades</h3>
-          <div className="flex gap-0.5">
+      <div className="px-2 py-1 border-b border-gray-200">
+        <div className="flex items-center justify-between">
+          <h3 className="text-xs font-semibold text-gray-900">Propriedades</h3>
+          <div className="flex items-center gap-1">
+            <span className="px-1.5 py-0.5 text-[10px] font-medium bg-blue-100 text-blue-700 rounded">
+              {selectedElement.type === 'text' && 'Texto'}
+              {selectedElement.type === 'image' && 'Imagem'}
+              {selectedElement.type === 'shape' && 'Forma'}
+              {selectedElement.type === 'icon' && 'Ícone'}
+              {selectedElement.type === 'chart' && 'Gráfico'}
+              {selectedElement.type === 'form' && 'Forma'}
+              {selectedElement.type === 'frame' && 'Moldura'}
+            </span>
+            <span className="text-[10px] text-gray-500">
+              {selectedElement.id.slice(0, 8)}...
+            </span>
             <button
               onClick={() => duplicateElement(selectedElement.id)}
-              className="p-1 rounded hover:bg-gray-100 transition-colors"
+              className="p-0.5 rounded hover:bg-gray-100 transition-colors"
               title="Duplicar"
             >
               <DocumentDuplicateIcon className="w-3.5 h-3.5 text-gray-600" />
             </button>
             <button
               onClick={() => deleteElement(selectedElement.id)}
-              className="p-1 rounded hover:bg-red-50 transition-colors"
+              className="p-0.5 rounded hover:bg-red-50 transition-colors"
               title="Excluir"
             >
               <TrashIcon className="w-3.5 h-3.5 text-red-600" />
             </button>
           </div>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="px-1.5 py-0.5 text-[10px] font-medium bg-blue-100 text-blue-700 rounded">
-            {selectedElement.type === 'text' && 'Texto'}
-            {selectedElement.type === 'image' && 'Imagem'}
-            {selectedElement.type === 'shape' && 'Forma'}
-            {selectedElement.type === 'icon' && 'Ícone'}
-            {selectedElement.type === 'chart' && 'Gráfico'}
-            {selectedElement.type === 'form' && 'Forma'}
-            {selectedElement.type === 'frame' && 'Moldura'}
-          </span>
-          <span className="text-[10px] text-gray-500">
-            ID: {selectedElement.id.slice(0, 8)}...
-          </span>
         </div>
       </div>
 
@@ -1022,6 +1361,9 @@ export function PropertiesPanel() {
           )}
           {selectedElement.type === 'frame' && (
             <FrameProperties element={selectedElement as FrameElement} />
+          )}
+          {selectedElement.type === 'icon' && (
+            <IconProperties element={selectedElement as IconElement} />
           )}
         </div>
 

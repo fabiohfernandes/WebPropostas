@@ -95,6 +95,7 @@ import {
   Crown,
   Tag,
   Search,
+  Star as StarIcon,
 } from 'lucide-react';
 import { useBuilderStore } from '@/store/builder';
 
@@ -122,8 +123,8 @@ const iconLibrary: IconDefinition[] = [
   { id: 'arrow-down', category: 'arrows', label: 'Seta Baixo', icon: ArrowDown, tags: ['seta', 'baixo', 'abaixo'], defaultColor: '#3B82F6' },
   { id: 'arrow-left', category: 'arrows', label: 'Seta Esquerda', icon: ArrowLeft, tags: ['seta', 'esquerda'], defaultColor: '#3B82F6' },
   { id: 'arrow-right', category: 'arrows', label: 'Seta Direita', icon: ArrowRight, tags: ['seta', 'direita'], defaultColor: '#3B82F6' },
-  { id: 'arrow-up-right', category: 'arrows', label: 'Diagonal ↗', icon: ArrowUpRight, tags: ['diagonal', 'crescimento'], defaultColor: '#059669' },
-  { id: 'arrow-down-left', category: 'arrows', label: 'Diagonal ↙', icon: ArrowDownLeft, tags: ['diagonal', 'queda'], defaultColor: '#DC2626' },
+  { id: 'arrow-up-right', category: 'arrows', label: 'Diagonal', icon: ArrowUpRight, tags: ['diagonal', 'crescimento'], defaultColor: '#059669' },
+  { id: 'arrow-down-left', category: 'arrows', label: 'Diagonal', icon: ArrowDownLeft, tags: ['diagonal', 'queda'], defaultColor: '#DC2626' },
   { id: 'trending-up', category: 'arrows', label: 'Tendência Alta', icon: TrendingUp, tags: ['crescimento', 'alta', 'sucesso'], defaultColor: '#059669' },
   { id: 'trending-down', category: 'arrows', label: 'Tendência Baixa', icon: TrendingDown, tags: ['queda', 'baixa'], defaultColor: '#DC2626' },
 
@@ -186,6 +187,10 @@ const iconLibrary: IconDefinition[] = [
   { id: 'flame', category: 'decorative', label: 'Fogo', icon: Flame, tags: ['fogo', 'quente', 'oferta'], defaultColor: '#DC2626' },
   { id: 'crown', category: 'decorative', label: 'Coroa', icon: Crown, tags: ['coroa', 'premium', 'vip'], defaultColor: '#F59E0B' },
   { id: 'tag', category: 'decorative', label: 'Etiqueta', icon: Tag, tags: ['etiqueta', 'tag', 'preço'], defaultColor: '#8B5CF6' },
+
+  // SHAPES (as icons)
+  { id: 'rectangle', category: 'shapes', label: 'Retângulo', icon: Square, tags: ['retângulo', 'quadrado', 'forma'], defaultColor: '#3B82F6' },
+  { id: 'circle', category: 'shapes', label: 'Círculo', icon: Circle, tags: ['círculo', 'forma', 'redondo'], defaultColor: '#10B981' },
 ];
 
 // Shapes Library
@@ -195,7 +200,8 @@ const shapesLibrary: ShapeDefinition[] = [
 ];
 
 const categories = [
-  { id: 'all', label: 'Todos' },
+  { id: 'all', label: 'Todos os Ícones' },
+  { id: 'favorites', label: 'Favoritos' },
   { id: 'shapes', label: 'Formas' },
   { id: 'arrows', label: 'Setas' },
   { id: 'business', label: 'Negócios' },
@@ -208,7 +214,7 @@ const categories = [
 ];
 
 export function IconsSessionEnhanced() {
-  const { addElement, currentPage } = useBuilderStore();
+  const { addElement, currentPage, favoriteIcons, toggleFavoriteIcon } = useBuilderStore();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [iconSize, setIconSize] = useState(48);
@@ -275,6 +281,12 @@ export function IconsSessionEnhanced() {
 
   // Filter icons
   const filteredIcons = iconLibrary.filter((icon) => {
+    // If favorites selected, only show favorited icons
+    if (selectedCategory === 'favorites') {
+      return favoriteIcons.includes(icon.id);
+    }
+
+    // Otherwise apply normal category filtering
     if (selectedCategory !== 'all' && selectedCategory !== 'shapes' && icon.category !== selectedCategory) {
       return false;
     }
@@ -291,7 +303,8 @@ export function IconsSessionEnhanced() {
   });
 
   const showShapes = selectedCategory === 'all' || selectedCategory === 'shapes';
-  const showIcons = selectedCategory !== 'shapes';
+  const showIcons = selectedCategory !== 'shapes' && selectedCategory !== 'favorites';
+  const showOnlyFavorites = selectedCategory === 'favorites';
 
   return (
     <div className="flex flex-col h-full">
@@ -301,9 +314,6 @@ export function IconsSessionEnhanced() {
           <Sparkles className="w-4 h-4 text-emerald-600" strokeWidth={2.5} />
           Ícones & Formas
         </h3>
-        <p className="text-xs text-gray-500 mt-0.5">
-          {filteredIcons.length + (showShapes ? shapesLibrary.length : 0)} elementos disponíveis
-        </p>
       </div>
 
       {/* Search */}
@@ -327,8 +337,22 @@ export function IconsSessionEnhanced() {
           )}
         </div>
 
-        {/* Size & Color Controls */}
+        {/* Size, Color & Category Controls */}
         <div className="flex gap-2 items-center">
+          <div className="flex-1">
+            <label className="text-xs text-gray-600 block mb-1">Categoria</label>
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="w-full px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            >
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.label}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="flex-1">
             <label className="text-xs text-gray-600 block mb-1">Tamanho</label>
             <select
@@ -354,50 +378,50 @@ export function IconsSessionEnhanced() {
         </div>
       </div>
 
-      {/* Categories */}
-      <div className="p-2 border-b border-gray-200 overflow-x-auto">
-        <div className="flex gap-1 flex-wrap">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              className={`
-                px-2 py-1 rounded-lg text-xs font-medium whitespace-nowrap
-                transition-all duration-150
-                ${selectedCategory === category.id
-                  ? 'bg-emerald-100 text-emerald-700 border border-emerald-300'
-                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-transparent'
-                }
-              `}
-            >
-              {category.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-3">
-        {/* Shapes Section */}
-        {showShapes && (
+        {/* Favorites Section */}
+        {showShapes && favoriteIcons.length > 0 && (
           <div className="mb-4">
-            <h4 className="text-xs font-semibold text-gray-700 mb-2">Formas Básicas</h4>
+            <h4 className="text-xs font-semibold text-gray-700 mb-2">Favoritos</h4>
             <div className="grid grid-cols-3 gap-2">
-              {shapesLibrary.map((shape) => (
-                <button
-                  key={shape.id}
-                  onClick={() => handleInsertShape(shape)}
-                  className="
-                    p-3 rounded-lg border border-gray-200 bg-white
-                    hover:border-emerald-300 hover:bg-emerald-50 hover:shadow-sm
-                    transition-all duration-150 flex flex-col items-center gap-1.5
-                  "
-                  style={{ color: iconColor }}
-                >
-                  {shape.icon}
-                  <span className="text-xs font-medium text-gray-700">{shape.label}</span>
-                </button>
-              ))}
+              {iconLibrary.filter(icon => favoriteIcons.includes(icon.id)).map((iconDef) => {
+                const IconComponent = iconDef.icon;
+                return (
+                  <button
+                    key={iconDef.id}
+                    onClick={() => handleInsertIcon(iconDef)}
+                    className="
+                      p-2 rounded-lg border border-gray-200 bg-white
+                      hover:border-emerald-300 hover:bg-emerald-50 hover:shadow-sm
+                      transition-all duration-150 flex flex-col items-center gap-1
+                      group relative
+                    "
+                    title={iconDef.label}
+                  >
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFavoriteIcon(iconDef.id);
+                      }}
+                      className="absolute top-1 right-1 p-0.5 rounded hover:bg-yellow-100 transition-colors"
+                    >
+                      <StarIcon
+                        className="w-3 h-3 text-yellow-500 fill-yellow-500"
+                        strokeWidth={2}
+                      />
+                    </button>
+                    <IconComponent
+                      className="w-6 h-6"
+                      strokeWidth={2.5}
+                      style={{ color: iconColor }}
+                    />
+                    <span className="text-xs font-medium text-gray-700 text-center leading-tight line-clamp-2">
+                      {iconDef.label}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
@@ -426,10 +450,26 @@ export function IconsSessionEnhanced() {
                         p-2 rounded-lg border border-gray-200 bg-white
                         hover:border-emerald-300 hover:bg-emerald-50 hover:shadow-sm
                         transition-all duration-150 flex flex-col items-center gap-1
-                        group
+                        group relative
                       "
                       title={iconDef.label}
                     >
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (favoriteIcons.includes(iconDef.id)) {
+                            toggleFavoriteIcon(iconDef.id);
+                          } else {
+                            toggleFavoriteIcon(iconDef.id);
+                          }
+                        }}
+                        className="absolute top-1 right-1 p-0.5 rounded hover:bg-yellow-100 transition-colors"
+                      >
+                        <StarIcon
+                          className={`w-3 h-3 ${favoriteIcons.includes(iconDef.id) ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}`}
+                          strokeWidth={2}
+                        />
+                      </button>
                       <IconComponent
                         className="w-6 h-6"
                         strokeWidth={2.5}

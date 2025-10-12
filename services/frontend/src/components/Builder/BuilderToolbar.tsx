@@ -228,11 +228,11 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
 
       {/* Right Section - Save/Export */}
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" className="px-2 py-0.5 text-xs">
           Preview
         </Button>
-        <Button variant="primary" size="sm">
-          Salvar Template
+        <Button variant="primary" size="sm" className="px-2 py-0.5 text-xs">
+          Salvar
         </Button>
       </div>
     </div>

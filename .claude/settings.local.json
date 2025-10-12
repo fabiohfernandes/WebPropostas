@@ -57,7 +57,20 @@
       "Bash(timeout 20 docker-compose logs -f frontend --tail=30)",
       "Bash(timeout 30 docker-compose logs -f frontend --tail=50)",
       "Bash(timeout 25 docker-compose logs -f frontend --tail=50)",
-      "Bash(timeout 30 docker-compose logs -f frontend --tail=30)"
+      "Bash(timeout 30 docker-compose logs -f frontend --tail=30)",
+      "Bash(timeout 30 docker-compose logs -f frontend --tail=10)",
+      "Bash(Get-FileHash \"services/frontend/src/components/Builder/BuilderCanvas.tsx\")",
+      "Bash(Select-Object Hash)",
+      "Bash(md5sum:*)",
+      "Bash(timeout 25 docker-compose logs -f frontend --tail=20)",
+      "Bash(Get-FileHash \"D:\\WebPropostas\\services\\frontend\\src\\components\\Builder\\BuilderLayout.tsx\")",
+      "Bash(timeout 40 docker-compose logs -f frontend --tail=20)",
+      "Bash(find:*)",
+      "Read(//d/**)",
+      "Bash(timeout 5 docker-compose logs -f frontend --tail=15)",
+      "Bash(timeout 30 docker-compose logs -f frontend --tail=20)",
+      "Bash(timeout 30 docker-compose logs -f frontend --tail=15)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []

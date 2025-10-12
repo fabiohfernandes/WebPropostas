@@ -73,6 +73,9 @@ export const useBuilderStore = create<BuilderState>()(
         selectedCategory: null,
       },
 
+      // Favorites state
+      favoriteIcons: [],
+
       // Insertion mode - for click-to-insert elements
       insertionMode: null,
 
@@ -305,6 +308,29 @@ export const useBuilderStore = create<BuilderState>()(
       // Actions - Session Navigation
       setActiveSession: (session: 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets' | 'ai' | 'tips') => {
         set({ activeSession: session });
+      },
+
+      // Favorites Actions
+      addFavoriteIcon: (iconId: string) => {
+        set((state) => ({
+          favoriteIcons: [...state.favoriteIcons, iconId],
+        }));
+      },
+
+      removeFavoriteIcon: (iconId: string) => {
+        set((state) => ({
+          favoriteIcons: state.favoriteIcons.filter((id) => id !== iconId),
+        }));
+      },
+
+      toggleFavoriteIcon: (iconId: string) => {
+        set((state) => {
+          if (state.favoriteIcons.includes(iconId)) {
+            return { favoriteIcons: state.favoriteIcons.filter((id) => id !== iconId) };
+          } else {
+            return { favoriteIcons: [...state.favoriteIcons, iconId] };
+          }
+        });
       },
 
       // Actions - Canvas
