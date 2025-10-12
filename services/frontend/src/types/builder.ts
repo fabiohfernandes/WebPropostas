@@ -6,7 +6,7 @@
 /**
  * Element Types supported in the builder
  */
-export type ElementType = 'text' | 'image' | 'shape' | 'icon' | 'chart' | 'form' | 'frame';
+export type ElementType = 'text' | 'image' | 'shape' | 'icon' | 'chart' | 'form' | 'frame' | 'video';
 
 /**
  * Shape Types for shape elements
@@ -191,6 +191,33 @@ export interface FrameElement extends BaseElement {
 }
 
 /**
+ * Video element properties - Supports YouTube and direct video URLs
+ */
+export interface VideoElement extends BaseElement {
+  type: 'video';
+  properties: {
+    src: string; // YouTube URL or direct video URL
+    videoType: 'youtube' | 'direct'; // Source type
+    autoPlay: boolean;
+    loop: boolean;
+    muted: boolean;
+    controls: boolean;
+    thumbnail?: string; // Custom thumbnail image URL
+    border?: {
+      width: number;
+      color: string;
+      radius: number;
+    };
+    shadow?: {
+      blur: number;
+      color: string;
+      offsetX: number;
+      offsetY: number;
+    };
+  };
+}
+
+/**
  * Union type of all element types
  */
-export type Element = TextElement | ImageElement | ShapeElement | IconElement | ChartElement | FormElement | FrameElement;
+export type Element = TextElement | ImageElement | ShapeElement | IconElement | ChartElement | FormElement | FrameElement | VideoElement;

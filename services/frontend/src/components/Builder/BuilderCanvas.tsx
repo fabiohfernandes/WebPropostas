@@ -12,10 +12,11 @@ import { useDroppable, useDndMonitor } from '@dnd-kit/core';
 import { useBuilderStore } from '@/store/builder';
 import { getFontFamily } from '@/utils/fonts';
 import { useElasticAnimation } from '@/hooks/useElasticAnimation';
-import type { Element, TextElement, ShapeElement, ImageElement, FormElement, IconElement, FrameElement } from '@/types/builder';
+import type { Element, TextElement, ShapeElement, ImageElement, FormElement, IconElement, FrameElement, VideoElement } from '@/types/builder';
 import Konva from 'konva';
 import { renderToString } from 'react-dom/server';
 import * as LucideIcons from 'lucide-react';
+import { VideoPlayerModal } from './VideoPlayerModal';
 
 // Background component that handles both color and image backgrounds
 function BackgroundRect({ background, width, height }: { background: any; width: number; height: number }) {
@@ -618,6 +619,182 @@ function getIconComponentName(iconName: string): string {
     .split('-')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join('');
+}
+
+// Video Element Renderer - Shows placeholder with play icon
+function VideoElementRenderer({ element, onDoubleClick }: { element: VideoElement; onDoubleClick?: () => void }) {
+  const { selectElement, updateElement, selectedElementId } = useBuilderStore();
+  const isSelected = selectedElementId === element.id;
+  const groupRef = useRef<any>(null);
+  const [playIconImage, setPlayIconImage] = useState<HTMLImageElement | null>(null);
+
+  // Apply elastic animation
+  useElasticAnimation(groupRef, isSelected, {
+    scaleFactor: 1.02,
+    duration: 0.5,
+    shadowOffset: 15,
+  });
+
+  // Create play icon image
+  useEffect(() => {
+    const playIconSVG = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2">
+        <circle cx="12" cy="12" r="10" fill="rgba(239, 68, 68, 0.9)" stroke="none"/>
+        <polygon points="10,8 16,12 10,16" fill="white" stroke="none"/>
+      </svg>
+    `;
+
+    const svg = new Blob([playIconSVG], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svg);
+
+    const img = new window.Image();
+    img.onload = () => {
+      setPlayIconImage(img);
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
+
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, []);
+
+  const handleDragEnd = (e: any) => {
+    updateElement(element.id, {
+      zIndex: element.zIndex + 10000,
+      x: e.target.x(),
+      y: e.target.y(),
+    });
+  };
+
+  const handleTransformEnd = (e: any) => {
+    const node = e.target;
+    const scaleX = node.scaleX();
+    const scaleY = node.scaleY();
+
+    const newWidth = Math.max(100, element.width * scaleX);
+    const newHeight = Math.max(60, element.height * scaleY);
+
+    node.scaleX(1);
+    node.scaleY(1);
+
+    updateElement(element.id, {
+      zIndex: element.zIndex + 10000,
+      x: node.x(),
+      y: node.y(),
+      width: newWidth,
+      height: newHeight,
+      rotation: node.rotation(),
+    });
+  };
+
+  const borderRadius = element.properties.border?.radius || 12;
+
+  return (
+    <Group
+      ref={groupRef}
+      id={element.id}
+      x={element.x}
+      y={element.y}
+      width={element.width}
+      height={element.height}
+      offsetX={element.width / 2}
+      offsetY={element.height / 2}
+      rotation={element.rotation}
+      opacity={element.opacity}
+      draggable={!element.locked}
+      onClick={() => selectElement(element.id)}
+      onTap={() => selectElement(element.id)}
+      onDblClick={onDoubleClick}
+      onDblTap={onDoubleClick}
+      onDragStart={() => selectElement(element.id)}
+      onDragEnd={handleDragEnd}
+      onTransformEnd={handleTransformEnd}
+    >
+      {/* Video background rectangle */}
+      <Rect
+        x={0}
+        y={0}
+        width={element.width}
+        height={element.height}
+        fill="#1F2937"
+        cornerRadius={borderRadius}
+        shadowColor={element.properties.shadow?.color || 'rgba(0,0,0,0.3)'}
+        shadowBlur={element.properties.shadow?.blur || 20}
+        shadowOffsetX={element.properties.shadow?.offsetX || 0}
+        shadowOffsetY={element.properties.shadow?.offsetY || 8}
+        stroke={element.properties.border?.color || '#374151'}
+        strokeWidth={element.properties.border?.width || 2}
+      />
+
+      {/* YouTube badge */}
+      {element.properties.videoType === 'youtube' && (
+        <Rect
+          x={element.width - 100}
+          y={20}
+          width={80}
+          height={30}
+          fill="#EF4444"
+          cornerRadius={6}
+        />
+      )}
+      {element.properties.videoType === 'youtube' && (
+        <KonvaText
+          x={element.width - 100}
+          y={20}
+          width={80}
+          height={30}
+          text="YouTube"
+          fontSize={14}
+          fontFamily="Arial"
+          fontStyle="bold"
+          fill="white"
+          align="center"
+          verticalAlign="middle"
+        />
+      )}
+
+      {/* Play icon */}
+      {playIconImage && (
+        <KonvaImage
+          x={element.width / 2 - 60}
+          y={element.height / 2 - 60}
+          width={120}
+          height={120}
+          image={playIconImage}
+          opacity={0.95}
+        />
+      )}
+
+      {/* Video info text */}
+      <KonvaText
+        x={20}
+        y={element.height - 50}
+        width={element.width - 40}
+        text={element.properties.videoType === 'youtube' ? 'Vídeo do YouTube' : 'Vídeo'}
+        fontSize={16}
+        fontFamily="Arial"
+        fontStyle="bold"
+        fill="white"
+        align="left"
+      />
+
+      {/* Selection border */}
+      {isSelected && (
+        <Rect
+          x={0}
+          y={0}
+          width={element.width}
+          height={element.height}
+          stroke="#3B82F6"
+          strokeWidth={3}
+          cornerRadius={borderRadius}
+          listening={false}
+          dash={[10, 5]}
+        />
+      )}
+    </Group>
+  );
 }
 
 function IconElementRenderer({ element }: { element: IconElement }) {
@@ -1656,7 +1833,7 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
   );
 }
 
-function CanvasElement({ element, onFrameHover, hoverFrameId }: { element: Element; onFrameHover?: (frameId: string | null) => void; hoverFrameId?: string | null }) {
+function CanvasElement({ element, onFrameHover, hoverFrameId, onVideoDoubleClick }: { element: Element; onFrameHover?: (frameId: string | null) => void; hoverFrameId?: string | null; onVideoDoubleClick?: (video: VideoElement) => void }) {
   const { selectElement, updateElement, selectedElementId } = useBuilderStore();
   const isSelected = selectedElementId === element.id;
   const elementRef = useRef<any>(null);
@@ -1763,6 +1940,15 @@ function CanvasElement({ element, onFrameHover, hoverFrameId }: { element: Eleme
     return <ImageElement element={element as ImageElement} />;
   }
 
+  if (element.type === 'video') {
+    return (
+      <VideoElementRenderer
+        element={element as VideoElement}
+        onDoubleClick={() => onVideoDoubleClick?.(element as VideoElement)}
+      />
+    );
+  }
+
   if (element.type === 'form') {
     return <FormElementRenderer element={element as FormElement} />;
   }
@@ -1848,6 +2034,7 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
   const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [hoverFrameId, setHoverFrameId] = useState<string | null>(null);
   const [draggingImageId, setDraggingImageId] = useState<string | null>(null);
+  const [videoPlayerElement, setVideoPlayerElement] = useState<VideoElement | null>(null);
 
   // Merge hover state from library drag and canvas element drag
   const activeHoverFrameId = hoveredFrameFromLibrary || hoverFrameId;
@@ -2534,7 +2721,13 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
               .filter((el) => el.visible)
               .sort((a, b) => a.zIndex - b.zIndex)
               .map((element) => (
-                <CanvasElement key={element.id} element={element} onFrameHover={onFrameHover} hoverFrameId={activeHoverFrameId} />
+                <CanvasElement
+                  key={element.id}
+                  element={element}
+                  onFrameHover={onFrameHover}
+                  hoverFrameId={activeHoverFrameId}
+                  onVideoDoubleClick={setVideoPlayerElement}
+                />
               ))}
           </Layer>
           <Layer>
@@ -2591,6 +2784,13 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
           </Layer>
         </Stage>
       </div>
+
+      {/* Video Player Modal */}
+      <VideoPlayerModal
+        isOpen={!!videoPlayerElement}
+        onClose={() => setVideoPlayerElement(null)}
+        videoElement={videoPlayerElement}
+      />
     </div>
   );
 }

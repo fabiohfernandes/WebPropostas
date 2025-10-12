@@ -10,7 +10,7 @@ import { useBuilderStore } from '@/store/builder';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Stage, Layer, Rect, Text as KonvaText, Image as KonvaImage, Group } from 'react-konva';
 import { getFontFamily } from '@/utils/fonts';
-import type { Element, TextElement, ImageElement, IconElement, FrameElement } from '@/types/builder';
+import type { Element, TextElement, ImageElement, IconElement, FrameElement, VideoElement } from '@/types/builder';
 import Konva from 'konva';
 import { renderToString } from 'react-dom/server';
 import * as LucideIcons from 'lucide-react';
@@ -95,7 +95,7 @@ export function PreviewModal({ isOpen, onClose }: PreviewModalProps) {
       </div>
 
       {/* Canvas */}
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center relative">
         <Stage
           width={canvasSize.width * scale}
           height={canvasSize.height * scale}
@@ -121,6 +121,16 @@ export function PreviewModal({ isOpen, onClose }: PreviewModalProps) {
               ))}
           </Layer>
         </Stage>
+
+        {/* HTML Video Overlay */}
+        <div className="absolute inset-0 pointer-events-none">
+          {currentPage.elements
+            .filter(el => el.visible && el.type === 'video')
+            .sort((a, b) => a.zIndex - b.zIndex)
+            .map(element => (
+              <VideoOverlay key={element.id} element={element as VideoElement} scale={scale} />
+            ))}
+        </div>
       </div>
 
       {/* Navigation Arrows */}
@@ -142,6 +152,74 @@ export function PreviewModal({ isOpen, onClose }: PreviewModalProps) {
         >
           <ChevronRight className="w-8 h-8 text-white" strokeWidth={2} />
         </button>
+      )}
+    </div>
+  );
+}
+
+// Video Overlay Component - Renders HTML video/iframe over canvas
+function VideoOverlay({ element, scale }: { element: VideoElement; scale: number }) {
+  // Calculate position and size with center-pivot transformation
+  const centerX = element.x;
+  const centerY = element.y;
+
+  // Apply rotation transform
+  const rotationDeg = element.rotation;
+  const rotationRad = (rotationDeg * Math.PI) / 180;
+
+  // Calculate top-left position from center position
+  const left = (centerX - element.width / 2) * scale;
+  const top = (centerY - element.height / 2) * scale;
+
+  const width = element.width * scale;
+  const height = element.height * scale;
+
+  const borderRadius = (element.properties.border?.radius || 12) * scale;
+
+  return (
+    <div
+      className="absolute pointer-events-auto"
+      style={{
+        left: `${left}px`,
+        top: `${top}px`,
+        width: `${width}px`,
+        height: `${height}px`,
+        transform: `rotate(${rotationDeg}deg)`,
+        transformOrigin: 'center center',
+        opacity: element.opacity,
+        borderRadius: `${borderRadius}px`,
+        overflow: 'hidden',
+        boxShadow: element.properties.shadow
+          ? `${element.properties.shadow.offsetX * scale}px ${element.properties.shadow.offsetY * scale}px ${element.properties.shadow.blur * scale}px ${element.properties.shadow.color}`
+          : 'none',
+        border: element.properties.border
+          ? `${element.properties.border.width * scale}px solid ${element.properties.border.color}`
+          : 'none',
+      }}
+    >
+      {element.properties.videoType === 'youtube' ? (
+        <iframe
+          src={element.properties.src}
+          className="w-full h-full"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          style={{
+            border: 'none',
+            borderRadius: `${borderRadius}px`,
+          }}
+        />
+      ) : (
+        <video
+          src={element.properties.src}
+          controls={element.properties.controls}
+          autoPlay={element.properties.autoPlay}
+          loop={element.properties.loop}
+          muted={element.properties.muted}
+          className="w-full h-full object-cover"
+          style={{
+            borderRadius: `${borderRadius}px`,
+          }}
+        />
       )}
     </div>
   );

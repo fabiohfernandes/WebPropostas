@@ -245,7 +245,7 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
         <Button
           variant="outline"
           size="sm"
-          className="px-2 py-0.5 text-xs"
+          className="w-[86px] h-[32px]"
           onClick={() => setIsPreviewOpen(true)}
         >
           Preview
@@ -253,7 +253,7 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
         <Button
           variant="primary"
           size="sm"
-          className="px-2 py-0.5 text-xs"
+          className="w-[86px] h-[32px]"
           onClick={() => setIsSaveModalOpen(true)}
         >
           Salvar
