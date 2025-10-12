@@ -150,7 +150,7 @@ function BorderFilter(this: any, imageData: ImageData) {
 
 // Image element with fit modes (cover, contain, fill, none)
 function ImageElement({ element }: { element: ImageElement }) {
-  const { selectElement, updateElement, selectedElementId } = useBuilderStore();
+  const { selectElement, updateElement, selectedElementId, currentElements } = useBuilderStore();
   const isSelected = selectedElementId === element.id;
   const imageRef = useRef<any>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -158,6 +158,12 @@ function ImageElement({ element }: { element: ImageElement }) {
 
   // Check if this is a temporary image (created during frame transform)
   const isTemporaryImage = element.id.startsWith('temp-image-');
+
+  // Check if any frame is in edit mode - if so, temp images should be interactive
+  const frameInEditMode = currentElements().find(el =>
+    el.type === 'frame' && (el as FrameElement).properties.editMode
+  );
+  const isEditModeImage = isTemporaryImage && frameInEditMode;
 
   // Apply elastic animation after image loads
   useEffect(() => {
@@ -397,11 +403,11 @@ function ImageElement({ element }: { element: ImageElement }) {
       offsetY={element.height / 2}
       rotation={element.rotation}
       opacity={element.opacity}
-      draggable={!element.locked && !isTemporaryImage}
-      listening={!isTemporaryImage} // Temporary images don't respond to events
-      onClick={() => !isTemporaryImage && selectElement(element.id)}
-      onTap={() => !isTemporaryImage && selectElement(element.id)}
-      onDragStart={() => !isTemporaryImage && selectElement(element.id)}
+      draggable={!element.locked && (!isTemporaryImage || isEditModeImage)}
+      listening={!isTemporaryImage || isEditModeImage} // Edit mode images ARE interactive
+      onClick={() => (!isTemporaryImage || isEditModeImage) && selectElement(element.id)}
+      onTap={() => (!isTemporaryImage || isEditModeImage) && selectElement(element.id)}
+      onDragStart={() => (!isTemporaryImage || isEditModeImage) && selectElement(element.id)}
       onDragEnd={handleDragEnd}
       onTransformEnd={handleTransformEnd}
     >
@@ -1072,7 +1078,7 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
     setIsTransforming(false);
   };
 
-  // Handle double-click to enter edit mode
+  // Handle double-click to enter edit mode (extract image for repositioning)
   const handleClick = () => {
     selectElement(element.id);
 
@@ -1085,18 +1091,80 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
 
     clickTimerRef.current = setTimeout(() => {
       if (clickCount >= 1) {
-        // Double-click detected - toggle edit mode
-        if (element.properties.image) {
-          updateElement(element.id, {
-            properties: {
-              ...element.properties,
-              editMode: !element.properties.editMode,
-            },
-          });
+        // Double-click detected - extract image for editing
+        if (element.properties.image && imageObj && !element.properties.editMode) {
+          console.log('🖊️ Double-click detected - entering edit mode');
+          enterEditMode();
         }
       }
       setClickCount(0);
     }, 300);
+  };
+
+  // Enter edit mode: extract image to canvas for repositioning/scaling
+  const enterEditMode = () => {
+    if (!element.properties.image || !imageObj) return;
+
+    const img = element.properties.image;
+
+    // Calculate absolute canvas position of image
+    const pivotAbsoluteX = element.x - element.width / 2 + (img.pivotX * element.width);
+    const pivotAbsoluteY = element.y - element.height / 2 + (img.pivotY * element.height);
+
+    const imageCenterX = pivotAbsoluteX;
+    const imageCenterY = pivotAbsoluteY;
+
+    const imageWidth = imageObj.width * img.scale;
+    const imageHeight = imageObj.height * img.scale;
+
+    console.log('📤 Extracting image for editing:', {
+      frameCenter: { x: element.x, y: element.y },
+      frameSize: { w: element.width, h: element.height },
+      pivot: { x: img.pivotX, y: img.pivotY },
+      imageCenterOnCanvas: { x: imageCenterX, y: imageCenterY },
+      imageSize: { w: imageWidth, h: imageHeight }
+    });
+
+    // Create temporary editable image element
+    const tempImageId = `temp-image-${Date.now()}`;
+    tempImageIdRef.current = tempImageId;
+
+    const tempImageElement: ImageElement = {
+      id: tempImageId,
+      type: 'image',
+      x: imageCenterX,
+      y: imageCenterY,
+      width: imageWidth,
+      height: imageHeight,
+      rotation: element.rotation,
+      opacity: 1, // Full opacity for editing
+      zIndex: 9999,
+      locked: false, // NOT locked - user can drag and scale
+      visible: true,
+      properties: {
+        src: img.src,
+        fit: 'fill', // Use fill mode for editing to show full image
+      },
+    };
+
+    addElement(tempImageElement);
+
+    // IMPORTANT: Need to wait for next frame to select the temp image
+    // Otherwise the frame steals the selection
+    setTimeout(() => {
+      selectElement(tempImageId);
+      console.log('🎯 Selected temporary image for editing:', tempImageId);
+    }, 50);
+
+    // Mark frame as in edit mode
+    updateElement(element.id, {
+      properties: {
+        ...element.properties,
+        editMode: true,
+      },
+    });
+
+    console.log('✅ Edit mode activated - image extracted:', tempImageId);
   };
 
   // Cleanup timer
@@ -1107,6 +1175,83 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
       }
     };
   }, []);
+
+  // Exit edit mode when ESC pressed or canvas clicked
+  useEffect(() => {
+    if (!element.properties.editMode || !tempImageIdRef.current) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        console.log('⌨️ ESC pressed - exiting edit mode');
+        exitEditMode();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [element.properties.editMode, tempImageIdRef.current]);
+
+  // Exit edit mode: re-insert image into frame
+  const exitEditMode = () => {
+    if (!tempImageIdRef.current) return;
+
+    console.log('📥 Exiting edit mode - re-inserting image');
+
+    const { currentElements } = useBuilderStore.getState();
+    const tempImage = currentElements().find(el => el.id === tempImageIdRef.current) as ImageElement | undefined;
+
+    if (tempImage) {
+      // Calculate new pivot based on temp image's position
+      const imageCenterX = tempImage.x;
+      const imageCenterY = tempImage.y;
+
+      const frameCenterX = element.x;
+      const frameCenterY = element.y;
+
+      // Relative position from frame center
+      const relativeX = imageCenterX - frameCenterX;
+      const relativeY = imageCenterY - frameCenterY;
+
+      // Convert to normalized coordinates (0-1)
+      const newPivotX = 0.5 + (relativeX / element.width);
+      const newPivotY = 0.5 + (relativeY / element.height);
+
+      // Calculate new scale based on temp image size
+      const newScale = tempImage.width / imageObj!.width;
+
+      console.log('📐 Re-calculated for edit mode:', {
+        frameCenter: { x: frameCenterX, y: frameCenterY },
+        imageCenter: { x: imageCenterX, y: imageCenterY },
+        newPivot: { x: newPivotX, y: newPivotY },
+        newScale: newScale
+      });
+
+      // Update frame with new image position and scale
+      updateElement(element.id, {
+        properties: {
+          ...element.properties,
+          image: {
+            ...element.properties.image!,
+            pivotX: newPivotX,
+            pivotY: newPivotY,
+            scale: newScale,
+          },
+          editMode: false,
+        },
+      });
+
+      // Delete temporary image
+      deleteElement(tempImageIdRef.current);
+      console.log('🗑️ Deleted temporary image:', tempImageIdRef.current);
+      tempImageIdRef.current = null;
+
+      // Re-select the frame
+      selectElement(element.id);
+    }
+  };
 
   // Apply clip-path shape to canvas context
   const applyClipPath = (ctx: any, width: number, height: number) => {
@@ -1269,8 +1414,8 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
           ctx.closePath();
           ctx.clip();
 
-          // Only render image if NOT transforming (image is extracted to canvas during transform)
-          if (element.properties.image && imageObj && !isTransforming) {
+          // Only render image if NOT transforming AND NOT in edit mode
+          if (element.properties.image && imageObj && !isTransforming && !element.properties.editMode) {
             const img = element.properties.image;
 
             const pivotAbsoluteX = img.pivotX * frameWidth;
@@ -1898,6 +2043,72 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
   // PAN & CLICK-TO-INSERT HANDLERS
   const handleStageClick = (e: any) => {
     console.log('Stage click:', { target: e.target, insertionMode });
+
+    // Check if any frame is in edit mode and exit it when clicking on stage
+    const frameInEditMode = currentElements.find(el =>
+      el.type === 'frame' && (el as FrameElement).properties.editMode
+    ) as FrameElement | undefined;
+
+    if (frameInEditMode && e.target === e.target.getStage()) {
+      console.log('🖱️ Stage clicked - exiting edit mode for frame:', frameInEditMode.id);
+
+      const tempImages = currentElements.filter(el => el.id.startsWith('temp-image-'));
+
+      if (tempImages.length > 0) {
+        const tempImage = tempImages[0] as ImageElement;
+        const frameElement = frameInEditMode;
+
+        // Calculate new pivot based on temp image's position
+        const imageCenterX = tempImage.x;
+        const imageCenterY = tempImage.y;
+        const frameCenterX = frameElement.x;
+        const frameCenterY = frameElement.y;
+
+        const relativeX = imageCenterX - frameCenterX;
+        const relativeY = imageCenterY - frameCenterY;
+
+        const newPivotX = 0.5 + (relativeX / frameElement.width);
+        const newPivotY = 0.5 + (relativeY / frameElement.height);
+
+        // Calculate scale: temp image width divided by original image natural width
+        // We need to load the image to get its natural width
+        const img = new window.Image();
+        img.src = tempImage.properties.src;
+        img.onload = () => {
+          const newScale = tempImage.width / img.naturalWidth;
+
+          console.log('📐 Stage click - re-calculated:', {
+            frameCenter: { x: frameCenterX, y: frameCenterY },
+            imageCenter: { x: imageCenterX, y: imageCenterY },
+            newPivot: { x: newPivotX, y: newPivotY },
+            newScale: newScale,
+            tempImageWidth: tempImage.width,
+            naturalWidth: img.naturalWidth
+          });
+
+          const { updateElement, deleteElement, selectElement } = useBuilderStore.getState();
+
+          updateElement(frameElement.id, {
+            properties: {
+              ...frameElement.properties,
+              image: {
+                ...frameElement.properties.image!,
+                pivotX: newPivotX,
+                pivotY: newPivotY,
+                scale: newScale,
+              },
+              editMode: false,
+            },
+          });
+
+          deleteElement(tempImage.id);
+          selectElement(frameElement.id);
+          console.log('✅ Edit mode exited via stage click');
+        };
+
+        return;
+      }
+    }
 
     if (insertionMode) {
       // In insertion mode, insert element anywhere clicked (even over other elements)
