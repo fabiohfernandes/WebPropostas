@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import { BULLET_CATEGORIES, BulletGraphic } from '@/types/bullet';
-import { Search, Settings, Upload } from 'lucide-react';
+import { Search, Settings, Upload, Wand2 } from 'lucide-react';
 import Link from 'next/link';
+import { BulletCustomizer } from '../BulletCustomizer';
 
 interface BulletItemProps {
   bullet: BulletGraphic;
@@ -75,6 +76,7 @@ export function BulletsSessionEnhanced() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(true);
+  const [showCustomizer, setShowCustomizer] = useState(false);
 
   // Load bullets from localStorage (admin selections)
   useEffect(() => {
@@ -130,14 +132,23 @@ export function BulletsSessionEnhanced() {
       <div className="flex-shrink-0 p-4 border-b border-slate-200 dark:border-slate-700">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold text-slate-900 dark:text-slate-100">Bullets Gráficos</h3>
-          <Link
-            href="/admin/bullets"
-            target="_blank"
-            className="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
-            title="Gerenciar bullets (Admin)"
-          >
-            <Settings className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-          </Link>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setShowCustomizer(true)}
+              className="p-1.5 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded-lg transition-colors"
+              title="Criar Bullet Personalizado"
+            >
+              <Wand2 className="w-4 h-4 text-purple-500 dark:text-purple-400" />
+            </button>
+            <Link
+              href="/admin/bullets"
+              target="_blank"
+              className="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
+              title="Gerenciar bullets (Admin)"
+            >
+              <Settings className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+            </Link>
+          </div>
         </div>
 
         {/* Search */}
@@ -236,6 +247,39 @@ export function BulletsSessionEnhanced() {
             : 'Aguardando upload do admin'}
         </p>
       </div>
+
+      {/* Bullet Customizer Modal */}
+      {showCustomizer && (
+        <BulletCustomizer
+          onClose={() => setShowCustomizer(false)}
+          onAdd={(svgData, name) => {
+            // Add generated bullet to localStorage
+            const newBullet: BulletGraphic = {
+              id: `custom-${Date.now()}`,
+              name,
+              category: 'custom',
+              imageUrl: svgData,
+              tags: ['personalizado', 'gerado'],
+              isPremium: false,
+              isActive: true,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              usageCount: 0,
+              defaultWidth: 120,
+              defaultHeight: 120,
+              aspectRatio: 1,
+              fileFormat: 'svg',
+            };
+
+            const saved = localStorage.getItem('admin_bullet_graphics');
+            const existing = saved ? JSON.parse(saved) : [];
+            localStorage.setItem('admin_bullet_graphics', JSON.stringify([...existing, newBullet]));
+
+            // Reload bullets
+            setBullets([...bullets, newBullet]);
+          }}
+        />
+      )}
     </div>
   );
 }
