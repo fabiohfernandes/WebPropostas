@@ -1535,8 +1535,32 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
         />
       )}
 
-{/* Frame overlay during transform */}      {isTransforming && (        <Shape          ref={overlayRef}          listening={false}          sceneFunc={(ctx, shape) => {            // Get parent group node to read current transform            const group = groupRef.current;            if (!group) return;                        const scaleX = group.scaleX();            const scaleY = group.scaleY();            const frameWidth = element.width * scaleX;            const frameHeight = element.height * scaleY;                        ctx.beginPath();            applyClipPath(ctx, frameWidth, frameHeight);            ctx.closePath();                        ctx.strokeStyle = "#F59E0B";            ctx.lineWidth = 3 / Math.min(scaleX, scaleY);            ctx.setLineDash([8, 4]);            ctx.stroke();          }}        />      )}
 
+      {/* Frame overlay during transform */}
+      {isTransforming && (
+        <Shape
+          ref={overlayRef}
+          x={0}
+          y={0}
+          scaleX={1}
+          scaleY={1}
+          listening={false}
+          sceneFunc={(ctx, shape) => {
+            // Draw at base dimensions - the Group's scale will handle the transformation
+            const frameWidth = element.width;
+            const frameHeight = element.height;
+
+            ctx.beginPath();
+            applyClipPath(ctx, frameWidth, frameHeight);
+            ctx.closePath();
+
+            ctx.strokeStyle = "#F59E0B";
+            ctx.lineWidth = 3;
+            ctx.setLineDash([8, 4]);
+            ctx.stroke();
+          }}
+        />
+      )}
       {isSelected && (
         <Rect
           x={0}
@@ -2471,12 +2495,13 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
               borderStrokeWidth={2}
               anchorStroke="#3B82F6"
               anchorFill="#FFFFFF"
-              anchorSize={8}
-              anchorCornerRadius={4}
+              anchorSize={14}
+              anchorCornerRadius={7}
+              anchorStrokeWidth={2}
               ignoreStroke={true}
               keepRatio={(() => {
                 const selectedEl = currentElements.find(el => el.id === selectedElementId);
-                return selectedEl?.type === 'image';
+                return selectedEl?.type === 'image' || selectedEl?.type === 'frame';
               })()}
             />
           </Layer>
