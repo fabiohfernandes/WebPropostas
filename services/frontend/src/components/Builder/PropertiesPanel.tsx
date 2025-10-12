@@ -296,7 +296,7 @@ function IconProperties({ element }: { element: IconElement }) {
                             e.preventDefault();
                             toggleFavoriteIcon(iconDef.id);
                           }}
-                          className={`relative p-1.5 rounded hover:bg-gray-100 transition-colors ${
+                          className={`relative p-1.5 rounded hover:bg-gray-100 transition-colors flex justify-center items-center ${
                             element.properties.iconName === iconDef.id ? 'bg-blue-50 ring-2 ring-blue-500' : ''
                           }`}
                           title={`${iconDef.label} (clique direito para favoritar)`}
@@ -304,7 +304,7 @@ function IconProperties({ element }: { element: IconElement }) {
                           {isFavorite && (
                             <div className="absolute top-0 right-0 w-2 h-2 bg-yellow-400 rounded-full"></div>
                           )}
-                          <Icon className="w-4 h-4 mx-auto" style={{ color: element.properties.color }} strokeWidth={element.properties.strokeWidth || 2} />
+                          <Icon className="w-5 h-5 flex-shrink-0" style={{ color: element.properties.color }} strokeWidth={element.properties.strokeWidth || 2} />
                         </button>
                       );
                     })}
@@ -351,12 +351,12 @@ function IconProperties({ element }: { element: IconElement }) {
                             } as Partial<IconElement>);
                             setFavoritesPickerOpen(false);
                           }}
-                          className={`p-1.5 rounded hover:bg-gray-100 transition-colors ${
+                          className={`p-1.5 rounded hover:bg-gray-100 transition-colors flex justify-center items-center ${
                             element.properties.iconName === iconDef.id ? 'bg-blue-50 ring-2 ring-blue-500' : ''
                           }`}
                           title={iconDef.label}
                         >
-                          <Icon className="w-4 h-4 mx-auto" style={{ color: element.properties.color }} strokeWidth={element.properties.strokeWidth || 2} />
+                          <Icon className="w-5 h-5 flex-shrink-0" style={{ color: element.properties.color }} strokeWidth={element.properties.strokeWidth || 2} />
                         </button>
                       );
                     })}
