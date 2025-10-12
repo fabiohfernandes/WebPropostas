@@ -1710,6 +1710,7 @@ interface BuilderCanvasProps {
 export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: BuilderCanvasProps) {
   const stageRef = useRef<any>(null);
   const transformerRef = useRef<any>(null);
+  const justDraggedRef = useRef(false);
 
   const currentElements = useBuilderStore((state) => state.currentElements());
   const currentCanvasSize = useBuilderStore((state) => state.currentCanvasSize());
@@ -1975,6 +1976,11 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
       // Skip frame insertion if this is a temporary edit-mode image
       if (imageElement.id.startsWith("temp-image-")) {
         console.log("⏭️ Skipping frame insertion for temporary edit-mode image");
+        // Set flag to prevent immediate click-to-exit
+        justDraggedRef.current = true;
+        setTimeout(() => {
+          justDraggedRef.current = false;
+        }, 100);
         return;
       }
 
@@ -2086,6 +2092,12 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
     ) as FrameElement | undefined;
 
     if (!frameInEditMode) return false;
+    // Prevent immediate exit after drag ends (clicks get triggered on drag end)
+    if (justDraggedRef.current) {
+      console.log("🚫 Ignoring click - drag just ended");
+      return false;
+    }
+
 
     console.log('🖱️ Click detected - exiting edit mode for frame:', frameInEditMode.id);
 
@@ -2400,6 +2412,18 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
           </Layer>
           <Layer>
             <Transformer
+              onTransformEnd={(e) => {
+                // Check if transforming a temp image
+                const node = e.target;
+                const elementId = node.id();
+                if (elementId && elementId.startsWith("temp-image-")) {
+                  console.log("🔄 Transform ended on temp image - preventing immediate exit");
+                  justDraggedRef.current = true;
+                  setTimeout(() => {
+                    justDraggedRef.current = false;
+                  }, 100);
+                }
+              }}
               ref={transformerRef}
               rotateEnabled={true}
               enabledAnchors={[
