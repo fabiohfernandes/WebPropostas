@@ -16,6 +16,8 @@ import { LayersPanel } from './LayersPanelNew';
 import { BuilderToolbar } from './BuilderToolbar';
 import type { Element, FrameElement } from '@/types/builder';
 import Image from 'next/image';
+import { INDIVIDUAL_BULLETS_LIBRARY } from '@/data/individualBulletsLibrary';
+import { BULLET_SETS_LIBRARY } from '@/data/bulletSetsLibrary';
 
 interface BuilderLayoutProps {
   templateId?: string;
@@ -363,7 +365,105 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
       return;
     }
 
-    // CASE 3: Regular element drag (existing behavior)
+    // CASE 2: Individual bullet dropped on canvas
+    if (dragData?.type === 'individual-bullet' && over.id === 'canvas-drop-zone') {
+      console.log('🟣 Individual bullet dropped:', dragData);
+
+      // Find the bullet definition from the library
+      const bullet = INDIVIDUAL_BULLETS_LIBRARY.find(b => b.id === dragData.bulletId);
+      if (!bullet) {
+        console.error('Bullet not found in library:', dragData.bulletId);
+        return;
+      }
+
+      // Generate SVG for the bullet with current settings
+      const svgContent = bullet.generateSVG({
+        width: bullet.defaultWidth,
+        height: bullet.defaultHeight,
+        color: dragData.color,
+        number: dragData.number,
+      });
+
+      // Convert SVG to data URL
+      const svgDataUrl = `data:image/svg+xml;base64,${btoa(svgContent)}`;
+
+      const canvasSize = currentCanvasSize();
+
+      const newElement: Element = {
+        id: `bullet-${Date.now()}`,
+        type: 'bullet',
+        x: canvasSize.width / 2,
+        y: canvasSize.height / 2,
+        width: bullet.defaultWidth,
+        height: bullet.defaultHeight,
+        rotation: 0,
+        opacity: 1,
+        zIndex: 0,
+        locked: false,
+        visible: true,
+        properties: {
+          bulletId: bullet.id,
+          bulletName: bullet.name,
+          color: dragData.color,
+          number: dragData.number,
+          svgDataUrl: svgDataUrl,
+        },
+      } as Element;
+
+      console.log('Adding bullet element:', newElement);
+      addElement(newElement);
+      return;
+    }
+
+    // CASE 3: Bullet set dropped on canvas
+    if (dragData?.type === 'bullet-set' && over.id === 'canvas-drop-zone') {
+      console.log('🟠 Bullet set dropped:', dragData);
+
+      // Find the bullet set definition from the library
+      const bulletSet = BULLET_SETS_LIBRARY.find(bs => bs.id === dragData.setId);
+      if (!bulletSet) {
+        console.error('Bullet set not found in library:', dragData.setId);
+        return;
+      }
+
+      // Generate SVG for the set with current color scheme
+      const svgContent = bulletSet.generateSVG({
+        width: bulletSet.width,
+        height: bulletSet.height,
+        colorScheme: dragData.colorScheme,
+      });
+
+      // Convert SVG to data URL
+      const svgDataUrl = `data:image/svg+xml;base64,${btoa(svgContent)}`;
+
+      const canvasSize = currentCanvasSize();
+
+      const newElement: Element = {
+        id: `bullet-set-${Date.now()}`,
+        type: 'bullet',
+        x: canvasSize.width / 2,
+        y: canvasSize.height / 2,
+        width: bulletSet.width,
+        height: bulletSet.height,
+        rotation: 0,
+        opacity: 1,
+        zIndex: 0,
+        locked: false,
+        visible: true,
+        properties: {
+          bulletSetId: bulletSet.id,
+          bulletName: bulletSet.name,
+          colorScheme: dragData.colorScheme,
+          svgDataUrl: svgDataUrl,
+        },
+      } as Element;
+
+      console.log('Adding bullet set element:', newElement);
+      addElement(newElement);
+      return;
+    }
+
+    // CASE 4: Regular element drag (existing behavior)
     if (over.id === 'canvas-drop-zone') {
       const elementData = dragData as {
         type: string;
@@ -426,7 +526,25 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
 
       {/* Drag Overlay - shows preview while dragging */}
       <DragOverlay dropAnimation={null}>
-        {activeId && activeDragData?.type === 'image' && activeDragData?.imageSrc ? (
+        {activeId && activeDragData?.type === 'individual-bullet' ? (
+          <div className="bg-white rounded-lg shadow-2xl border-2 border-violet-400 p-3 opacity-90">
+            <div className="w-24 h-24 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-400 to-violet-600 flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                {activeDragData.number || '●'}
+              </div>
+            </div>
+            <p className="text-xs text-center text-gray-600 mt-1 font-medium">Bullet</p>
+          </div>
+        ) : activeId && activeDragData?.type === 'bullet-set' ? (
+          <div className="bg-white rounded-lg shadow-2xl border-2 border-orange-400 p-3 opacity-90">
+            <div className="w-32 h-24 flex items-center justify-center gap-2">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-lime-400 to-lime-600 text-white flex items-center justify-center text-sm font-bold shadow">A</div>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 text-white flex items-center justify-center text-sm font-bold shadow">B</div>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 text-white flex items-center justify-center text-sm font-bold shadow">C</div>
+            </div>
+            <p className="text-xs text-center text-gray-600 mt-1 font-medium">Conjunto</p>
+          </div>
+        ) : activeId && activeDragData?.type === 'image' && activeDragData?.imageSrc ? (
           <div className="bg-white rounded-lg shadow-2xl border-2 border-blue-400 p-2 opacity-90">
             <img
               src={activeDragData.imageSrc}

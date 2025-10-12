@@ -8,9 +8,11 @@
 import { useState } from 'react';
 import { Layers, Search, Sparkles, Workflow, GitCompare, TrendingUp } from 'lucide-react';
 import { useDraggable } from '@dnd-kit/core';
+import { useBuilderStore } from '@/store/builder';
 import { BULLET_SETS_LIBRARY } from '@/data/bulletSetsLibrary';
 import type { BulletSet, ColorScaleName } from '@/types/bulletSystemV2';
 import { COLOR_SCALES } from '@/types/bulletSystemV2';
+import type { Element } from '@/types/builder';
 
 const CATEGORIES: { id: BulletSet['category'] | 'all'; label: string; icon: React.ReactNode }[] = [
   { id: 'all', label: 'Todos', icon: <Sparkles className="w-4 h-4" /> },
@@ -26,6 +28,7 @@ interface DraggableBulletSetProps {
 }
 
 function DraggableBulletSet({ bulletSet, colorScheme }: DraggableBulletSetProps) {
+  const { addElement, currentCanvasSize } = useBuilderStore();
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `bullet-set-${bulletSet.id}-${Date.now()}`,
     data: {
@@ -35,23 +38,52 @@ function DraggableBulletSet({ bulletSet, colorScheme }: DraggableBulletSetProps)
     },
   });
 
-  const svgDataUrl = `data:image/svg+xml;base64,${btoa(
-    bulletSet.generateSVG({
+  const svgContent = bulletSet.generateSVG({
+    width: bulletSet.width,
+    height: bulletSet.height,
+    colorScheme,
+  });
+
+  const svgDataUrl = `data:image/svg+xml;base64,${btoa(svgContent)}`;
+
+  // Handle click to insert
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const canvasSize = currentCanvasSize();
+
+    const newElement: Element = {
+      id: `bullet-set-${Date.now()}`,
+      type: 'bullet',
+      x: canvasSize.width / 2,
+      y: canvasSize.height / 2,
       width: bulletSet.width,
       height: bulletSet.height,
-      colorScheme,
-    })
-  )}`;
+      rotation: 0,
+      opacity: 1,
+      zIndex: 0,
+      locked: false,
+      visible: true,
+      properties: {
+        bulletSetId: bulletSet.id,
+        bulletName: bulletSet.name,
+        colorScheme: colorScheme,
+        svgDataUrl: svgDataUrl,
+      },
+    } as Element;
+
+    addElement(newElement);
+  };
 
   return (
     <div
       ref={setNodeRef}
       {...listeners}
       {...attributes}
+      onClick={handleClick}
       className={`
-        relative group cursor-move
+        relative group cursor-pointer
         bg-white rounded-lg border-2 border-gray-200
-        hover:border-violet-400 hover:shadow-lg
+        hover:border-orange-400 hover:shadow-lg
         transition-all duration-200
         p-4
         ${isDragging ? 'opacity-50 scale-95' : 'hover:scale-102'}

@@ -58,6 +58,8 @@ function ElementCard({ element, isSelected }: { element: Element; isSelected: bo
         return <Square className="w-3 h-3" />;
       case 'shape':
         return <Circle className="w-3 h-3" />;
+      case 'bullet':
+        return <Circle className="w-3 h-3" />;
       default:
         return <Square className="w-3 h-3" />;
     }
@@ -65,10 +67,15 @@ function ElementCard({ element, isSelected }: { element: Element; isSelected: bo
 
   // Get element display name
   const getElementName = () => {
+    if (!element.type) {
+      return 'Unknown Element';
+    }
+
     if (element.type === 'text' && 'properties' in element) {
       const content = (element as any).properties?.content;
       return content && content.length > 15 ? content.substring(0, 15) + '...' : content || 'Text';
     }
+
     if (element.type === 'frame' && 'properties' in element) {
       const clipPath = (element as any).properties?.clipPath;
       if (clipPath?.includes('21.35')) return 'Heart Frame';
@@ -76,6 +83,12 @@ function ElementCard({ element, isSelected }: { element: Element; isSelected: bo
       if (clipPath?.includes('polygon')) return 'Polygon Frame';
       return 'Frame';
     }
+
+    if (element.type === 'bullet' && 'properties' in element) {
+      const bulletName = (element as any).properties?.bulletName;
+      return bulletName || 'Bullet';
+    }
+
     return element.type.charAt(0).toUpperCase() + element.type.slice(1);
   };
 

@@ -8,9 +8,11 @@
 import { useState } from 'react';
 import { Circle, Hexagon, Diamond, Pill, Search, Sparkles } from 'lucide-react';
 import { useDraggable } from '@dnd-kit/core';
+import { useBuilderStore } from '@/store/builder';
 import { INDIVIDUAL_BULLETS_LIBRARY } from '@/data/individualBulletsLibrary';
 import type { IndividualBullet, BulletCategory, ColorScaleName } from '@/types/bulletSystemV2';
 import { COLOR_SCALES } from '@/types/bulletSystemV2';
+import type { Element } from '@/types/builder';
 
 const CATEGORIES: { id: BulletCategory | 'all'; label: string; icon: React.ReactNode }[] = [
   { id: 'all', label: 'Todos', icon: <Sparkles className="w-4 h-4" /> },
@@ -27,6 +29,7 @@ interface DraggableBulletProps {
 }
 
 function DraggableBullet({ bullet, color, number }: DraggableBulletProps) {
+  const { addElement, currentCanvasSize } = useBuilderStore();
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `bullet-${bullet.id}-${Date.now()}`,
     data: {
@@ -37,22 +40,52 @@ function DraggableBullet({ bullet, color, number }: DraggableBulletProps) {
     },
   });
 
-  const svgDataUrl = `data:image/svg+xml;base64,${btoa(
-    bullet.generateSVG({
+  const svgContent = bullet.generateSVG({
+    width: bullet.defaultWidth,
+    height: bullet.defaultHeight,
+    color,
+    number,
+  });
+
+  const svgDataUrl = `data:image/svg+xml;base64,${btoa(svgContent)}`;
+
+  // Handle click to insert
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const canvasSize = currentCanvasSize();
+
+    const newElement: Element = {
+      id: `bullet-${Date.now()}`,
+      type: 'bullet',
+      x: canvasSize.width / 2,
+      y: canvasSize.height / 2,
       width: bullet.defaultWidth,
       height: bullet.defaultHeight,
-      color,
-      number,
-    })
-  )}`;
+      rotation: 0,
+      opacity: 1,
+      zIndex: 0,
+      locked: false,
+      visible: true,
+      properties: {
+        bulletId: bullet.id,
+        bulletName: bullet.name,
+        color: color,
+        number: number,
+        svgDataUrl: svgDataUrl,
+      },
+    } as Element;
+
+    addElement(newElement);
+  };
 
   return (
     <div
       ref={setNodeRef}
       {...listeners}
       {...attributes}
+      onClick={handleClick}
       className={`
-        relative group cursor-move
+        relative group cursor-pointer
         bg-white rounded-lg border-2 border-gray-200
         hover:border-violet-400 hover:shadow-lg
         transition-all duration-200

@@ -635,20 +635,24 @@ function BulletElementRenderer({ element }: { element: BulletElement }) {
     shadowOffset: 8,
   });
 
-  // Load bullet graphic image
+  // Load bullet graphic image (supports both imageUrl and svgDataUrl)
   useEffect(() => {
-    if (!element.properties.imageUrl) return;
+    const imageSource = element.properties.svgDataUrl || element.properties.imageUrl;
+    if (!imageSource) return;
 
     const img = new window.Image();
-    img.crossOrigin = 'anonymous';
+    // Don't set crossOrigin for data URLs
+    if (!imageSource.startsWith('data:')) {
+      img.crossOrigin = 'anonymous';
+    }
     img.onload = () => {
       setBulletImage(img);
     };
     img.onerror = () => {
       console.error('Failed to load bullet image');
     };
-    img.src = element.properties.imageUrl;
-  }, [element.properties.imageUrl]);
+    img.src = imageSource;
+  }, [element.properties.svgDataUrl, element.properties.imageUrl]);
 
   const handleDragEnd = (e: any) => {
     updateElement(element.id, {
@@ -691,14 +695,46 @@ function BulletElementRenderer({ element }: { element: BulletElement }) {
       offsetY={element.height / 2}
       rotation={element.rotation}
       opacity={element.opacity}
-      draggable
+      draggable={!element.locked}
       onDragEnd={handleDragEnd}
       onTransformEnd={handleTransformEnd}
       onClick={() => selectElement(element.id)}
       onTap={() => selectElement(element.id)}
     >
+      {/* Placeholder if no image loaded */}
+      {!bulletImage && (
+        <>
+          <Rect
+            x={0}
+            y={0}
+            width={element.width}
+            height={element.height}
+            fill="#F3F4F6"
+            stroke={isSelected ? '#8B5CF6' : '#D1D5DB'}
+            strokeWidth={isSelected ? 2 : 1}
+            dash={[5, 5]}
+          />
+          <KonvaText
+            x={0}
+            y={element.height / 2 - 10}
+            width={element.width}
+            height={20}
+            text="● Bullet"
+            fontSize={14}
+            fontFamily="Arial"
+            fill="#9CA3AF"
+            align="center"
+            verticalAlign="middle"
+            listening={false}
+          />
+        </>
+      )}
+
+      {/* Bullet image */}
       {bulletImage && (
         <KonvaImage
+          x={0}
+          y={0}
           image={bulletImage}
           width={element.width}
           height={element.height}
