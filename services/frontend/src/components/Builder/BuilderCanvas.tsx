@@ -1531,6 +1531,31 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
         />
       )}
 
+      {/* Frame overlay during transform - always visible */}
+      {isTransforming && (
+        <Shape
+          x={0}
+          y={0}
+          width={element.width}
+          height={element.height}
+          listening={false}
+          sceneFunc={(ctx, shape) => {
+            const frameWidth = element.width;
+            const frameHeight = element.height;
+
+            ctx.beginPath();
+            applyClipPath(ctx, frameWidth, frameHeight);
+            ctx.closePath();
+
+            // Orange dashed frame border during transform
+            ctx.strokeStyle = "#F59E0B";
+            ctx.lineWidth = 3;
+            ctx.setLineDash([8, 4]);
+            ctx.stroke();
+          }}
+        />
+      )}
+
       {isSelected && (
         <Rect
           x={0}
