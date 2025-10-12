@@ -207,22 +207,22 @@ export function BulletsSessionEnhanced() {
           </div>
         ) : bullets.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center p-6">
-            <div className="w-16 h-16 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center mb-4">
-              <Upload className="w-8 h-8 text-slate-400" />
+            <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mb-4">
+              <Wand2 className="w-8 h-8 text-white" />
             </div>
             <p className="text-sm text-slate-600 dark:text-slate-400 mb-2 font-medium">
-              Nenhum bullet disponível
+              Crie seus bullets personalizados
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-500 mb-4">
-              O administrador precisa fazer upload de bullets
+              12 templates profissionais prontos para usar
             </p>
-            <Link
-              href="/admin/bullets"
-              target="_blank"
-              className="text-xs text-purple-500 hover:text-purple-600 underline font-medium"
+            <button
+              onClick={() => setShowCustomizer(true)}
+              className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all shadow-lg hover:shadow-xl"
             >
-              Abrir painel admin
-            </Link>
+              <Wand2 className="w-4 h-4 inline mr-2" />
+              Abrir Personalizador
+            </button>
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center h-full text-center p-6">
@@ -244,7 +244,7 @@ export function BulletsSessionEnhanced() {
         <p className="text-xs text-slate-500 dark:text-slate-400 text-center">
           {bullets.length > 0
             ? `${bullets.length} bullets disponíveis`
-            : 'Aguardando upload do admin'}
+            : 'Clique na varinha mágica ✨ para criar bullets'}
         </p>
       </div>
 
