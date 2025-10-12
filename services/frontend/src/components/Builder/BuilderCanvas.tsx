@@ -2079,6 +2079,74 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
     };
   }, [currentElements, selectElement]);
 
+  // Helper function to exit edit mode and re-insert image
+  const exitEditModeViaClick = () => {
+    const frameInEditMode = currentElements.find(el =>
+      el.type === 'frame' && (el as FrameElement).properties.editMode
+    ) as FrameElement | undefined;
+
+    if (!frameInEditMode) return false;
+
+    console.log('🖱️ Click detected - exiting edit mode for frame:', frameInEditMode.id);
+
+    const tempImages = currentElements.filter(el => el.id.startsWith('temp-image-'));
+
+    if (tempImages.length > 0) {
+      const tempImage = tempImages[0] as ImageElement;
+      const frameElement = frameInEditMode;
+
+      // Calculate new pivot based on temp image's position
+      const imageCenterX = tempImage.x;
+      const imageCenterY = tempImage.y;
+      const frameCenterX = frameElement.x;
+      const frameCenterY = frameElement.y;
+
+      const relativeX = imageCenterX - frameCenterX;
+      const relativeY = imageCenterY - frameCenterY;
+
+      const newPivotX = 0.5 + (relativeX / frameElement.width);
+      const newPivotY = 0.5 + (relativeY / frameElement.height);
+
+      // Calculate scale: temp image width divided by original image natural width
+      const img = new window.Image();
+      img.src = tempImage.properties.src;
+      img.onload = () => {
+        const newScale = tempImage.width / img.naturalWidth;
+
+        console.log('📐 Click - re-calculated:', {
+          frameCenter: { x: frameCenterX, y: frameCenterY },
+          imageCenter: { x: imageCenterX, y: imageCenterY },
+          newPivot: { x: newPivotX, y: newPivotY },
+          newScale: newScale,
+          tempImageWidth: tempImage.width,
+          naturalWidth: img.naturalWidth
+        });
+
+        const { updateElement, deleteElement, selectElement } = useBuilderStore.getState();
+
+        updateElement(frameElement.id, {
+          zIndex: frameElement.zIndex - 10000, // Restore original z-index
+          properties: {
+            ...frameElement.properties,
+            image: {
+              ...frameElement.properties.image!,
+              pivotX: newPivotX,
+              pivotY: newPivotY,
+              scale: newScale,
+            },
+            editMode: false,
+          },
+        });
+
+        deleteElement(tempImage.id);
+        selectElement(frameElement.id);
+        console.log('✅ Edit mode exited via click');
+      };
+    }
+
+    return true; // Indicate that edit mode was active
+  };
+
   // PAN & CLICK-TO-INSERT HANDLERS
   const handleStageClick = (e: any) => {
     console.log('Stage click:', { target: e.target, insertionMode });
@@ -2088,66 +2156,20 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
       el.type === 'frame' && (el as FrameElement).properties.editMode
     ) as FrameElement | undefined;
 
-    if (frameInEditMode && e.target === e.target.getStage()) {
-      console.log('🖱️ Stage clicked - exiting edit mode for frame:', frameInEditMode.id);
+    if (frameInEditMode) {
+      const clickedElementId = e.target.id();
+      const isTempImage = clickedElementId && clickedElementId.startsWith('temp-image-');
+      const isFrame = clickedElementId === frameInEditMode.id;
 
-      const tempImages = currentElements.filter(el => el.id.startsWith('temp-image-'));
-
-      if (tempImages.length > 0) {
-        const tempImage = tempImages[0] as ImageElement;
-        const frameElement = frameInEditMode;
-
-        // Calculate new pivot based on temp image's position
-        const imageCenterX = tempImage.x;
-        const imageCenterY = tempImage.y;
-        const frameCenterX = frameElement.x;
-        const frameCenterY = frameElement.y;
-
-        const relativeX = imageCenterX - frameCenterX;
-        const relativeY = imageCenterY - frameCenterY;
-
-        const newPivotX = 0.5 + (relativeX / frameElement.width);
-        const newPivotY = 0.5 + (relativeY / frameElement.height);
-
-        // Calculate scale: temp image width divided by original image natural width
-        // We need to load the image to get its natural width
-        const img = new window.Image();
-        img.src = tempImage.properties.src;
-        img.onload = () => {
-          const newScale = tempImage.width / img.naturalWidth;
-
-          console.log('📐 Stage click - re-calculated:', {
-            frameCenter: { x: frameCenterX, y: frameCenterY },
-            imageCenter: { x: imageCenterX, y: imageCenterY },
-            newPivot: { x: newPivotX, y: newPivotY },
-            newScale: newScale,
-            tempImageWidth: tempImage.width,
-            naturalWidth: img.naturalWidth
-          });
-
-          const { updateElement, deleteElement, selectElement } = useBuilderStore.getState();
-
-          updateElement(frameElement.id, {
-            zIndex: frameElement.zIndex - 10000, // Restore original z-index
-            properties: {
-              ...frameElement.properties,
-              image: {
-                ...frameElement.properties.image!,
-                pivotX: newPivotX,
-                pivotY: newPivotY,
-                scale: newScale,
-              },
-              editMode: false,
-            },
-          });
-
-          deleteElement(tempImage.id);
-          selectElement(frameElement.id);
-          console.log('✅ Edit mode exited via stage click');
-        };
-
+      // Only exit edit mode if NOT clicking on temp image or frame
+      if (isTempImage || isFrame) {
+        console.log('🚫 Clicked on temp image or frame - staying in edit mode');
         return;
       }
+
+      // Exit edit mode using helper function
+      exitEditModeViaClick();
+      return;
     }
 
     if (insertionMode) {
@@ -2331,26 +2353,15 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
         cursor: cursorState
       }}
       onClick={(e) => {
-        // Deselect when clicking outside canvas (on gray background)
-        if (e.target === e.currentTarget) {
+        // Exit edit mode when clicking outside canvas
+        const editModeExited = exitEditModeViaClick();
+        
+        // Deselect when clicking outside canvas (on gray background) if not in edit mode
+        if (!editModeExited && e.target === e.currentTarget) {
           selectElement(null);
         }
       }}
     >
-      <div
-        className="bg-white shadow-2xl"
-        style={{
-          width: `${currentCanvasSize.width}px`,
-          height: `${currentCanvasSize.height}px`,
-          transform: `scale(${zoom})`,
-          transformOrigin: 'center center',
-          transition: 'transform 0.2s ease-out',
-          position: 'relative',
-        }}
-      >
-        <Stage
-          ref={stageRef}
-          width={currentCanvasSize.width}
           height={currentCanvasSize.height}
           onClick={handleStageClick}
           onTap={handleStageClick}
