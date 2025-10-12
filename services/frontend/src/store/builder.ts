@@ -48,7 +48,7 @@ export const useBuilderStore = create<BuilderState>()(
   devtools(
     (set, get) => ({
       // Session State - Navigation
-      activeSession: 'text' as 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets' | 'ai' | 'tips',
+      activeSession: 'text' as 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets-individual' | 'bullets-sets' | 'ai' | 'tips',
 
       // Initial State - Pages
       pages: [createInitialPage()],

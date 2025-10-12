@@ -12,7 +12,8 @@ import { IconsSessionEnhanced } from './sessions/IconsSessionEnhanced';
 import { FramesSessionEnhanced } from './sessions/FramesSessionEnhanced';
 import { ImagesSession } from './sessions/ImagesSession';
 import { VideoSessionEnhanced } from './sessions/VideoSessionEnhanced';
-import { BulletsSessionEnhanced } from './sessions/BulletsSessionEnhanced';
+import { IndividualBulletsSession } from './sessions/IndividualBulletsSession';
+import { BulletSetsSession } from './sessions/BulletSetsSession';
 import { AISessionEnhanced } from './sessions/AISessionEnhanced';
 import { TipsSession } from './sessions/TipsSession';
 
@@ -33,8 +34,10 @@ export function ElementsPanelNew() {
         return <ImagesSession />;
       case 'videos':
         return <VideoSessionEnhanced />;
-      case 'bullets':
-        return <BulletsSessionEnhanced />;
+      case 'bullets-individual':
+        return <IndividualBulletsSession />;
+      case 'bullets-sets':
+        return <BulletSetsSession />;
       case 'ai':
         return <AISessionEnhanced />;
       case 'tips':

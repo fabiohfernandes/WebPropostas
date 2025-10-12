@@ -12,14 +12,15 @@ import {
   Frame,
   Image as ImageIcon,
   Video,
-  FileText,
+  Circle,
+  Layers,
   Sparkles,
   Lightbulb,
 } from 'lucide-react';
 import { useBuilderStore } from '@/store/builder';
 
 interface Session {
-  id: 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets' | 'ai' | 'tips';
+  id: 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets-individual' | 'bullets-sets' | 'ai' | 'tips';
   label: string;
   icon: React.ReactNode;
   color: string;
@@ -70,11 +71,18 @@ const sessions: Session[] = [
     gradient: 'from-rose-500 to-rose-600',
   },
   {
-    id: 'bullets',
+    id: 'bullets-individual',
     label: 'Bullets',
-    icon: <FileText className="w-5 h-5" strokeWidth={2.5} />,
+    icon: <Circle className="w-5 h-5" strokeWidth={2.5} />,
     color: 'text-amber-600',
     gradient: 'from-amber-500 to-amber-600',
+  },
+  {
+    id: 'bullets-sets',
+    label: 'Conjuntos',
+    icon: <Layers className="w-5 h-5" strokeWidth={2.5} />,
+    color: 'text-orange-600',
+    gradient: 'from-orange-500 to-orange-600',
   },
   {
     id: 'ai',
