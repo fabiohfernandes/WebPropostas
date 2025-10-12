@@ -2362,6 +2362,20 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
         }
       }}
     >
+      <div
+        className="bg-white shadow-2xl"
+        style={{
+          width: `${currentCanvasSize.width}px`,
+          height: `${currentCanvasSize.height}px`,
+          transform: `scale(${zoom})`,
+          transformOrigin: 'center center',
+          transition: 'transform 0.2s ease-out',
+          position: 'relative',
+        }}
+      >
+        <Stage
+          ref={stageRef}
+          width={currentCanvasSize.width}
           height={currentCanvasSize.height}
           onClick={handleStageClick}
           onTap={handleStageClick}
