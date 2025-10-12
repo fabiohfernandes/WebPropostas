@@ -156,6 +156,8 @@ function PreviewElement({ element }: { element: Element }) {
       <Group
         x={element.x}
         y={element.y}
+        offsetX={element.width / 2}
+        offsetY={element.height / 2}
         rotation={element.rotation}
         opacity={element.opacity}
       >
