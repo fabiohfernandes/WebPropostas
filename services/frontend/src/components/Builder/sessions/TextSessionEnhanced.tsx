@@ -75,7 +75,7 @@ const textPresets: TextPreset[] = [
     tags: ['título', 'hero', 'principal'],
     example: 'Título Principal',
     defaultProps: {
-      width: 600,
+      width: 450,
       height: 80,
       properties: {
         content: 'Seu Título Impactante Aqui',
@@ -976,18 +976,24 @@ export function TextSessionEnhanced() {
                 <span className="text-xs font-semibold text-gray-700">{preset.label}</span>
               </div>
               <div
-                className="text-xs truncate px-2 py-1 rounded"
+                className="px-2 py-1 rounded overflow-hidden"
                 style={{
                   fontFamily: preset.defaultProps.properties.fontFamily,
-                  fontSize: '11px',
+                  fontSize: `${Math.max(10, preset.defaultProps.properties.fontSize * 0.25)}px`,
                   fontWeight: preset.defaultProps.properties.fontWeight,
                   fontStyle: preset.defaultProps.properties.fontStyle,
                   color: preset.defaultProps.properties.color,
                   backgroundColor: preset.defaultProps.properties.backgroundColor || 'transparent',
                   textAlign: preset.defaultProps.properties.textAlign,
+                  lineHeight: preset.defaultProps.properties.lineHeight,
+                  letterSpacing: `${preset.defaultProps.properties.letterSpacing * 0.25}px`,
+                  textDecoration: preset.defaultProps.properties.textDecoration || 'none',
+                  maxHeight: '60px',
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word',
                 }}
               >
-                {preset.example}
+                {preset.defaultProps.properties.content}
               </div>
             </button>
           ))

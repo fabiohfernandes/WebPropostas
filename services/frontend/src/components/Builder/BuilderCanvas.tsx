@@ -1715,30 +1715,47 @@ function CanvasElement({ element, onFrameHover, hoverFrameId }: { element: Eleme
 
   if (element.type === 'text') {
     const textEl = element as TextElement;
+    const hasBackground = textEl.properties.backgroundColor;
+
     return (
-      <KonvaText
-        {...commonProps}
-        text={textEl.properties.content}
-        fontSize={textEl.properties.fontSize}
-        fontFamily={getFontFamily(textEl.properties.fontFamily)}
-        fill={textEl.properties.color}
-        align={textEl.properties.textAlign}
-        fontStyle={
-          textEl.properties.fontStyle === 'italic'
-            ? 'italic'
-            : textEl.properties.fontWeight === 'bold'
-            ? 'bold'
-            : 'normal'
-        }
-        lineHeight={textEl.properties.lineHeight}
-        letterSpacing={textEl.properties.letterSpacing}
-        shadowColor={textEl.properties.shadow?.color}
-        shadowBlur={textEl.properties.shadow?.blur}
-        shadowOffsetX={textEl.properties.shadow?.offsetX}
-        shadowOffsetY={textEl.properties.shadow?.offsetY}
-        stroke={isSelected ? '#3B82F6' : undefined}
-        strokeWidth={isSelected ? 2 : 0}
-      />
+      <Group {...commonProps}>
+        {hasBackground && (
+          <Rect
+            x={0}
+            y={0}
+            width={element.width}
+            height={element.height}
+            fill={textEl.properties.backgroundColor}
+            cornerRadius={8}
+          />
+        )}
+        <KonvaText
+          x={0}
+          y={0}
+          width={element.width}
+          height={element.height}
+          text={textEl.properties.content}
+          fontSize={textEl.properties.fontSize}
+          fontFamily={getFontFamily(textEl.properties.fontFamily)}
+          fill={textEl.properties.color}
+          align={textEl.properties.textAlign}
+          verticalAlign="middle"
+          padding={hasBackground ? 12 : 0}
+          fontStyle={
+            textEl.properties.fontStyle === 'italic'
+              ? 'italic'
+              : textEl.properties.fontWeight === 'bold'
+              ? 'bold'
+              : 'normal'
+          }
+          lineHeight={textEl.properties.lineHeight}
+          letterSpacing={textEl.properties.letterSpacing}
+          shadowColor={textEl.properties.shadow?.color}
+          shadowBlur={textEl.properties.shadow?.blur}
+          shadowOffsetX={textEl.properties.shadow?.offsetX}
+          shadowOffsetY={textEl.properties.shadow?.offsetY}
+        />
+      </Group>
     );
   }
 
@@ -2546,9 +2563,21 @@ export function BuilderCanvas({ onFrameHover, hoveredFrameFromLibrary }: Builder
                 'top-center',
                 'bottom-center',
               ]}
-              borderStroke="#3B82F6"
+              borderStroke={(() => {
+                const selectedEl = currentElements.find(el => el.id === selectedElementId);
+                if (selectedEl?.type === 'text' && (selectedEl as TextElement).properties.backgroundColor) {
+                  return (selectedEl as TextElement).properties.backgroundColor;
+                }
+                return '#3B82F6';
+              })()}
               borderStrokeWidth={2}
-              anchorStroke="#3B82F6"
+              anchorStroke={(() => {
+                const selectedEl = currentElements.find(el => el.id === selectedElementId);
+                if (selectedEl?.type === 'text' && (selectedEl as TextElement).properties.backgroundColor) {
+                  return (selectedEl as TextElement).properties.backgroundColor;
+                }
+                return '#3B82F6';
+              })()}
               anchorFill="#FFFFFF"
               anchorSize={14}
               anchorCornerRadius={7}
