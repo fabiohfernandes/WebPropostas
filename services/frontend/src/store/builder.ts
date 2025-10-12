@@ -109,6 +109,7 @@ export const useBuilderStore = create<BuilderState>()(
           return {
             pages: [...state.pages, newPage],
             currentPageId: newPage.id,
+            selectedElementId: null,
           };
         });
         get().saveHistory();
