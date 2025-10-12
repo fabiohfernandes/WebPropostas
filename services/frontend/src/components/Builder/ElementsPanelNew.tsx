@@ -13,7 +13,7 @@ import { FramesSessionEnhanced } from './sessions/FramesSessionEnhanced';
 import { ImagesSession } from './sessions/ImagesSession';
 import { VideoSessionEnhanced } from './sessions/VideoSessionEnhanced';
 import { BulletsSessionEnhanced } from './sessions/BulletsSessionEnhanced';
-import { AISession } from './sessions/AISession';
+import { AISessionEnhanced } from './sessions/AISessionEnhanced';
 import { TipsSession } from './sessions/TipsSession';
 
 export function ElementsPanelNew() {
@@ -36,7 +36,7 @@ export function ElementsPanelNew() {
       case 'bullets':
         return <BulletsSessionEnhanced />;
       case 'ai':
-        return <AISession />;
+        return <AISessionEnhanced />;
       case 'tips':
         return <TipsSession />;
       default:
