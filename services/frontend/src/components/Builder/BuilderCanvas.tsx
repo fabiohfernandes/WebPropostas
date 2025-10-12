@@ -953,6 +953,7 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
     // Pivot stays in normalized coordinates (0-1), so no recalculation needed
   };
 
+  const [transformDimensions, setTransformDimensions] = useState<{ width: number; height: number } | null>(null);
   const handleTransformStart = (e: any) => {
     console.log('🔄 Transform started - extracting image to canvas');
 
@@ -1101,6 +1102,7 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
 
     // Detect double-click
     setClickCount(prev => prev + 1);
+    setTransformDimensions(null); // Reset transform dimensions
 
     if (clickTimerRef.current) {
       clearTimeout(clickTimerRef.current);
@@ -1418,6 +1420,15 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
       onDragEnd={handleDragEnd}
       onTransformStart={handleTransformStart}
       onTransformEnd={handleTransformEnd}
+      onTransform={(e) => {
+        const node = e.target;
+        const scaleX = node.scaleX();
+        const scaleY = node.scaleY();
+        setTransformDimensions({
+          width: element.width * scaleX,
+          height: element.height * scaleY,
+        });
+      }}
     >
       <Shape
         x={0}
@@ -1535,12 +1546,12 @@ function FrameElementRenderer({ element, isDropTarget }: { element: FrameElement
       {isTransforming && (
         <Shape
           x={0}
-          y={0}
-          width={element.width}
+          width={transformDimensions?.width || element.width}
+          height={transformDimensions?.height || element.height}
           height={element.height}
           listening={false}
-          sceneFunc={(ctx, shape) => {
-            const frameWidth = element.width;
+            const frameWidth = transformDimensions?.width || element.width;
+            const frameHeight = transformDimensions?.height || element.height;
             const frameHeight = element.height;
 
             ctx.beginPath();
