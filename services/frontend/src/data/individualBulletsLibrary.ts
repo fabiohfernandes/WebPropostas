@@ -155,7 +155,7 @@ export const STEP_CIRCLE: IndividualBullet = {
                 stroke-width="2"
                 stroke-opacity="0.3"/>
 
-        <!-- Step label background -->
+        <!-- Step label (editable text) -->
         ${text ? `
         <text x="60" y="45"
               font-family="Arial, sans-serif"
@@ -164,7 +164,7 @@ export const STEP_CIRCLE: IndividualBullet = {
               fill="white"
               fill-opacity="0.9"
               text-anchor="middle">
-          STEP
+          ${text.toUpperCase()}
         </text>
         ` : ''}
 
@@ -463,7 +463,7 @@ export const PILL_BADGE: IndividualBullet = {
     size: true,
   },
   generateSVG: (options: BulletRenderOptions) => {
-    const { width, height, color = 'lightBlue', number = 1, text = 'Your description here' } = options;
+    const { width, height, color = 'lightBlue', number = 1, text = 'Your description here', icon = 'STEP' } = options;
     const mainColor = getColor(color, 'medium');
     const uniqueId = `pill_${number}_${Date.now()}`;
 
@@ -513,7 +513,7 @@ export const PILL_BADGE: IndividualBullet = {
               fill="${mainColor}"
               fill-opacity="0.7"
               text-anchor="middle">
-          STEP
+          ${icon.toUpperCase()}
         </text>
         <text x="35" y="54"
               font-family="Arial, sans-serif"

@@ -481,8 +481,8 @@ function BulletProperties({ element }: { element: BulletElement }) {
     return (colorEntry?.[0] as ColorScaleName) || 'limeGreen';
   };
 
-  // Regenerate SVG when color or number changes
-  const regenerateSVG = (colorName: ColorScaleName, number?: number) => {
+  // Regenerate SVG when color, number, text, or icon changes
+  const regenerateSVG = (colorName: ColorScaleName, number?: number, text?: string, icon?: string) => {
     if (!bullet) return;
 
     const colorValue = COLOR_SCALES[colorName].medium;
@@ -491,7 +491,9 @@ function BulletProperties({ element }: { element: BulletElement }) {
       width: bullet.defaultWidth,
       height: bullet.defaultHeight,
       color: colorValue,
-      number: number !== undefined ? number : (element.properties.number || 1),
+      number: number !== undefined ? number : element.properties.number,
+      text: text !== undefined ? text : element.properties.text,
+      icon: icon !== undefined ? icon : element.properties.icon,
     });
     const svgDataUrl = `data:image/svg+xml;base64,${btoa(svgContent)}`;
 
@@ -500,6 +502,8 @@ function BulletProperties({ element }: { element: BulletElement }) {
         ...element.properties,
         color: colorName,
         number: number !== undefined ? number : element.properties.number,
+        text: text !== undefined ? text : element.properties.text,
+        icon: icon !== undefined ? icon : element.properties.icon,
         svgDataUrl,
       },
     } as Partial<BulletElement>);
@@ -565,43 +569,102 @@ function BulletProperties({ element }: { element: BulletElement }) {
         </div>
       )}
 
-      {/* Number Control (only for individual bullets) */}
-      {isIndividualBullet && bullet && (
-        <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1">
-            Número
-          </label>
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={() => {
-                const newNumber = Math.max(1, (element.properties.number || 1) - 1);
-                regenerateSVG(getCurrentColorName(), newNumber);
-              }}
-              className="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium"
-            >
-              −
-            </button>
-            <input
-              type="number"
-              value={element.properties.number || 1}
-              onChange={(e) => {
-                const newNumber = Math.max(1, Math.min(99, parseInt(e.target.value) || 1));
-                regenerateSVG(getCurrentColorName(), newNumber);
-              }}
-              className="flex-1 px-2 py-1 text-center border border-gray-300 rounded text-xs"
-              min="1"
-              max="99"
-            />
-            <button
-              onClick={() => {
-                const newNumber = Math.min(99, (element.properties.number || 1) + 1);
-                regenerateSVG(getCurrentColorName(), newNumber);
-              }}
-              className="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium"
-            >
-              +
-            </button>
-          </div>
+      {/* Text Editing Section - COMPACT LAYOUT */}
+      {isIndividualBullet && bullet && (bullet.customizable.number || bullet.customizable.text || bullet.customizable.icon) && (
+        <div className="space-y-2 pt-2 border-t border-gray-200">
+          <h4 className="text-xs font-semibold text-gray-700">Conteúdo do Bullet</h4>
+
+          {/* Number + Text in same row (25% + 75%) */}
+          {(bullet.customizable.number || bullet.customizable.text) && (
+            <div className="grid grid-cols-4 gap-1.5">
+              {/* Number Field (25% - if bullet supports number) */}
+              {bullet.customizable.number && (
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                    Número
+                  </label>
+                  <div className="flex items-center gap-0.5">
+                    <button
+                      onClick={() => {
+                        const newNumber = Math.max(1, (element.properties.number || 1) - 1);
+                        regenerateSVG(getCurrentColorName(), newNumber);
+                      }}
+                      className="px-1 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium"
+                    >
+                      −
+                    </button>
+                    <input
+                      type="number"
+                      value={element.properties.number || 1}
+                      onChange={(e) => {
+                        const newNumber = Math.max(1, Math.min(99, parseInt(e.target.value) || 1));
+                        regenerateSVG(getCurrentColorName(), newNumber);
+                      }}
+                      className="w-10 px-1 py-1 text-center border border-gray-300 rounded text-xs"
+                      min="1"
+                      max="99"
+                    />
+                    <button
+                      onClick={() => {
+                        const newNumber = Math.min(99, (element.properties.number || 1) + 1);
+                        regenerateSVG(getCurrentColorName(), newNumber);
+                      }}
+                      className="px-1 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Text Field (75% - if bullet supports text) */}
+              {bullet.customizable.text && (
+                <div className={bullet.customizable.number ? "col-span-3" : "col-span-4"}>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                    Texto
+                  </label>
+                  <input
+                    type="text"
+                    value={element.properties.text || ''}
+                    onChange={(e) => {
+                      regenerateSVG(
+                        getCurrentColorName(),
+                        element.properties.number,
+                        e.target.value,
+                        element.properties.icon
+                      );
+                    }}
+                    placeholder="Digite o texto..."
+                    className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Icon Field (full width if present) */}
+          {bullet.customizable.icon && (
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                Ícone
+              </label>
+              <input
+                type="text"
+                value={element.properties.icon || ''}
+                onChange={(e) => {
+                  regenerateSVG(
+                    getCurrentColorName(),
+                    element.properties.number,
+                    element.properties.text,
+                    e.target.value
+                  );
+                }}
+                placeholder="Ex: STEP, ETAPA, FASE..."
+                className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+              <p className="text-[10px] text-gray-500 mt-0.5">Label/rótulo do bullet</p>
+            </div>
+          )}
         </div>
       )}
 

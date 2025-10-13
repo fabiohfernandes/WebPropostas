@@ -228,6 +228,8 @@ export interface BulletElement extends BaseElement {
     bulletName?: string;         // Bullet name for reference
     color?: string;              // Color for individual bullets
     number?: number;             // Number for individual bullets
+    text?: string;               // Text content for bullets that support text
+    icon?: string;               // Icon identifier for bullets that support icons
     colorScheme?: string[];      // Color scheme for bullet sets
     itemCount?: number;          // Number of items in the set (for bullet sets)
     imageUrl?: string;           // Legacy: URL or base64 data URL of bullet graphic
