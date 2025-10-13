@@ -84,6 +84,26 @@ function getColor(colorName: ColorScaleName | string, shade: 'light' | 'medium' 
 }
 
 // ============================================================================
+// BULLET ICON LIBRARY - SVG paths for icons (centered at 70,55)
+// ============================================================================
+export const BULLET_ICONS: Record<string, { path: string; label: string }> = {
+  'arrow-up': { path: 'M 70 47 L 75 52 L 72 52 L 72 63 L 68 63 L 68 52 L 65 52 Z', label: 'Seta Cima' },
+  'arrow-down': { path: 'M 70 63 L 75 58 L 72 58 L 72 47 L 68 47 L 68 58 L 65 58 Z', label: 'Seta Baixo' },
+  'arrow-left': { path: 'M 62 55 L 67 50 L 67 53 L 78 53 L 78 57 L 67 57 L 67 60 Z', label: 'Seta Esquerda' },
+  'arrow-right': { path: 'M 78 55 L 73 50 L 73 53 L 62 53 L 62 57 L 73 57 L 73 60 Z', label: 'Seta Direita' },
+  'check': { path: 'M 64 55 L 68 59 L 77 49 L 80 52 L 68 65 L 61 58 Z', label: 'Check' },
+  'x': { path: 'M 64 48 L 70 54 L 76 48 L 79 51 L 73 57 L 79 63 L 76 66 L 70 60 L 64 66 L 61 63 L 67 57 L 61 51 Z', label: 'X' },
+  'plus': { path: 'M 68 48 L 72 48 L 72 53 L 77 53 L 77 57 L 72 57 L 72 62 L 68 62 L 68 57 L 63 57 L 63 53 L 68 53 Z', label: 'Mais' },
+  'minus': { path: 'M 63 53 L 77 53 L 77 57 L 63 57 Z', label: 'Menos' },
+  'star': { path: 'M 70 46 L 72 53 L 79 53 L 74 57 L 76 64 L 70 60 L 64 64 L 66 57 L 61 53 L 68 53 Z', label: 'Estrela' },
+  'heart': { path: 'M 70 63 L 77 56 C 80 53 80 48 75 48 C 73 48 71 49 70 51 C 69 49 67 48 65 48 C 60 48 60 53 63 56 Z', label: 'Coração' },
+  'circle': { path: 'M 70 55 m -7, 0 a 7,7 0 1,0 14,0 a 7,7 0 1,0 -14,0', label: 'Círculo' },
+  'square': { path: 'M 63 48 L 77 48 L 77 62 L 63 62 Z', label: 'Quadrado' },
+  'triangle': { path: 'M 70 48 L 78 62 L 62 62 Z', label: 'Triângulo' },
+  'diamond': { path: 'M 70 48 L 78 55 L 70 62 L 62 55 Z', label: 'Diamante' },
+};
+
+// ============================================================================
 // BULLET 01: Step Circle (Process Step)
 // Based on: Main section horizontal pills from 4110.jpg
 // ============================================================================
@@ -357,9 +377,12 @@ export const DIAMOND_BADGE: IndividualBullet = {
     size: true,
   },
   generateSVG: (options: BulletRenderOptions) => {
-    const { width, height, color = 'navy', text = 'UP' } = options;
+    const { width, height, color = 'navy', text = 'UP', icon = 'arrow-up' } = options;
     const mainColor = getColor(color, 'medium');
     const uniqueId = `diamond_${Date.now()}`;
+
+    // Get icon path from library, fallback to arrow-up
+    const iconPath = BULLET_ICONS[icon]?.path || BULLET_ICONS['arrow-up'].path;
 
     return `
       <svg width="${width}" height="${height}" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
@@ -400,8 +423,8 @@ export const DIAMOND_BADGE: IndividualBullet = {
                 fill-opacity="0.95"
                 filter="url(#shadow_${uniqueId})"/>
 
-        <!-- Icon (arrow or custom) -->
-        <path d="M 70 45 L 75 50 L 70 50 L 70 65 L 65 65 L 65 50 L 60 50 Z"
+        <!-- Icon (from library) -->
+        <path d="${iconPath}"
               fill="${mainColor}"
               opacity="0.9"/>
 
@@ -456,9 +479,9 @@ export const PILL_BADGE: IndividualBullet = {
     shadow: DEFAULT_SHADOW_EFFECT,
   },
   customizable: {
-    text: true,
-    number: true,
-    icon: true,
+    text: true,       // Main description text on right
+    number: true,     // Number inside left circle (01, 02, etc)
+    icon: true,       // Uses icon parameter for text label ("STEP"), not graphical icon
     color: true,
     size: true,
   },

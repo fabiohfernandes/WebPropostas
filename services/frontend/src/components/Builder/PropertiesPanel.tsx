@@ -642,27 +642,75 @@ function BulletProperties({ element }: { element: BulletElement }) {
             </div>
           )}
 
-          {/* Icon Field (full width if present) */}
+          {/* Icon/Label Field (full width if present) */}
           {bullet.customizable.icon && (
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Ícone
-              </label>
-              <input
-                type="text"
-                value={element.properties.icon || ''}
-                onChange={(e) => {
-                  regenerateSVG(
-                    getCurrentColorName(),
-                    element.properties.number,
-                    element.properties.text,
-                    e.target.value
-                  );
-                }}
-                placeholder="Ex: STEP, ETAPA, FASE..."
-                className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              />
-              <p className="text-[10px] text-gray-500 mt-0.5">Label/rótulo do bullet</p>
+              {/* Check if bullet uses icon for graphical icons or text labels */}
+              {bullet.id === 'diamond-badge-v2' ? (
+                // DIAMOND: Icon selector dropdown
+                <>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                    Ícone
+                  </label>
+                  <select
+                    value={element.properties.icon || 'arrow-up'}
+                    onChange={(e) => {
+                      regenerateSVG(
+                        getCurrentColorName(),
+                        element.properties.number,
+                        element.properties.text,
+                        e.target.value
+                      );
+                    }}
+                    className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  >
+                    <option value="">Nenhum</option>
+                    <optgroup label="Setas">
+                      <option value="arrow-up">↑ Seta Cima</option>
+                      <option value="arrow-down">↓ Seta Baixo</option>
+                      <option value="arrow-left">← Seta Esquerda</option>
+                      <option value="arrow-right">→ Seta Direita</option>
+                    </optgroup>
+                    <optgroup label="Símbolos">
+                      <option value="check">✓ Check</option>
+                      <option value="x">✗ X</option>
+                      <option value="plus">+ Mais</option>
+                      <option value="minus">− Menos</option>
+                    </optgroup>
+                    <optgroup label="Formas">
+                      <option value="star">★ Estrela</option>
+                      <option value="heart">♥ Coração</option>
+                      <option value="circle">● Círculo</option>
+                      <option value="square">■ Quadrado</option>
+                      <option value="triangle">▲ Triângulo</option>
+                      <option value="diamond">◆ Diamante</option>
+                    </optgroup>
+                  </select>
+                  <p className="text-[10px] text-gray-500 mt-0.5">Ícone exibido no bullet</p>
+                </>
+              ) : (
+                // Other bullets: Text label input
+                <>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                    Rótulo
+                  </label>
+                  <input
+                    type="text"
+                    value={element.properties.icon || ''}
+                    onChange={(e) => {
+                      regenerateSVG(
+                        getCurrentColorName(),
+                        element.properties.number,
+                        element.properties.text,
+                        e.target.value
+                      );
+                    }}
+                    placeholder="Ex: STEP, ETAPA, FASE..."
+                    className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                  <p className="text-[10px] text-gray-500 mt-0.5">Texto do rótulo</p>
+                </>
+              )}
             </div>
           )}
         </div>
