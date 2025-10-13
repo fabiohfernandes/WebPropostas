@@ -457,6 +457,47 @@ function VideoProperties({ element }: { element: VideoElement }) {
 
 function BulletProperties({ element }: { element: BulletElement }) {
   const { updateElement } = useBuilderStore();
+  const { INDIVIDUAL_BULLETS_LIBRARY } = require('@/data/individualBulletsLibrary');
+  const { COLOR_SCALES } = require('@/types/bulletSystemV2');
+
+  // Check if this is an individual bullet or a set
+  const isIndividualBullet = !!element.properties.bulletId;
+  const bullet = isIndividualBullet ? INDIVIDUAL_BULLETS_LIBRARY.find((b: any) => b.id === element.properties.bulletId) : null;
+
+  // Get current color value (either from scale or custom hex)
+  const getCurrentColor = () => {
+    const colorProp = element.properties.color || 'limeGreen';
+    // Check if it's a hex color (starts with #) or a color scale name
+    if (colorProp.startsWith('#')) {
+      return colorProp;
+    }
+    return COLOR_SCALES[colorProp]?.medium || '#B4D432';
+  };
+
+  // Regenerate SVG when color or number changes
+  const regenerateSVG = (color: string, number?: number) => {
+    if (!bullet) return;
+
+    // If color is a scale name, get the medium value; otherwise use it directly
+    const colorValue = color.startsWith('#') ? color : (COLOR_SCALES[color]?.medium || color);
+
+    const svgContent = bullet.generateSVG({
+      width: bullet.defaultWidth,
+      height: bullet.defaultHeight,
+      color: colorValue,
+      number: number !== undefined ? number : (element.properties.number || 1),
+    });
+    const svgDataUrl = `data:image/svg+xml;base64,${btoa(svgContent)}`;
+
+    updateElement(element.id, {
+      properties: {
+        ...element.properties,
+        color,
+        number: number !== undefined ? number : element.properties.number,
+        svgDataUrl,
+      },
+    } as Partial<BulletElement>);
+  };
 
   return (
     <div className="space-y-2">
@@ -467,128 +508,249 @@ function BulletProperties({ element }: { element: BulletElement }) {
         </label>
         <div className="w-full aspect-square bg-slate-50 rounded-lg border border-gray-200 flex items-center justify-center p-4">
           <img
-            src={element.properties.imageUrl}
-            alt={element.properties.name}
+            src={element.properties.svgDataUrl || element.properties.imageUrl}
+            alt={element.properties.bulletName || 'Bullet'}
             className="max-w-full max-h-full object-contain"
           />
         </div>
         <p className="text-xs text-gray-600 mt-1 text-center font-medium">
-          {element.properties.name}
+          {element.properties.bulletName}
+        </p>
+        <p className="text-[10px] text-gray-500 mt-0.5 text-center">
+          ID: {element.properties.bulletId || element.properties.bulletSetId}
         </p>
       </div>
 
-      {/* Shadow */}
-      <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">
-          Sombra
-        </label>
-        <div className="space-y-1.5">
-          <div className="flex gap-2">
-            <div className="flex-1">
-              <label className="text-xs text-gray-600 mb-0.5 block">Desfoque</label>
-              <input
-                type="number"
-                min="0"
-                max="50"
-                value={element.properties.shadow?.blur || 0}
-                onChange={(e) =>
-                  updateElement(element.id, {
-                    properties: {
-                      ...element.properties,
-                      shadow: {
-                        ...element.properties.shadow,
-                        blur: parseInt(e.target.value) || 0,
-                        color: element.properties.shadow?.color || '#000000',
-                        offsetX: element.properties.shadow?.offsetX || 0,
-                        offsetY: element.properties.shadow?.offsetY || 0,
-                      },
-                    },
-                  } as Partial<BulletElement>)
-                }
-                className="w-full px-2 py-1 text-xs border border-gray-200 rounded"
-              />
-            </div>
-            <div className="flex-1">
-              <label className="text-xs text-gray-600 mb-0.5 block">Cor</label>
-              <input
-                type="color"
-                value={element.properties.shadow?.color || '#000000'}
-                onChange={(e) =>
-                  updateElement(element.id, {
-                    properties: {
-                      ...element.properties,
-                      shadow: {
-                        ...element.properties.shadow,
-                        blur: element.properties.shadow?.blur || 0,
-                        color: e.target.value,
-                        offsetX: element.properties.shadow?.offsetX || 0,
-                        offsetY: element.properties.shadow?.offsetY || 0,
-                      },
-                    },
-                  } as Partial<BulletElement>)
-                }
-                className="w-full h-8 rounded border border-gray-200 cursor-pointer"
-              />
-            </div>
+      {/* Color Control (only for individual bullets) - STANDARDIZED WITH ICONS */}
+      {isIndividualBullet && bullet && (
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1">
+            Cor
+          </label>
+          <div className="flex items-center gap-2 mb-2">
+            <div
+              className="w-10 h-8 rounded border-2 border-gray-300"
+              style={{ backgroundColor: getCurrentColor() }}
+            />
+            <input
+              type="text"
+              value={getCurrentColor()}
+              readOnly
+              onFocus={(e) => e.target.select()}
+              className="flex-1 px-2 py-1 text-xs border border-gray-200 rounded bg-gray-50 font-mono text-gray-600"
+              placeholder="#000000"
+            />
           </div>
-          <div className="flex gap-2">
-            <div className="flex-1">
-              <label className="text-xs text-gray-600 mb-0.5 block">Offset X</label>
-              <input
-                type="number"
-                min="-50"
-                max="50"
-                value={element.properties.shadow?.offsetX || 0}
-                onChange={(e) =>
-                  updateElement(element.id, {
-                    properties: {
-                      ...element.properties,
-                      shadow: {
-                        ...element.properties.shadow,
-                        blur: element.properties.shadow?.blur || 0,
-                        color: element.properties.shadow?.color || '#000000',
-                        offsetX: parseInt(e.target.value) || 0,
-                        offsetY: element.properties.shadow?.offsetY || 0,
-                      },
-                    },
-                  } as Partial<BulletElement>)
-                }
-                className="w-full px-2 py-1 text-xs border border-gray-200 rounded"
+          {/* Color palette presets - ALL 196 colors */}
+          <div className="flex gap-1.5 flex-wrap max-h-64 overflow-y-auto">
+            {Object.keys(COLOR_SCALES).map((colorKey) => (
+              <button
+                key={colorKey}
+                onClick={() => regenerateSVG(colorKey, element.properties.number)}
+                className={`w-7 h-7 rounded border-2 transition-all flex-shrink-0 ${
+                  getCurrentColor() === COLOR_SCALES[colorKey as keyof typeof COLOR_SCALES].medium
+                    ? 'border-blue-500 scale-110 shadow-md'
+                    : 'border-gray-300 hover:border-gray-400 hover:scale-105'
+                }`}
+                style={{ backgroundColor: COLOR_SCALES[colorKey as keyof typeof COLOR_SCALES].medium }}
+                title={colorKey}
               />
-            </div>
-            <div className="flex-1">
-              <label className="text-xs text-gray-600 mb-0.5 block">Offset Y</label>
-              <input
-                type="number"
-                min="-50"
-                max="50"
-                value={element.properties.shadow?.offsetY || 0}
-                onChange={(e) =>
-                  updateElement(element.id, {
-                    properties: {
-                      ...element.properties,
-                      shadow: {
-                        ...element.properties.shadow,
-                        blur: element.properties.shadow?.blur || 0,
-                        color: element.properties.shadow?.color || '#000000',
-                        offsetX: element.properties.shadow?.offsetX || 0,
-                        offsetY: parseInt(e.target.value) || 0,
-                      },
-                    },
-                  } as Partial<BulletElement>)
-                }
-                className="w-full px-2 py-1 text-xs border border-gray-200 rounded"
-              />
-            </div>
+            ))}
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Info */}
+      {/* Number Control (only for individual bullets) */}
+      {isIndividualBullet && bullet && (
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1">
+            Número
+          </label>
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => {
+                const newNumber = Math.max(1, (element.properties.number || 1) - 1);
+                regenerateSVG(element.properties.color || 'limeGreen', newNumber);
+              }}
+              className="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium"
+            >
+              −
+            </button>
+            <input
+              type="number"
+              value={element.properties.number || 1}
+              onChange={(e) => {
+                const newNumber = Math.max(1, Math.min(99, parseInt(e.target.value) || 1));
+                regenerateSVG(element.properties.color || 'limeGreen', newNumber);
+              }}
+              className="flex-1 px-2 py-1 text-center border border-gray-300 rounded text-xs"
+              min="1"
+              max="99"
+            />
+            <button
+              onClick={() => {
+                const newNumber = Math.min(99, (element.properties.number || 1) + 1);
+                regenerateSVG(element.properties.color || 'limeGreen', newNumber);
+              }}
+              className="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium"
+            >
+              +
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Shadow Controls - COPIED FROM ICONPROPERTIES */}
       <div className="pt-2 border-t border-gray-200">
-        <p className="text-xs text-gray-500">
-          ID: {element.properties.bulletId}
-        </p>
+        <div className="flex items-center gap-2 mb-1.5">
+          <label className="text-xs font-medium text-gray-700">
+            Sombra
+          </label>
+          <input
+            type="checkbox"
+            checked={!!element.properties?.shadow}
+            onChange={(e) => {
+              if (e.target.checked) {
+                updateElement(element.id, {
+                  properties: {
+                    ...element.properties,
+                    shadow: {
+                      blur: 2,
+                      color: 'rgba(0, 0, 0, 0.5)',
+                      offsetX: 2,
+                      offsetY: 2,
+                    },
+                  } as Partial<BulletElement>['properties'],
+                });
+              } else {
+                const { shadow, ...restProperties } = element.properties;
+                updateElement(element.id, {
+                  properties: restProperties,
+                } as Partial<BulletElement>);
+              }
+            }}
+            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+          />
+          <input
+            type="color"
+            value={element.properties?.shadow?.color.startsWith('rgba') ? '#000000' : (element.properties?.shadow?.color || '#000000')}
+            onChange={(e) => {
+              if (!element.properties?.shadow) return;
+              const hex = e.target.value;
+              const rgba = `rgba(${parseInt(hex.slice(1, 3), 16)}, ${parseInt(hex.slice(3, 5), 16)}, ${parseInt(hex.slice(5, 7), 16)}, 0.5)`;
+              updateElement(element.id, {
+                properties: {
+                  ...element.properties,
+                  shadow: {
+                    ...element.properties.shadow,
+                    color: rgba,
+                  },
+                } as Partial<BulletElement>['properties'],
+              });
+            }}
+            disabled={!element.properties?.shadow}
+            className="w-8 h-6 rounded border border-gray-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          />
+          <input
+            type="text"
+            value={element.properties?.shadow?.color.startsWith('rgba') ? '#000000' : (element.properties?.shadow?.color || '#000000')}
+            onChange={(e) => {
+              if (!element.properties?.shadow) return;
+              updateElement(element.id, {
+                properties: {
+                  ...element.properties,
+                  shadow: {
+                    ...element.properties.shadow,
+                    color: e.target.value,
+                  },
+                } as Partial<BulletElement>['properties'],
+              });
+            }}
+            onFocus={(e) => e.target.select()}
+            disabled={!element.properties?.shadow}
+            placeholder="#000000"
+            className="w-20 px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed font-mono"
+          />
+        </div>
+
+        {element.properties?.shadow && (
+          <div className="grid grid-cols-3 gap-1.5 pl-2">
+            <div>
+              <div className="flex justify-between items-center mb-0.5">
+                <label className="text-xs text-gray-600">Desfoque</label>
+                <span className="text-xs text-gray-500">{element.properties.shadow.blur}px</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="10"
+                value={element.properties.shadow.blur}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        blur: parseInt(e.target.value),
+                      },
+                    } as Partial<BulletElement>['properties'],
+                  })
+                }
+                className="w-full h-1.5"
+              />
+            </div>
+
+            <div>
+              <div className="flex justify-between items-center mb-0.5">
+                <label className="text-xs text-gray-600">Offset X</label>
+                <span className="text-xs text-gray-500">{element.properties.shadow.offsetX}px</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="10"
+                value={element.properties.shadow.offsetX}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        offsetX: parseInt(e.target.value),
+                      },
+                    } as Partial<BulletElement>['properties'],
+                  })
+                }
+                className="w-full h-1.5"
+              />
+            </div>
+
+            <div>
+              <div className="flex justify-between items-center mb-0.5">
+                <label className="text-xs text-gray-600">Offset Y</label>
+                <span className="text-xs text-gray-500">{element.properties.shadow.offsetY}px</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="10"
+                value={element.properties.shadow.offsetY}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        offsetY: parseInt(e.target.value),
+                      },
+                    } as Partial<BulletElement>['properties'],
+                  })
+                }
+                className="w-full h-1.5"
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -598,67 +760,74 @@ function IconProperties({ element }: { element: IconElement }) {
   const { updateElement, favoriteIcons, toggleFavoriteIcon } = useBuilderStore();
   const [iconPickerOpen, setIconPickerOpen] = useState(false);
   const [favoritesPickerOpen, setFavoritesPickerOpen] = useState(false);
-  const [colorPickerOpen, setColorPickerOpen] = useState(false);
+  const { COLOR_SCALES } = require('@/types/bulletSystemV2');
 
   const currentIcon = iconLibrary.find((icon) => icon.id === element.properties.iconName);
   const IconComponent = currentIcon?.icon;
 
   return (
     <div className="space-y-2">
-      {/* Color Picker and Stroke Width */}
+      {/* Color Control - PALETTE ONLY */}
       <div>
         <label className="block text-xs font-medium text-gray-700 mb-1">
           Cor
         </label>
-        <div className="flex items-center gap-2">
-          <input
-            type="color"
-            value={element.properties.color}
-            onChange={(e) =>
-              updateElement(element.id, {
-                properties: { ...element.properties, color: e.target.value },
-              } as Partial<IconElement>)
-            }
-            onClick={(e) => {
-              if (colorPickerOpen) {
-                e.preventDefault();
-              }
-              setColorPickerOpen(!colorPickerOpen);
-            }}
-            className="w-10 h-8 rounded border border-gray-200 cursor-pointer"
+        {/* Current color hex (read-only) */}
+        <div className="flex items-center gap-2 mb-2">
+          <div
+            className="w-10 h-8 rounded border-2 border-gray-300"
+            style={{ backgroundColor: element.properties.color }}
           />
           <input
             type="text"
             value={element.properties.color}
-            onChange={(e) =>
-              updateElement(element.id, {
-                properties: { ...element.properties, color: e.target.value },
-              } as Partial<IconElement>)
-            }
+            readOnly
             onFocus={(e) => e.target.select()}
-            className="w-20 px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="flex-1 px-2 py-1 text-xs border border-gray-200 rounded bg-gray-50 font-mono text-gray-600"
             placeholder="#000000"
           />
-          <div className="flex-1">
-            <div className="flex justify-between items-center mb-1">
-              <label className="text-xs font-medium text-gray-700">Espessura</label>
-              <span className="text-xs text-gray-500">{element.properties.strokeWidth || 2}px</span>
-            </div>
-            <input
-              type="range"
-              min="1"
-              max="6"
-              step="0.5"
-              value={element.properties.strokeWidth || 2}
-              onChange={(e) =>
+        </div>
+        {/* Color palette presets - ALL 196 colors */}
+        <div className="flex gap-1.5 flex-wrap max-h-64 overflow-y-auto">
+          {Object.keys(COLOR_SCALES).map((colorKey) => (
+            <button
+              key={colorKey}
+              onClick={() =>
                 updateElement(element.id, {
-                  properties: { ...element.properties, strokeWidth: parseFloat(e.target.value) },
+                  properties: { ...element.properties, color: COLOR_SCALES[colorKey as keyof typeof COLOR_SCALES].medium },
                 } as Partial<IconElement>)
               }
-              className="w-full h-1.5"
+              className={`w-7 h-7 rounded border-2 transition-all flex-shrink-0 ${
+                element.properties.color === COLOR_SCALES[colorKey as keyof typeof COLOR_SCALES].medium
+                  ? 'border-blue-500 scale-110 shadow-md'
+                  : 'border-gray-300 hover:border-gray-400 hover:scale-105'
+              }`}
+              style={{ backgroundColor: COLOR_SCALES[colorKey as keyof typeof COLOR_SCALES].medium }}
+              title={colorKey}
             />
-          </div>
+          ))}
         </div>
+      </div>
+
+      {/* Stroke Width */}
+      <div>
+        <div className="flex justify-between items-center mb-1">
+          <label className="text-xs font-medium text-gray-700">Espessura</label>
+          <span className="text-xs text-gray-500">{element.properties.strokeWidth || 2}px</span>
+        </div>
+        <input
+          type="range"
+          min="1"
+          max="6"
+          step="0.5"
+          value={element.properties.strokeWidth || 2}
+          onChange={(e) =>
+            updateElement(element.id, {
+              properties: { ...element.properties, strokeWidth: parseFloat(e.target.value) },
+            } as Partial<IconElement>)
+          }
+          className="w-full h-1.5"
+        />
       </div>
 
       {/* Icon & Favorites Pickers */}

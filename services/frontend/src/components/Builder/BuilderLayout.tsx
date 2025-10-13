@@ -264,13 +264,19 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over, delta } = event;
 
-    // Clear drag overlay
+    if (!over) {
+      // Clear drag overlay and return early if no drop target
+      setActiveId(null);
+      setActiveDragData(null);
+      return;
+    }
+
+    // Get drag data BEFORE clearing state
+    const dragData = (activeDragData || active.data.current) as any;
+
+    // Clear drag overlay AFTER getting data
     setActiveId(null);
     setActiveDragData(null);
-
-    if (!over) return;
-
-    const dragData = active.data.current as any;
 
     // Check if dragging an image from library
     const isImageDrag = dragData?.type === 'image' && dragData?.imageSrc;
@@ -366,6 +372,7 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
     }
 
     // CASE 2: Individual bullet dropped on canvas
+    console.log('🔍 Checking bullet drop:', { dragDataType: dragData?.type, overId: over?.id, matches: dragData?.type === 'individual-bullet' && over?.id === 'canvas-drop-zone' });
     if (dragData?.type === 'individual-bullet' && over.id === 'canvas-drop-zone') {
       console.log('🟣 Individual bullet dropped:', dragData);
 
@@ -426,11 +433,12 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
         return;
       }
 
-      // Generate SVG for the set with current color scheme
+      // Generate SVG for the set with current color scheme and item count
       const svgContent = bulletSet.generateSVG({
         width: bulletSet.width,
         height: bulletSet.height,
         colorScheme: dragData.colorScheme,
+        itemCount: dragData.itemCount || 3,
       });
 
       // Convert SVG to data URL
@@ -454,6 +462,7 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
           bulletSetId: bulletSet.id,
           bulletName: bulletSet.name,
           colorScheme: dragData.colorScheme,
+          itemCount: dragData.itemCount || 3,
           svgDataUrl: svgDataUrl,
         },
       } as Element;

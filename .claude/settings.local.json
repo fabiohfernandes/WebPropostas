@@ -71,7 +71,17 @@
       "Bash(timeout 30 docker-compose logs -f frontend --tail=20)",
       "Bash(timeout 30 docker-compose logs -f frontend --tail=15)",
       "Bash(tree:*)",
-      "Bash(timeout 10 docker-compose logs -f frontend --tail=15)"
+      "Bash(timeout 10 docker-compose logs -f frontend --tail=15)",
+      "Bash(timeout 5 docker-compose logs -f frontend --tail=20)",
+      "Bash(timeout 5 docker-compose logs -f frontend --tail=30)",
+      "Bash(npx esbuild:*)",
+      "Bash(timeout 10 docker-compose logs -f frontend --tail=20)",
+      "Bash(timeout 15 docker-compose logs -f frontend --tail=30)",
+      "Bash(timeout 20 docker-compose logs -f frontend)",
+      "Bash(timeout 15 docker-compose logs -f frontend)",
+      "Bash(timeout 10 docker-compose logs -f frontend)",
+      "Bash(timeout 15 docker-compose logs -f frontend --tail=20)",
+      "Bash(npm init:*)"
     ],
     "deny": [],
     "ask": []

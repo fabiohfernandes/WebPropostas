@@ -223,9 +223,15 @@ export interface VideoElement extends BaseElement {
 export interface BulletElement extends BaseElement {
   type: 'bullet';
   properties: {
-    bulletId: string;    // ID from bullet library
-    imageUrl: string;    // URL or base64 data URL of bullet graphic
-    name: string;        // Bullet name for reference
+    bulletId?: string;           // ID from bullet library (for individual bullets)
+    bulletSetId?: string;        // ID from bullet sets library
+    bulletName?: string;         // Bullet name for reference
+    color?: string;              // Color for individual bullets
+    number?: number;             // Number for individual bullets
+    colorScheme?: string[];      // Color scheme for bullet sets
+    itemCount?: number;          // Number of items in the set (for bullet sets)
+    imageUrl?: string;           // Legacy: URL or base64 data URL of bullet graphic
+    svgDataUrl?: string;         // SVG data URL for rendering
     shadow?: {
       blur: number;
       color: string;
