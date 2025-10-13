@@ -16,6 +16,7 @@ export function ColorDropdown({ value, onChange, colors, label, className = '' }
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredColor, setHoveredColor] = useState<ColorScaleName | null>(null);
   const [pillPosition, setPillPosition] = useState({ x: 0, y: 0 });
+  const [openToLeft, setOpenToLeft] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -28,6 +29,14 @@ export function ColorDropdown({ value, onChange, colors, label, className = '' }
 
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
+
+      // Check if dropdown is on the right side of the screen
+      if (dropdownRef.current) {
+        const rect = dropdownRef.current.getBoundingClientRect();
+        const screenWidth = window.innerWidth;
+        // If dropdown is in the right 40% of the screen, open pills to the left
+        setOpenToLeft(rect.right > screenWidth * 0.6);
+      }
     }
 
     return () => {
@@ -35,7 +44,7 @@ export function ColorDropdown({ value, onChange, colors, label, className = '' }
     };
   }, [isOpen]);
 
-  const selectedColorData = COLOR_SCALES[value];
+  const selectedColorData = COLOR_SCALES[value] || COLOR_SCALES.limeGreen;
 
   const getColorLabel = (colorKey: ColorScaleName): string => {
     const labels: Record<string, string> = {
@@ -103,10 +112,19 @@ export function ColorDropdown({ value, onChange, colors, label, className = '' }
                     setHoveredColor(colorKey);
                     const buttonRect = e.currentTarget.getBoundingClientRect();
                     const dropdownRect = dropdownRef.current?.getBoundingClientRect();
-                    setPillPosition({
-                      x: dropdownRect ? dropdownRect.right + 8 : 0,
-                      y: buttonRect.top
-                    });
+                    if (openToLeft) {
+                      // Open to the left (subtract pill width ~220px)
+                      setPillPosition({
+                        x: dropdownRect ? dropdownRect.left - 228 : 0,
+                        y: buttonRect.top
+                      });
+                    } else {
+                      // Open to the right
+                      setPillPosition({
+                        x: dropdownRect ? dropdownRect.right + 8 : 0,
+                        y: buttonRect.top
+                      });
+                    }
                   }}
                   onMouseLeave={() => setHoveredColor(null)}
                   className="w-full px-3 py-2 text-left text-xs flex items-center gap-2 transition-all"

@@ -23,6 +23,9 @@ import {
 } from '@heroicons/react/24/outline';
 import { FormProperties } from './FormProperties';
 import { FrameProperties } from './FrameProperties';
+import { ColorDropdown } from './ColorDropdown';
+import { COLOR_SCHEMAS } from './sessions/ColorsSessionEnhanced';
+import { COLOR_SCALES, type ColorScaleName } from '@/types/bulletSystemV2';
 import {
   // Shapes
   Square,
@@ -458,28 +461,31 @@ function VideoProperties({ element }: { element: VideoElement }) {
 function BulletProperties({ element }: { element: BulletElement }) {
   const { updateElement } = useBuilderStore();
   const { INDIVIDUAL_BULLETS_LIBRARY } = require('@/data/individualBulletsLibrary');
-  const { COLOR_SCALES } = require('@/types/bulletSystemV2');
+  const [selectedColorSchema, setSelectedColorSchema] = useState('todas');
 
   // Check if this is an individual bullet or a set
   const isIndividualBullet = !!element.properties.bulletId;
   const bullet = isIndividualBullet ? INDIVIDUAL_BULLETS_LIBRARY.find((b: any) => b.id === element.properties.bulletId) : null;
 
-  // Get current color value (either from scale or custom hex)
-  const getCurrentColor = () => {
+  // Find color name from hex value or return the color name if it's already a name
+  const getCurrentColorName = (): ColorScaleName => {
     const colorProp = element.properties.color || 'limeGreen';
-    // Check if it's a hex color (starts with #) or a color scale name
-    if (colorProp.startsWith('#')) {
-      return colorProp;
+    // If it's already a color name, return it
+    if (COLOR_SCALES[colorProp as ColorScaleName]) {
+      return colorProp as ColorScaleName;
     }
-    return COLOR_SCALES[colorProp]?.medium || '#B4D432';
+    // If it's a hex, find the matching color name
+    const colorEntry = Object.entries(COLOR_SCALES).find(
+      ([_, scale]) => scale.medium === colorProp
+    );
+    return (colorEntry?.[0] as ColorScaleName) || 'limeGreen';
   };
 
   // Regenerate SVG when color or number changes
-  const regenerateSVG = (color: string, number?: number) => {
+  const regenerateSVG = (colorName: ColorScaleName, number?: number) => {
     if (!bullet) return;
 
-    // If color is a scale name, get the medium value; otherwise use it directly
-    const colorValue = color.startsWith('#') ? color : (COLOR_SCALES[color]?.medium || color);
+    const colorValue = COLOR_SCALES[colorName].medium;
 
     const svgContent = bullet.generateSVG({
       width: bullet.defaultWidth,
@@ -492,7 +498,7 @@ function BulletProperties({ element }: { element: BulletElement }) {
     updateElement(element.id, {
       properties: {
         ...element.properties,
-        color,
+        color: colorName,
         number: number !== undefined ? number : element.properties.number,
         svgDataUrl,
       },
@@ -521,42 +527,41 @@ function BulletProperties({ element }: { element: BulletElement }) {
         </p>
       </div>
 
-      {/* Color Control (only for individual bullets) - STANDARDIZED WITH ICONS */}
+      {/* Color Control (only for individual bullets) - STANDARDIZED SCHEMA + DROPDOWN */}
       {isIndividualBullet && bullet && (
-        <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1">
-            Cor
-          </label>
-          <div className="flex items-center gap-2 mb-2">
-            <div
-              className="w-10 h-8 rounded border-2 border-gray-300"
-              style={{ backgroundColor: getCurrentColor() }}
-            />
-            <input
-              type="text"
-              value={getCurrentColor()}
-              readOnly
-              onFocus={(e) => e.target.select()}
-              className="flex-1 px-2 py-1 text-xs border border-gray-200 rounded bg-gray-50 font-mono text-gray-600"
-              placeholder="#000000"
-            />
+        <div className="grid grid-cols-2 gap-1.5">
+          {/* Schema Selection */}
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">
+              Esquema de Cores
+            </label>
+            <select
+              value={selectedColorSchema}
+              onChange={(e) => setSelectedColorSchema(e.target.value)}
+              className="w-full px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            >
+              <option value="todas">Todas as Cores</option>
+              {COLOR_SCHEMAS.map((schema) => (
+                <option key={schema.id} value={schema.id}>
+                  {schema.name}
+                </option>
+              ))}
+            </select>
           </div>
-          {/* Color palette presets - ALL 196 colors */}
-          <div className="flex gap-1.5 flex-wrap max-h-64 overflow-y-auto">
-            {Object.keys(COLOR_SCALES).map((colorKey) => (
-              <button
-                key={colorKey}
-                onClick={() => regenerateSVG(colorKey, element.properties.number)}
-                className={`w-7 h-7 rounded border-2 transition-all flex-shrink-0 ${
-                  getCurrentColor() === COLOR_SCALES[colorKey as keyof typeof COLOR_SCALES].medium
-                    ? 'border-blue-500 scale-110 shadow-md'
-                    : 'border-gray-300 hover:border-gray-400 hover:scale-105'
-                }`}
-                style={{ backgroundColor: COLOR_SCALES[colorKey as keyof typeof COLOR_SCALES].medium }}
-                title={colorKey}
-              />
-            ))}
-          </div>
+
+          {/* Color Dropdown */}
+          <ColorDropdown
+            value={getCurrentColorName()}
+            onChange={(colorName) => {
+              regenerateSVG(colorName, element.properties.number);
+            }}
+            colors={(() => {
+              const schema = COLOR_SCHEMAS.find(s => s.id === selectedColorSchema);
+              const availableColors = schema ? schema.colors : Object.keys(COLOR_SCALES) as ColorScaleName[];
+              return availableColors.filter(colorKey => COLOR_SCALES[colorKey]);
+            })()}
+            label="Cor"
+          />
         </div>
       )}
 
@@ -570,7 +575,7 @@ function BulletProperties({ element }: { element: BulletElement }) {
             <button
               onClick={() => {
                 const newNumber = Math.max(1, (element.properties.number || 1) - 1);
-                regenerateSVG(element.properties.color || 'limeGreen', newNumber);
+                regenerateSVG(getCurrentColorName(), newNumber);
               }}
               className="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium"
             >
@@ -581,7 +586,7 @@ function BulletProperties({ element }: { element: BulletElement }) {
               value={element.properties.number || 1}
               onChange={(e) => {
                 const newNumber = Math.max(1, Math.min(99, parseInt(e.target.value) || 1));
-                regenerateSVG(element.properties.color || 'limeGreen', newNumber);
+                regenerateSVG(getCurrentColorName(), newNumber);
               }}
               className="flex-1 px-2 py-1 text-center border border-gray-300 rounded text-xs"
               min="1"
@@ -590,7 +595,7 @@ function BulletProperties({ element }: { element: BulletElement }) {
             <button
               onClick={() => {
                 const newNumber = Math.min(99, (element.properties.number || 1) + 1);
-                regenerateSVG(element.properties.color || 'limeGreen', newNumber);
+                regenerateSVG(getCurrentColorName(), newNumber);
               }}
               className="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium"
             >
@@ -760,53 +765,57 @@ function IconProperties({ element }: { element: IconElement }) {
   const { updateElement, favoriteIcons, toggleFavoriteIcon } = useBuilderStore();
   const [iconPickerOpen, setIconPickerOpen] = useState(false);
   const [favoritesPickerOpen, setFavoritesPickerOpen] = useState(false);
-  const { COLOR_SCALES } = require('@/types/bulletSystemV2');
+  const [selectedColorSchema, setSelectedColorSchema] = useState('todas');
+
+  // Find color name from hex value
+  const getCurrentColorName = (): ColorScaleName => {
+    const colorEntry = Object.entries(COLOR_SCALES).find(
+      ([_, scale]) => scale.medium === element.properties.color
+    );
+    return (colorEntry?.[0] as ColorScaleName) || 'limeGreen';
+  };
 
   const currentIcon = iconLibrary.find((icon) => icon.id === element.properties.iconName);
   const IconComponent = currentIcon?.icon;
 
   return (
     <div className="space-y-2">
-      {/* Color Control - PALETTE ONLY */}
-      <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">
-          Cor
-        </label>
-        {/* Current color hex (read-only) */}
-        <div className="flex items-center gap-2 mb-2">
-          <div
-            className="w-10 h-8 rounded border-2 border-gray-300"
-            style={{ backgroundColor: element.properties.color }}
-          />
-          <input
-            type="text"
-            value={element.properties.color}
-            readOnly
-            onFocus={(e) => e.target.select()}
-            className="flex-1 px-2 py-1 text-xs border border-gray-200 rounded bg-gray-50 font-mono text-gray-600"
-            placeholder="#000000"
-          />
+      {/* Color Control - STANDARDIZED WITH SCHEMA + DROPDOWN */}
+      <div className="grid grid-cols-2 gap-1.5">
+        {/* Schema Selection */}
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1">
+            Esquema de Cores
+          </label>
+          <select
+            value={selectedColorSchema}
+            onChange={(e) => setSelectedColorSchema(e.target.value)}
+            className="w-full px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          >
+            <option value="todas">Todas as Cores</option>
+            {COLOR_SCHEMAS.map((schema) => (
+              <option key={schema.id} value={schema.id}>
+                {schema.name}
+              </option>
+            ))}
+          </select>
         </div>
-        {/* Color palette presets - ALL 196 colors */}
-        <div className="flex gap-1.5 flex-wrap max-h-64 overflow-y-auto">
-          {Object.keys(COLOR_SCALES).map((colorKey) => (
-            <button
-              key={colorKey}
-              onClick={() =>
-                updateElement(element.id, {
-                  properties: { ...element.properties, color: COLOR_SCALES[colorKey as keyof typeof COLOR_SCALES].medium },
-                } as Partial<IconElement>)
-              }
-              className={`w-7 h-7 rounded border-2 transition-all flex-shrink-0 ${
-                element.properties.color === COLOR_SCALES[colorKey as keyof typeof COLOR_SCALES].medium
-                  ? 'border-blue-500 scale-110 shadow-md'
-                  : 'border-gray-300 hover:border-gray-400 hover:scale-105'
-              }`}
-              style={{ backgroundColor: COLOR_SCALES[colorKey as keyof typeof COLOR_SCALES].medium }}
-              title={colorKey}
-            />
-          ))}
-        </div>
+
+        {/* Color Dropdown */}
+        <ColorDropdown
+          value={getCurrentColorName()}
+          onChange={(colorName) => {
+            updateElement(element.id, {
+              properties: { ...element.properties, color: COLOR_SCALES[colorName].medium },
+            } as Partial<IconElement>);
+          }}
+          colors={(() => {
+            const schema = COLOR_SCHEMAS.find(s => s.id === selectedColorSchema);
+            const availableColors = schema ? schema.colors : Object.keys(COLOR_SCALES) as ColorScaleName[];
+            return availableColors.filter(colorKey => COLOR_SCALES[colorKey]);
+          })()}
+          label="Cor"
+        />
       </div>
 
       {/* Stroke Width */}
@@ -1708,6 +1717,8 @@ export function PropertiesPanel() {
   const { deleteElement, duplicateElement, currentPageId, updatePageBackground, pages } = useBuilderStore();
   const { images } = useImageLibrary();
   const [showBgLibrary, setShowBgLibrary] = useState(false);
+  const [selectedColorSchema, setSelectedColorSchema] = useState('todas');
+  const [selectedColor, setSelectedColor] = useState<ColorScaleName>('ivoryWhite');
   const currentPage = pages.find(p => p.id === currentPageId);
 
   if (!selectedElement) {
@@ -1756,36 +1767,44 @@ export function PropertiesPanel() {
 
           {/* Color Background */}
           {bgType === 'color' && (
-            <div>
-              <label className="block text-xs text-gray-600 mb-1">
-                Cor
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="color"
-                  value={bgColor}
-                  onChange={(e) =>
-                    updatePageBackground(currentPageId, {
-                      type: 'color',
-                      color: e.target.value,
-                      opacity: bgOpacity,
-                    })
-                  }
-                  className="w-10 h-8 rounded cursor-pointer"
-                />
-                <input
-                  type="text"
-                  value={bgColor}
-                  onChange={(e) =>
-                    updatePageBackground(currentPageId, {
-                      type: 'color',
-                      color: e.target.value,
-                      opacity: bgOpacity,
-                    })
-                  }
-                  className="flex-1 px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono"
-                />
+            <div className="grid grid-cols-2 gap-1.5">
+              {/* Schema Selection */}
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">
+                  Esquema de Cores
+                </label>
+                <select
+                  value={selectedColorSchema}
+                  onChange={(e) => setSelectedColorSchema(e.target.value)}
+                  className="w-full px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                >
+                  <option value="todas">Todas as Cores</option>
+                  {COLOR_SCHEMAS.map((schema) => (
+                    <option key={schema.id} value={schema.id}>
+                      {schema.name}
+                    </option>
+                  ))}
+                </select>
               </div>
+
+              {/* Color Dropdown */}
+              <ColorDropdown
+                value={selectedColor}
+                onChange={(colorName) => {
+                  setSelectedColor(colorName);
+                  updatePageBackground(currentPageId, {
+                    type: 'color',
+                    color: COLOR_SCALES[colorName].medium,
+                    opacity: bgOpacity,
+                  });
+                }}
+                colors={(() => {
+                  const schema = COLOR_SCHEMAS.find(s => s.id === selectedColorSchema);
+                  const availableColors = schema ? schema.colors : Object.keys(COLOR_SCALES) as ColorScaleName[];
+                  return availableColors.filter(colorKey => COLOR_SCALES[colorKey]);
+                })()}
+                label="Cor"
+              />
             </div>
           )}
 

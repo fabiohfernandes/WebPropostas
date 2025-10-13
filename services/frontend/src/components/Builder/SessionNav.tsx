@@ -5,6 +5,7 @@
 
 'use client';
 
+import { useState } from 'react';
 import {
   LayoutTemplate,
   Type,
@@ -110,46 +111,63 @@ const sessions: Session[] = [
 
 export function SessionNav() {
   const { activeSession, setActiveSession } = useBuilderStore();
+  const [hoveredSession, setHoveredSession] = useState<string | null>(null);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
   return (
-    <div className="w-16 bg-white border-r border-gray-200 flex flex-col items-center py-4 gap-2">
-      {sessions.map((session) => {
-        const isActive = activeSession === session.id;
+    <>
+      <div className="w-16 bg-white border-r border-gray-200 flex flex-col items-center py-4 gap-2">
+        {sessions.map((session) => {
+          const isActive = activeSession === session.id;
 
-        return (
-          <button
-            key={session.id}
-            onClick={() => setActiveSession(session.id)}
-            className={`
-              group relative w-12 h-12 rounded-xl flex items-center justify-center
-              transition-all duration-200
-              ${isActive
-                ? `bg-gradient-to-br ${session.gradient} shadow-lg scale-105`
-                : 'bg-gray-50 hover:bg-gray-100 hover:scale-105'
-              }
-            `}
-            title={session.label}
-          >
-            <div className={isActive ? 'text-white' : session.color}>
-              {session.icon}
-            </div>
+          return (
+            <button
+              key={session.id}
+              onClick={() => setActiveSession(session.id)}
+              onMouseEnter={(e) => {
+                setHoveredSession(session.id);
+                const rect = e.currentTarget.getBoundingClientRect();
+                setTooltipPosition({
+                  x: rect.right + 8,
+                  y: rect.top + rect.height / 2
+                });
+              }}
+              onMouseLeave={() => setHoveredSession(null)}
+              className={`
+                group relative w-12 h-12 rounded-xl flex items-center justify-center
+                transition-all duration-200
+                ${isActive
+                  ? `bg-gradient-to-br ${session.gradient} shadow-lg scale-105`
+                  : 'bg-gray-50 hover:bg-gray-100 hover:scale-105'
+                }
+              `}
+            >
+              <div className={isActive ? 'text-white' : session.color}>
+                {session.icon}
+              </div>
 
-            {/* Tooltip */}
-            <div className="
-              absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded
-              opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity
-              whitespace-nowrap z-50
-            ">
-              {session.label}
-            </div>
+              {/* Active indicator */}
+              {isActive && (
+                <div className={`absolute -right-1 w-1 h-8 rounded-full bg-gradient-to-b ${session.gradient}`} />
+              )}
+            </button>
+          );
+        })}
+      </div>
 
-            {/* Active indicator */}
-            {isActive && (
-              <div className={`absolute -right-1 w-1 h-8 rounded-full bg-gradient-to-b ${session.gradient}`} />
-            )}
-          </button>
-        );
-      })}
-    </div>
+      {/* Fixed positioned tooltip - rendered at document level */}
+      {hoveredSession && (
+        <div
+          className="fixed px-3 py-1.5 bg-gray-100 text-gray-900 text-sm font-medium rounded border border-gray-300 whitespace-nowrap pointer-events-none transition-opacity duration-150 shadow-lg z-[9999]"
+          style={{
+            left: `${tooltipPosition.x}px`,
+            top: `${tooltipPosition.y}px`,
+            transform: 'translateY(-50%)'
+          }}
+        >
+          {sessions.find(s => s.id === hoveredSession)?.label}
+        </div>
+      )}
+    </>
   );
 }

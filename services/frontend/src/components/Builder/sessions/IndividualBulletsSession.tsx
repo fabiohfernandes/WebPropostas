@@ -139,8 +139,6 @@ function DraggableBullet({ bullet, color, number }: DraggableBulletProps) {
   return (
     <div
       ref={setNodeRef}
-      {...listeners}
-      {...attributes}
       onClick={handleClick}
       className={`
         relative group cursor-pointer
@@ -150,16 +148,26 @@ function DraggableBullet({ bullet, color, number }: DraggableBulletProps) {
         p-3
         ${isDragging ? 'opacity-50 scale-95' : 'hover:scale-105'}
       `}
-      style={{
-        touchAction: 'none',
-      }}
     >
+      {/* Drag handle (top-left corner) */}
+      <div
+        {...listeners}
+        {...attributes}
+        className="absolute top-1 left-1 p-1.5 bg-violet-100 hover:bg-violet-200 rounded cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity z-10"
+        style={{ touchAction: 'none' }}
+        title="Arrastar"
+      >
+        <svg className="w-3 h-3 text-violet-600" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M7 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 2zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 14zm6-8a2 2 0 1 0-.001-4.001A2 2 0 0 0 13 6zm0 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 14z" />
+        </svg>
+      </div>
+
       {/* Preview */}
       <div className="aspect-square flex items-center justify-center bg-gray-50 rounded-lg overflow-hidden">
         <img
           src={svgDataUrl}
           alt={bullet.name}
-          className="max-w-full max-h-full object-contain"
+          className="max-w-full max-h-full object-contain pointer-events-none"
           draggable={false}
         />
       </div>

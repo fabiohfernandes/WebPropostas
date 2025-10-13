@@ -27,7 +27,7 @@ interface ColorSchema {
 }
 
 // ALL 44 Color Schemas from palette images - SORTED ALPHABETICALLY
-const DEFAULT_SCHEMAS: ColorSchema[] = [
+export const COLOR_SCHEMAS: ColorSchema[] = [
   { id: 'aesthetic', name: 'Aesthetic', colors: ['maroonRed', 'ivoryWhite', 'lightGrayBeige', 'shadowGray', 'taupeBrown'], isDefault: true },
   { id: 'blackberry', name: 'Blackberry', colors: ['paleBeige', 'dustyTealGray', 'softBlue', 'mutedPurple', 'charcoalPurple'], isDefault: true },
   { id: 'bubblegum', name: 'Bubblegum', colors: ['amethyst', 'skyBlue', 'hotPink', 'sunflower', 'electricBlue', 'brightFuchsia'], isDefault: true },
@@ -77,7 +77,7 @@ const DEFAULT_SCHEMAS: ColorSchema[] = [
 ];
 
 export function ColorsSessionEnhanced() {
-  const [schemas, setSchemas] = useState<ColorSchema[]>(DEFAULT_SCHEMAS);
+  const [schemas, setSchemas] = useState<ColorSchema[]>(COLOR_SCHEMAS);
   const [favorites, setFavorites] = useState<ColorScaleName[]>(['limeGreen', 'teal', 'coral', 'amethyst']);
   const [editingSchema, setEditingSchema] = useState<string | null>(null);
   const [newSchemaName, setNewSchemaName] = useState('');
