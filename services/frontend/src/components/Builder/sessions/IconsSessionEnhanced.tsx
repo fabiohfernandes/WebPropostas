@@ -98,6 +98,7 @@ import {
   Star as StarIcon,
 } from 'lucide-react';
 import { useBuilderStore } from '@/store/builder';
+import { COLOR_SCALES, ColorScaleName } from '@/types/bulletSystemV2';
 
 interface IconDefinition {
   id: string;
@@ -213,12 +214,70 @@ const categories = [
   { id: 'decorative', label: 'Decorativo' },
 ];
 
+interface ColorSchema {
+  id: string;
+  name: string;
+  colors: ColorScaleName[];
+}
+
+// Color Schemas (matching ColorsSessionEnhanced)
+const COLOR_SCHEMAS: ColorSchema[] = [
+  { id: 'all', name: 'Todas as Cores', colors: Object.keys(COLOR_SCALES) as ColorScaleName[] },
+  { id: 'fresh', name: 'Fresh', colors: ['warmBrown', 'sageGreen', 'steelBlue', 'lightGray', 'coconutCream'] },
+  { id: 'haze-sunset', name: 'Haze Sunset', colors: ['peach', 'coral', 'dustyRose', 'purpleGray', 'slateBlue'] },
+  { id: 'studio', name: 'Studio', colors: ['goldenYellow', 'iceBlue', 'powderBlue', 'charcoal', 'mauve'] },
+  { id: 'tropical', name: 'Tropical', colors: ['harvestGold', 'calico', 'hampton', 'seaNymph', 'smaltBlue'] },
+  { id: 'sinopsys', name: 'Sinopsys', colors: ['softPeach', 'vintagePlum', 'midnightNavy'] },
+  { id: 'aesthetic', name: 'Aesthetic', colors: ['maroonRed', 'ivoryWhite', 'shadowGray', 'taupe'] },
+  { id: 'coconut', name: 'Coconut', colors: ['tangerine', 'coconutCream', 'espresso', 'khaki'] },
+  { id: 'chicago', name: 'Chicago', colors: ['beigeTan'] },
+  { id: 'dreamer', name: 'Dreamer', colors: ['aquaMist', 'lavenderGray', 'sandBeige', 'lilacMist'] },
+  { id: 'officer', name: 'Officer', colors: ['slateGray', 'tealBlue', 'softBlue', 'amber', 'tangerine'] },
+  { id: 'golden', name: 'Golden', colors: ['antiqueBronze', 'sandyBeige', 'lightGray', 'khaki', 'darkChocolate'] },
+  { id: 'dusk', name: 'Dusk', colors: ['darkBrown', 'rosewood', 'dustySage', 'paleGray'] },
+  { id: 'winter', name: 'Winter', colors: ['winterSky', 'steelBlue', 'deepOcean'] },
+  { id: 'deep-water', name: 'Deep Water', colors: ['navyDepth'] },
+  { id: 'bubblegum', name: 'Bubblegum', colors: ['amethyst', 'skyBlue', 'hotPink', 'sunflower'] },
+  { id: 'summer-vibes', name: 'Summer Vibes', colors: ['mintGreen', 'lemonChiffon', 'blushPink', 'coralPink'] },
+  { id: 'nude', name: 'Nude', colors: ['deepCharcoal', 'rosyBrown', 'sandyBeige', 'lightTan', 'creamBeige', 'ivoryCream'] },
+  { id: 'officer2', name: 'Officer 2', colors: ['slateGray', 'tealBlue', 'softBlue', 'amber', 'tangerine'] },
+  { id: 'blackberry', name: 'Blackberry', colors: ['vanillaCream', 'softBlue', 'mutedPurple'] },
+  { id: 'officer3', name: 'Officer 3', colors: ['darkSlate', 'royalPurple', 'silverGray'] },
+  { id: 'classic', name: 'Classic', colors: ['forestGreen', 'silverGray', 'lightGray', 'mustardYellow'] },
+  { id: 'greenwich', name: 'Greenwich', colors: ['yaleBlue', 'dustyTeal', 'cambridgeBlue', 'mindaro'] },
+  { id: 'hazy', name: 'Hazy', colors: ['deepForest', 'dustyTeal', 'sageGray', 'seafoam', 'lightGray', 'mintCream'] },
+  { id: 'miami', name: 'Miami', colors: ['deepPurple', 'crimson', 'rubyRed', 'tangerineDream', 'goldenSun'] },
+  { id: 'pastel', name: 'Pastel', colors: ['softLavender', 'blushPink', 'softCoral', 'warmGray'] },
+  { id: 'mediterranean', name: 'Mediterranean', colors: ['deepTeal', 'skyBlue', 'lightBlue', 'coconutCream', 'tangerine'] },
+  { id: 'terrace', name: 'Terrace', colors: ['deepViolet', 'burgundy'] },
+  { id: 'lullaby', name: 'Lullaby', colors: ['paleRose', 'dustyPink', 'lightGray', 'warmGray'] },
+  { id: 'viola', name: 'Viola', colors: ['deepAmethyst', 'orchid', 'goldCream', 'vanillaIce'] },
+  { id: 'mocha', name: 'Mocha', colors: ['espressoDark', 'caramel', 'latte', 'milkCream', 'ivoryCream'] },
+  { id: 'earth', name: 'Earth', colors: ['charcoalBlack', 'forestBrown', 'doveGray', 'sandstone', 'parchment', 'ivory'] },
+  { id: 'frosted', name: 'Frosted', colors: ['midnightSlate', 'steelSlate', 'sageGray', 'mistyBlue', 'frostBlue', 'paleIce'] },
+  { id: 'sensual', name: 'Sensual', colors: ['nero', 'wineRed', 'desertSand', 'blushBeige', 'porcelain', 'ivoryCream'] },
+  { id: 'regal', name: 'Regal', colors: ['jetBlack', 'plumWine', 'bronze', 'mintJade', 'paleAlmond', 'ivoryCream'] },
+  { id: 'spiced', name: 'Spiced', colors: ['obsidian', 'cayenne', 'cinnamon', 'goldenHoney', 'champagne', 'ivoryCream'] },
+  { id: 'luxor', name: 'Luxor', colors: ['onyxBlack', 'mahogany', 'taupeBrown', 'champagneGold', 'paleChampagne', 'creamWhite'] },
+  { id: 'suvinil-amarelos', name: 'Suvinil Amarelos', colors: ['luzDeInverno', 'gengibre', 'cacauDaBahia', 'amareloReal'] },
+  { id: 'suvinil-laranjas', name: 'Suvinil Laranjas', colors: ['areia', 'naturale', 'maraca', 'vitaminaDePapaia'] },
+  { id: 'suvinil-rosas', name: 'Suvinil Rosas', colors: ['rosaPastel', 'contoDeFadas', 'rosaNeon', 'valentino'] },
+  { id: 'suvinil-violetas', name: 'Suvinil Violetas', colors: ['chaDeRosas', 'chuvaDePetalas', 'florDeGeranio', 'roxoRustico'] },
+  { id: 'suvinil-azuis', name: 'Suvinil Azuis', colors: ['aguaFresca', 'ceuSereno', 'ilhasGregas', 'azulMarinho'] },
+  { id: 'suvinil-teals', name: 'Suvinil Teals', colors: ['luzDaManha', 'calmaria', 'marMediterraneo', 'marVerde'] },
+  { id: 'suvinil-verdes', name: 'Suvinil Verdes', colors: ['verdeLavado', 'igarape', 'rioLimpido', 'trilhaNaMata'] },
+  { id: 'suvinil-verde-amarelo', name: 'Suvinil Verde-Amarelo', colors: ['rioPaine', 'capimSanto', 'cheiroVerde', 'capimSeco'] },
+  { id: 'suvinil-cinzas', name: 'Suvinil Cinzas', colors: ['fotoRetro', 'banhoDePlatina', 'cinzaNatural', 'aventurinaPreta'] },
+  { id: 'suvinil-beges', name: 'Suvinil Beges', colors: ['gelo', 'calopsita', 'algodaoEgipcio', 'invernoGelado'] },
+];
+
 export function IconsSessionEnhanced() {
   const { addElement, currentPage, favoriteIcons, toggleFavoriteIcon } = useBuilderStore();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [iconSize, setIconSize] = useState(48);
   const [iconColor, setIconColor] = useState('#3B82F6');
+  const [selectedColorSchema, setSelectedColorSchema] = useState<string>('all');
 
   const handleInsertIcon = (iconDef: IconDefinition) => {
     const page = currentPage();
@@ -337,8 +396,8 @@ export function IconsSessionEnhanced() {
           )}
         </div>
 
-        {/* Size, Color & Category Controls */}
-        <div className="flex gap-2 items-center">
+        {/* Category & Size Controls */}
+        <div className="flex gap-2 items-center mb-2">
           <div className="flex-1">
             <label className="text-xs text-gray-600 block mb-1">Categoria</label>
             <select
@@ -366,14 +425,61 @@ export function IconsSessionEnhanced() {
               <option value={96}>Extra Grande (96px)</option>
             </select>
           </div>
+        </div>
+
+        {/* Color Schema & Color Controls */}
+        <div className="flex gap-2 items-center">
+          <div className="flex-1">
+            <label className="text-xs text-gray-600 block mb-1">Esquema de Cores</label>
+            <select
+              value={selectedColorSchema}
+              onChange={(e) => {
+                setSelectedColorSchema(e.target.value);
+                // Reset to first valid color of selected schema
+                const schema = COLOR_SCHEMAS.find(s => s.id === e.target.value);
+                if (schema && schema.colors.length > 0) {
+                  const validColors = schema.colors.filter(c => COLOR_SCALES[c]);
+                  if (validColors.length > 0) {
+                    const firstColor = COLOR_SCALES[validColors[0]];
+                    setIconColor(firstColor.medium);
+                  }
+                }
+              }}
+              className="w-full px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            >
+              {COLOR_SCHEMAS.map((schema) => (
+                <option key={schema.id} value={schema.id}>
+                  {schema.name}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="flex-1">
             <label className="text-xs text-gray-600 block mb-1">Cor</label>
-            <input
-              type="color"
+            <select
               value={iconColor}
               onChange={(e) => setIconColor(e.target.value)}
-              className="w-full h-8 rounded cursor-pointer"
-            />
+              className="w-full px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              style={{
+                backgroundColor: iconColor,
+                color: ['#000000', '#11100F', '#050505', '#17222B', '#0B032D', '#223030', '#192524', '#0B2E33', '#1B4079', '#283848', '#384860', '#483868', '#286860', '#185048', '#506850', '#405040'].includes(iconColor) ? '#FFFFFF' : '#000000'
+              }}
+            >
+              {(() => {
+                const schema = COLOR_SCHEMAS.find(s => s.id === selectedColorSchema);
+                const availableColors = schema ? schema.colors : Object.keys(COLOR_SCALES) as ColorScaleName[];
+                return availableColors
+                  .filter(colorKey => COLOR_SCALES[colorKey]) // Filter out invalid colors
+                  .map((colorKey) => {
+                    const colorValue = COLOR_SCALES[colorKey];
+                    return (
+                      <option key={colorKey} value={colorValue.medium} style={{ backgroundColor: colorValue.medium }}>
+                        {colorKey}
+                      </option>
+                    );
+                  });
+              })()}
+            </select>
           </div>
         </div>
       </div>

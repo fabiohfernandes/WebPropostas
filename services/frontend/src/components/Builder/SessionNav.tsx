@@ -15,12 +15,13 @@ import {
   Circle,
   Layers,
   Sparkles,
+  Palette,
   Lightbulb,
 } from 'lucide-react';
 import { useBuilderStore } from '@/store/builder';
 
 interface Session {
-  id: 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets-individual' | 'bullets-sets' | 'ai' | 'tips';
+  id: 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets-individual' | 'bullets-sets' | 'ai' | 'colors' | 'tips';
   label: string;
   icon: React.ReactNode;
   color: string;
@@ -90,6 +91,13 @@ const sessions: Session[] = [
     icon: <Sparkles className="w-5 h-5" strokeWidth={2.5} />,
     color: 'text-violet-600',
     gradient: 'from-violet-500 to-violet-600',
+  },
+  {
+    id: 'colors',
+    label: 'Cores',
+    icon: <Palette className="w-5 h-5" strokeWidth={2.5} />,
+    color: 'text-fuchsia-600',
+    gradient: 'from-fuchsia-500 to-fuchsia-600',
   },
   {
     id: 'tips',

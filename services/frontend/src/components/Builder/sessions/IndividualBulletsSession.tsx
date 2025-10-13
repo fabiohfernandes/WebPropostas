@@ -22,6 +22,63 @@ const CATEGORIES: { id: BulletCategory | 'all'; label: string; icon: React.React
   { id: 'decorative', label: 'Decorativo', icon: <Diamond className="w-4 h-4" /> },
 ];
 
+interface ColorSchema {
+  id: string;
+  name: string;
+  colors: ColorScaleName[];
+}
+
+// Color Schemas (matching ColorsSessionEnhanced)
+const COLOR_SCHEMAS: ColorSchema[] = [
+  { id: 'all', name: 'Todas as Cores', colors: Object.keys(COLOR_SCALES) as ColorScaleName[] },
+  { id: 'fresh', name: 'Fresh', colors: ['warmBrown', 'sageGreen', 'steelBlue', 'lightGray', 'coconutCream'] },
+  { id: 'haze-sunset', name: 'Haze Sunset', colors: ['peach', 'coral', 'dustyRose', 'purpleGray', 'slateBlue'] },
+  { id: 'studio', name: 'Studio', colors: ['goldenYellow', 'iceBlue', 'powderBlue', 'charcoal', 'mauve'] },
+  { id: 'tropical', name: 'Tropical', colors: ['harvestGold', 'calico', 'hampton', 'seaNymph', 'smaltBlue'] },
+  { id: 'sinopsys', name: 'Sinopsys', colors: ['softPeach', 'vintagePlum', 'midnightNavy'] },
+  { id: 'aesthetic', name: 'Aesthetic', colors: ['maroonRed', 'ivoryWhite', 'shadowGray', 'taupe'] },
+  { id: 'coconut', name: 'Coconut', colors: ['tangerine', 'coconutCream', 'espresso', 'khaki'] },
+  { id: 'chicago', name: 'Chicago', colors: ['beigeTan'] },
+  { id: 'dreamer', name: 'Dreamer', colors: ['aquaMist', 'lavenderGray', 'sandBeige', 'lilacMist'] },
+  { id: 'officer', name: 'Officer', colors: ['slateGray', 'tealBlue', 'softBlue', 'amber', 'tangerine'] },
+  { id: 'golden', name: 'Golden', colors: ['antiqueBronze', 'sandyBeige', 'lightGray', 'khaki', 'darkChocolate'] },
+  { id: 'dusk', name: 'Dusk', colors: ['darkBrown', 'rosewood', 'dustySage', 'paleGray'] },
+  { id: 'winter', name: 'Winter', colors: ['winterSky', 'steelBlue', 'deepOcean'] },
+  { id: 'deep-water', name: 'Deep Water', colors: ['navyDepth'] },
+  { id: 'bubblegum', name: 'Bubblegum', colors: ['amethyst', 'skyBlue', 'hotPink', 'sunflower'] },
+  { id: 'summer-vibes', name: 'Summer Vibes', colors: ['mintGreen', 'lemonChiffon', 'blushPink', 'coralPink'] },
+  { id: 'nude', name: 'Nude', colors: ['deepCharcoal', 'rosyBrown', 'sandyBeige', 'lightTan', 'creamBeige', 'ivoryCream'] },
+  { id: 'officer2', name: 'Officer 2', colors: ['slateGray', 'tealBlue', 'softBlue', 'amber', 'tangerine'] },
+  { id: 'blackberry', name: 'Blackberry', colors: ['vanillaCream', 'softBlue', 'mutedPurple'] },
+  { id: 'officer3', name: 'Officer 3', colors: ['darkSlate', 'royalPurple', 'silverGray'] },
+  { id: 'classic', name: 'Classic', colors: ['forestGreen', 'silverGray', 'lightGray', 'mustardYellow'] },
+  { id: 'greenwich', name: 'Greenwich', colors: ['yaleBlue', 'dustyTeal', 'cambridgeBlue', 'mindaro'] },
+  { id: 'hazy', name: 'Hazy', colors: ['deepForest', 'dustyTeal', 'sageGray', 'seafoam', 'lightGray', 'mintCream'] },
+  { id: 'miami', name: 'Miami', colors: ['deepPurple', 'crimson', 'rubyRed', 'tangerineDream', 'goldenSun'] },
+  { id: 'pastel', name: 'Pastel', colors: ['softLavender', 'blushPink', 'softCoral', 'warmGray'] },
+  { id: 'mediterranean', name: 'Mediterranean', colors: ['deepTeal', 'skyBlue', 'lightBlue', 'coconutCream', 'tangerine'] },
+  { id: 'terrace', name: 'Terrace', colors: ['deepViolet', 'burgundy'] },
+  { id: 'lullaby', name: 'Lullaby', colors: ['paleRose', 'dustyPink', 'lightGray', 'warmGray'] },
+  { id: 'viola', name: 'Viola', colors: ['deepAmethyst', 'orchid', 'goldCream', 'vanillaIce'] },
+  { id: 'mocha', name: 'Mocha', colors: ['espressoDark', 'caramel', 'latte', 'milkCream', 'ivoryCream'] },
+  { id: 'earth', name: 'Earth', colors: ['charcoalBlack', 'forestBrown', 'doveGray', 'sandstone', 'parchment', 'ivory'] },
+  { id: 'frosted', name: 'Frosted', colors: ['midnightSlate', 'steelSlate', 'sageGray', 'mistyBlue', 'frostBlue', 'paleIce'] },
+  { id: 'sensual', name: 'Sensual', colors: ['nero', 'wineRed', 'desertSand', 'blushBeige', 'porcelain', 'ivoryCream'] },
+  { id: 'regal', name: 'Regal', colors: ['jetBlack', 'plumWine', 'bronze', 'mintJade', 'paleAlmond', 'ivoryCream'] },
+  { id: 'spiced', name: 'Spiced', colors: ['obsidian', 'cayenne', 'cinnamon', 'goldenHoney', 'champagne', 'ivoryCream'] },
+  { id: 'luxor', name: 'Luxor', colors: ['onyxBlack', 'mahogany', 'taupeBrown', 'champagneGold', 'paleChampagne', 'creamWhite'] },
+  { id: 'suvinil-amarelos', name: 'Suvinil Amarelos', colors: ['luzDeInverno', 'gengibre', 'cacauDaBahia', 'amareloReal'] },
+  { id: 'suvinil-laranjas', name: 'Suvinil Laranjas', colors: ['areia', 'naturale', 'maraca', 'vitaminaDePapaia'] },
+  { id: 'suvinil-rosas', name: 'Suvinil Rosas', colors: ['rosaPastel', 'contoDeFadas', 'rosaNeon', 'valentino'] },
+  { id: 'suvinil-violetas', name: 'Suvinil Violetas', colors: ['chaDeRosas', 'chuvaDePetalas', 'florDeGeranio', 'roxoRustico'] },
+  { id: 'suvinil-azuis', name: 'Suvinil Azuis', colors: ['aguaFresca', 'ceuSereno', 'ilhasGregas', 'azulMarinho'] },
+  { id: 'suvinil-teals', name: 'Suvinil Teals', colors: ['luzDaManha', 'calmaria', 'marMediterraneo', 'marVerde'] },
+  { id: 'suvinil-verdes', name: 'Suvinil Verdes', colors: ['verdeLavado', 'igarape', 'rioLimpido', 'trilhaNaMata'] },
+  { id: 'suvinil-verde-amarelo', name: 'Suvinil Verde-Amarelo', colors: ['rioPaine', 'capimSanto', 'cheiroVerde', 'capimSeco'] },
+  { id: 'suvinil-cinzas', name: 'Suvinil Cinzas', colors: ['fotoRetro', 'banhoDePlatina', 'cinzaNatural', 'aventurinaPreta'] },
+  { id: 'suvinil-beges', name: 'Suvinil Beges', colors: ['gelo', 'calopsita', 'algodaoEgipcio', 'invernoGelado'] },
+];
+
 interface DraggableBulletProps {
   bullet: IndividualBullet;
   color: ColorScaleName;
@@ -127,6 +184,7 @@ export function IndividualBulletsSession() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedColor, setSelectedColor] = useState<ColorScaleName>('limeGreen');
   const [currentNumber, setCurrentNumber] = useState(1);
+  const [selectedColorSchema, setSelectedColorSchema] = useState<string>('all');
 
   // Filter bullets
   const filteredBullets = INDIVIDUAL_BULLETS_LIBRARY.filter((bullet) => {
@@ -186,17 +244,43 @@ export function IndividualBulletsSession() {
           </div>
         </div>
 
-        {/* Category + Color in one row */}
+        {/* Category */}
+        <div className="relative">
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value as BulletCategory | 'all')}
+            className="w-full px-2 py-1.5 pr-6 text-xs border border-gray-300 rounded appearance-none bg-white focus:outline-none focus:ring-1 focus:ring-violet-500 cursor-pointer"
+          >
+            {CATEGORIES.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.label}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" />
+        </div>
+
+        {/* Color Schema + Color in one row */}
         <div className="grid grid-cols-2 gap-1.5">
           <div className="relative">
             <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value as BulletCategory | 'all')}
+              value={selectedColorSchema}
+              onChange={(e) => {
+                setSelectedColorSchema(e.target.value);
+                // Reset to first valid color of selected schema
+                const schema = COLOR_SCHEMAS.find(s => s.id === e.target.value);
+                if (schema && schema.colors.length > 0) {
+                  const validColors = schema.colors.filter(c => COLOR_SCALES[c]);
+                  if (validColors.length > 0) {
+                    setSelectedColor(validColors[0]);
+                  }
+                }
+              }}
               className="w-full px-2 py-1.5 pr-6 text-xs border border-gray-300 rounded appearance-none bg-white focus:outline-none focus:ring-1 focus:ring-violet-500 cursor-pointer"
             >
-              {CATEGORIES.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.label}
+              {COLOR_SCHEMAS.map((schema) => (
+                <option key={schema.id} value={schema.id}>
+                  {schema.name}
                 </option>
               ))}
             </select>
@@ -214,18 +298,31 @@ export function IndividualBulletsSession() {
                 fontWeight: '600'
               }}
             >
-              {(Object.keys(COLOR_SCALES) as ColorScaleName[]).map((colorKey) => (
-                <option key={colorKey} value={colorKey}>
-                  {colorKey === 'limeGreen' ? 'Verde Limão' :
-                   colorKey === 'teal' ? 'Verde Água' :
-                   colorKey === 'navy' ? 'Azul Marinho' :
-                   colorKey === 'lightBlue' ? 'Azul Claro' :
-                   colorKey === 'emerald' ? 'Esmeralda' :
-                   colorKey === 'orange' ? 'Laranja' :
-                   colorKey === 'pink' ? 'Rosa' :
-                   colorKey === 'purple' ? 'Roxo' : colorKey}
-                </option>
-              ))}
+              {(() => {
+                const schema = COLOR_SCHEMAS.find(s => s.id === selectedColorSchema);
+                const availableColors = schema ? schema.colors : Object.keys(COLOR_SCALES) as ColorScaleName[];
+                return availableColors
+                  .filter(colorKey => COLOR_SCALES[colorKey]) // Filter out invalid colors
+                  .map((colorKey) => (
+                    <option
+                      key={colorKey}
+                      value={colorKey}
+                      style={{
+                        backgroundColor: COLOR_SCALES[colorKey].medium,
+                        color: ['navy', 'emerald', 'darkBrown', 'espresso', 'darkChocolate', 'deepOcean', 'deepForest', 'deepTeal', 'deepPurple', 'deepViolet', 'nero', 'jetBlack', 'obsidian', 'onyxBlack', 'charcoalBlack', 'midnightNavy', 'midnightSlate', 'aventurinaPreta', 'azulMarinho', 'marVerde', 'trilhaNaMata', 'capimSeco', 'cinzaTecnologico', 'roxoRustico'].includes(colorKey) ? '#FFFFFF' : '#000000'
+                      }}
+                    >
+                      {colorKey === 'limeGreen' ? 'Verde Limão' :
+                       colorKey === 'teal' ? 'Verde Água' :
+                       colorKey === 'navy' ? 'Azul Marinho' :
+                       colorKey === 'lightBlue' ? 'Azul Claro' :
+                       colorKey === 'emerald' ? 'Esmeralda' :
+                       colorKey === 'orange' ? 'Laranja' :
+                       colorKey === 'pink' ? 'Rosa' :
+                       colorKey === 'purple' ? 'Roxo' : colorKey}
+                    </option>
+                  ));
+              })()}
             </select>
             <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 pointer-events-none"
               style={{ color: ['navy', 'emerald'].includes(selectedColor) ? 'white' : 'rgba(0,0,0,0.4)' }} />

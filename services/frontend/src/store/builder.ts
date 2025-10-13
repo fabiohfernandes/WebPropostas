@@ -48,7 +48,7 @@ export const useBuilderStore = create<BuilderState>()(
   devtools(
     (set, get) => ({
       // Session State - Navigation
-      activeSession: 'text' as 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets-individual' | 'bullets-sets' | 'ai' | 'tips',
+      activeSession: 'text' as 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets-individual' | 'bullets-sets' | 'ai' | 'colors' | 'tips',
 
       // Initial State - Pages
       pages: [createInitialPage()],
@@ -307,7 +307,7 @@ export const useBuilderStore = create<BuilderState>()(
       },
 
       // Actions - Session Navigation
-      setActiveSession: (session: 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets' | 'ai' | 'tips') => {
+      setActiveSession: (session: 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets-individual' | 'bullets-sets' | 'ai' | 'colors' | 'tips') => {
         set({ activeSession: session });
       },
 
