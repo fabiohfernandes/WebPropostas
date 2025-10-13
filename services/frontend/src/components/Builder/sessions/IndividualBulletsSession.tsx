@@ -7,6 +7,7 @@
 
 import { useState } from 'react';
 import { Circle, Hexagon, Diamond, Pill, Search, Sparkles, ChevronDown } from 'lucide-react';
+import { ColorDropdown } from '../ColorDropdown';
 import { useDraggable } from '@dnd-kit/core';
 import { useBuilderStore } from '@/store/builder';
 import { INDIVIDUAL_BULLETS_LIBRARY } from '@/data/individualBulletsLibrary';
@@ -200,21 +201,20 @@ export function IndividualBulletsSession() {
   return (
     <div className="flex flex-col h-full">
       <style jsx global>{`
-        /* Force color dropdown options to show their actual colors */
+        /* Option 2: Add visible white border/outline on hover (shows over blue) */
         select[style*="backgroundImage"] option,
         select[style*="backgroundColor"] option {
           background: inherit !important;
-          background-color: attr(data-color) !important;
+          padding: 8px !important;
         }
 
-        /* Add border/outline on hover instead of blue background */
+        /* Strong visual indicator on hover - white border shows over blue */
         select[style*="backgroundImage"] option:hover,
         select[style*="backgroundColor"] option:hover {
-          background: inherit !important;
-          background-color: inherit !important;
-          outline: 2px solid rgba(0, 0, 0, 0.3) !important;
-          outline-offset: -2px !important;
-          box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3) !important;
+          outline: 3px solid white !important;
+          outline-offset: -3px !important;
+          box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 0, 0, 0.2) !important;
+          cursor: pointer !important;
         }
 
         select[style*="backgroundImage"] option:focus,
@@ -222,14 +222,15 @@ export function IndividualBulletsSession() {
         select[style*="backgroundColor"] option:focus,
         select[style*="backgroundColor"] option:active {
           background: inherit !important;
-          background-color: inherit !important;
+          outline: 2px solid rgba(255, 255, 255, 0.8) !important;
+          outline-offset: -2px !important;
         }
 
         select[style*="backgroundImage"] option:checked,
         select[style*="backgroundColor"] option:checked {
           background: inherit !important;
-          background-color: inherit !important;
           font-weight: bold !important;
+          border-left: 4px solid #10b981 !important;
         }
       `}</style>
       {/* Compact Header */}
@@ -320,47 +321,17 @@ export function IndividualBulletsSession() {
             <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" />
           </div>
 
-          <div className="relative">
-            <select
-              value={selectedColor}
-              onChange={(e) => setSelectedColor(e.target.value as ColorScaleName)}
-              className="w-full px-2 py-1.5 pr-6 text-xs border border-gray-300 rounded appearance-none focus:outline-none focus:ring-1 focus:ring-violet-500 cursor-pointer"
-              style={{
-                backgroundImage: `linear-gradient(90deg, ${COLOR_SCALES[selectedColor].light} 0%, ${COLOR_SCALES[selectedColor].medium} 50%, ${COLOR_SCALES[selectedColor].dark} 100%)`,
-                color: ['navy', 'emerald'].includes(selectedColor) ? 'white' : 'black',
-                fontWeight: '600'
-              }}
-            >
-              {(() => {
-                const schema = COLOR_SCHEMAS.find(s => s.id === selectedColorSchema);
-                const availableColors = schema ? schema.colors : Object.keys(COLOR_SCALES) as ColorScaleName[];
-                return availableColors
-                  .filter(colorKey => COLOR_SCALES[colorKey]) // Filter out invalid colors
-                  .map((colorKey) => (
-                    <option
-                      key={colorKey}
-                      value={colorKey}
-                      style={{
-                        backgroundColor: COLOR_SCALES[colorKey].medium,
-                        color: ['navy', 'emerald', 'darkBrown', 'espresso', 'darkChocolate', 'deepOcean', 'deepForest', 'deepTeal', 'deepPurple', 'deepViolet', 'nero', 'jetBlack', 'obsidian', 'onyxBlack', 'charcoalBlack', 'midnightNavy', 'midnightSlate', 'aventurinaPreta', 'azulMarinho', 'marVerde', 'trilhaNaMata', 'capimSeco', 'cinzaTecnologico', 'roxoRustico'].includes(colorKey) ? '#FFFFFF' : '#000000'
-                      }}
-                    >
-                      {colorKey === 'limeGreen' ? 'Verde Limão' :
-                       colorKey === 'teal' ? 'Verde Água' :
-                       colorKey === 'navy' ? 'Azul Marinho' :
-                       colorKey === 'lightBlue' ? 'Azul Claro' :
-                       colorKey === 'emerald' ? 'Esmeralda' :
-                       colorKey === 'orange' ? 'Laranja' :
-                       colorKey === 'pink' ? 'Rosa' :
-                       colorKey === 'purple' ? 'Roxo' : colorKey}
-                    </option>
-                  ));
-              })()}
-            </select>
-            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 pointer-events-none"
-              style={{ color: ['navy', 'emerald'].includes(selectedColor) ? 'white' : 'rgba(0,0,0,0.4)' }} />
-          </div>
+          <ColorDropdown
+            value={selectedColor}
+            onChange={setSelectedColor}
+            colors={(() => {
+              const schema = COLOR_SCHEMAS.find(s => s.id === selectedColorSchema);
+              const availableColors = schema ? schema.colors : Object.keys(COLOR_SCALES) as ColorScaleName[];
+              return availableColors.filter(colorKey => COLOR_SCALES[colorKey]);
+            })()}
+          />
         </div>
+
       </div>
 
       {/* Bullets grid */}

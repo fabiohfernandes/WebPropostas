@@ -6,6 +6,7 @@
 'use client';
 
 import { useState } from 'react';
+import { ColorDropdown } from '../ColorDropdown';
 import {
   // Shapes
   Square,
@@ -368,29 +369,57 @@ export function IconsSessionEnhanced() {
   return (
     <div className="flex flex-col h-full">
       <style jsx global>{`
-        /* Force color dropdown options to show their actual colors */
+        /* Option 3: Nuclear approach - force everything to not be blue */
+        select[style*="backgroundImage"],
+        select[style*="backgroundColor"] {
+          -webkit-appearance: none !important;
+          -moz-appearance: none !important;
+          appearance: none !important;
+        }
+
         select[style*="backgroundImage"] option,
         select[style*="backgroundColor"] option {
           background: inherit !important;
-          background-color: attr(data-color) !important;
-        }
-
-        /* Add border/outline on hover instead of blue background */
-        select[style*="backgroundImage"] option:hover,
-        select[style*="backgroundColor"] option:hover {
-          background: inherit !important;
           background-color: inherit !important;
-          outline: 2px solid rgba(0, 0, 0, 0.3) !important;
-          outline-offset: -2px !important;
-          box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3) !important;
+          color: inherit !important;
+          padding: 8px !important;
+
+          /* Force no highlight color */
+          -webkit-tap-highlight-color: transparent !important;
+          -webkit-user-select: none !important;
+          -moz-user-select: none !important;
+          user-select: none !important;
         }
 
+        /* Override ALL possible hover/focus states */
+        select[style*="backgroundImage"] option:hover,
         select[style*="backgroundImage"] option:focus,
         select[style*="backgroundImage"] option:active,
+        select[style*="backgroundImage"] option::selection,
+        select[style*="backgroundImage"] option::-moz-selection,
+        select[style*="backgroundColor"] option:hover,
         select[style*="backgroundColor"] option:focus,
-        select[style*="backgroundColor"] option:active {
+        select[style*="backgroundColor"] option:active,
+        select[style*="backgroundColor"] option::selection,
+        select[style*="backgroundColor"] option::-moz-selection {
           background: inherit !important;
           background-color: inherit !important;
+          background-image: none !important;
+          color: inherit !important;
+          outline: none !important;
+          border: none !important;
+          box-shadow: none !important;
+
+          /* Try to prevent OS-level highlighting */
+          -webkit-tap-highlight-color: transparent !important;
+          -webkit-touch-callout: none !important;
+        }
+
+        /* Remove any possible selection/highlight pseudo-elements */
+        select[style*="backgroundImage"] option::-webkit-selection,
+        select[style*="backgroundColor"] option::-webkit-selection {
+          background: transparent !important;
+          color: inherit !important;
         }
 
         select[style*="backgroundImage"] option:checked,
@@ -461,7 +490,7 @@ export function IconsSessionEnhanced() {
         </div>
 
         {/* Color Schema & Color Controls */}
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-start">
           <div className="flex-1">
             <label className="text-xs text-gray-600 block mb-1">Esquema de Cores</label>
             <select
@@ -486,46 +515,19 @@ export function IconsSessionEnhanced() {
               ))}
             </select>
           </div>
-          <div className="flex-1">
-            <label className="text-xs text-gray-600 block mb-1">Cor</label>
-            <select
-              value={selectedColor}
-              onChange={(e) => setSelectedColor(e.target.value as ColorScaleName)}
-              className="w-full px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              style={{
-                backgroundImage: `linear-gradient(90deg, ${COLOR_SCALES[selectedColor].light} 0%, ${COLOR_SCALES[selectedColor].medium} 50%, ${COLOR_SCALES[selectedColor].dark} 100%)`,
-                color: ['navy', 'emerald', 'darkBrown', 'espresso', 'darkChocolate', 'deepOcean', 'deepForest', 'deepTeal', 'deepPurple', 'deepViolet', 'nero', 'jetBlack', 'obsidian', 'onyxBlack', 'charcoalBlack', 'midnightNavy', 'midnightSlate', 'aventurinaPreta', 'azulMarinho', 'marVerde', 'trilhaNaMata', 'capimSeco', 'cinzaTecnologico', 'roxoRustico'].includes(selectedColor) ? 'white' : 'black',
-                fontWeight: '600'
-              }}
-            >
-              {(() => {
-                const schema = COLOR_SCHEMAS.find(s => s.id === selectedColorSchema);
-                const availableColors = schema ? schema.colors : Object.keys(COLOR_SCALES) as ColorScaleName[];
-                return availableColors
-                  .filter(colorKey => COLOR_SCALES[colorKey]) // Filter out invalid colors
-                  .map((colorKey) => (
-                    <option
-                      key={colorKey}
-                      value={colorKey}
-                      style={{
-                        backgroundColor: COLOR_SCALES[colorKey].medium,
-                        color: ['navy', 'emerald', 'darkBrown', 'espresso', 'darkChocolate', 'deepOcean', 'deepForest', 'deepTeal', 'deepPurple', 'deepViolet', 'nero', 'jetBlack', 'obsidian', 'onyxBlack', 'charcoalBlack', 'midnightNavy', 'midnightSlate', 'aventurinaPreta', 'azulMarinho', 'marVerde', 'trilhaNaMata', 'capimSeco', 'cinzaTecnologico', 'roxoRustico'].includes(colorKey) ? '#FFFFFF' : '#000000'
-                      }}
-                    >
-                      {colorKey === 'limeGreen' ? 'Verde Limão' :
-                       colorKey === 'teal' ? 'Verde Água' :
-                       colorKey === 'navy' ? 'Azul Marinho' :
-                       colorKey === 'lightBlue' ? 'Azul Claro' :
-                       colorKey === 'emerald' ? 'Esmeralda' :
-                       colorKey === 'orange' ? 'Laranja' :
-                       colorKey === 'pink' ? 'Rosa' :
-                       colorKey === 'purple' ? 'Roxo' : colorKey}
-                    </option>
-                  ));
-              })()}
-            </select>
-          </div>
+          <ColorDropdown
+            value={selectedColor}
+            onChange={setSelectedColor}
+            colors={(() => {
+              const schema = COLOR_SCHEMAS.find(s => s.id === selectedColorSchema);
+              const availableColors = schema ? schema.colors : Object.keys(COLOR_SCALES) as ColorScaleName[];
+              return availableColors.filter(colorKey => COLOR_SCALES[colorKey]);
+            })()}
+            label="Cor"
+            className="flex-1"
+          />
         </div>
+
       </div>
 
       {/* Content */}
