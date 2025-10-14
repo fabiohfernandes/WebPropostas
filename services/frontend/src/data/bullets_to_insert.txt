@@ -1,0 +1,326 @@
+export const CIRCLE_ICON_BADGE: IndividualBullet = {
+  id: 'circle-icon-badge',
+  name: 'Círculo com Ícone',
+  description: 'Círculo colorido com ícone central e número de step',
+  category: 'numbered',
+  defaultWidth: 140,
+  defaultHeight: 140,
+  defaultColor: 'limeGreen',
+  customizable: {
+    text: true,    // Bottom label text (e.g., "Analysis", "Communication")
+    number: true,  // Step number (01, 02, 03...)
+    icon: true,    // Icon from library (graphical icons)
+    color: true,
+    size: true,
+  },
+  generateSVG: (options: BulletRenderOptions) => {
+    const { width, height, color = 'limeGreen', number = 1, text = 'Label', icon = 'check' } = options;
+    const uniqueId = `circle_icon_${Date.now()}_${Math.random()}`;
+    const mainColor = getColor(color, 'medium');
+    const darkColor = getColor(color, 'dark');
+    const iconPath = BULLET_ICONS[icon]?.path || BULLET_ICONS['check'].path;
+
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          ${generateGradientDef(`grad_${uniqueId}`, 'radial', mainColor)}
+          ${generateShadowEffect(uniqueId)}
+        </defs>
+
+        <!-- Outer circle -->
+        <circle cx="70" cy="55" r="38" fill="url(#grad_${uniqueId})" filter="url(#shadow_${uniqueId})"/>
+
+        <!-- Inner ring -->
+        <circle cx="70" cy="55" r="32" fill="none" stroke="white" stroke-width="3" opacity="0.9"/>
+
+        <!-- Icon -->
+        <path d="${iconPath}" fill="white" opacity="0.95"/>
+
+        <!-- Step number label at top -->
+        <text x="70" y="25" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="${darkColor}" text-anchor="middle" opacity="0.8">
+          Step
+        </text>
+        <text x="70" y="38" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="${mainColor}" text-anchor="middle">
+          ${number.toString().padStart(2, '0')}
+        </text>
+
+        <!-- Bottom label text -->
+        <text x="70" y="110" font-family="Arial, sans-serif" font-size="13" font-weight="600" fill="${darkColor}" text-anchor="middle">
+          ${text}
+        </text>
+      </svg>
+    `;
+  },
+  thumbnailSVG: `
+    <svg width="100" height="100" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="70" cy="55" r="38" fill="#A8D08D" opacity="0.9"/>
+      <circle cx="70" cy="55" r="32" fill="none" stroke="white" stroke-width="3"/>
+      <path d="M 64 55 L 68 59 L 77 49 L 80 52 L 68 65 L 61 58 Z" fill="white"/>
+      <text x="70" y="110" font-family="Arial" font-size="13" font-weight="600" fill="#6B8E23" text-anchor="middle">Analysis</text>
+    </svg>
+  `,
+  tags: ['circle', 'icon', 'step', 'process', 'horizontal'],
+  isPremium: false,
+  createdAt: new Date(),
+};
+
+// ============================================================================
+// ROUNDED_SQUARE_BADGE - Rounded square with icon (from 4266.jpg)
+// Row 3, Left panel - Shows colorful rounded squares with icons and step numbers
+// ============================================================================
+export const ROUNDED_SQUARE_BADGE: IndividualBullet = {
+  id: 'rounded-square-badge',
+  name: 'Quadrado Arredondado',
+  description: 'Quadrado arredondado colorido com ícone e número de step',
+  category: 'numbered',
+  defaultWidth: 120,
+  defaultHeight: 140,
+  defaultColor: 'limeGreen',
+  customizable: {
+    text: true,    // Bottom label text
+    number: true,  // Step number
+    icon: true,    // Icon from library (graphical icons)
+    color: true,
+    size: true,
+  },
+  generateSVG: (options: BulletRenderOptions) => {
+    const { width, height, color = 'limeGreen', number = 1, text = 'Label', icon = 'check' } = options;
+    const uniqueId = `square_${Date.now()}_${Math.random()}`;
+    const mainColor = getColor(color, 'medium');
+    const darkColor = getColor(color, 'dark');
+    const iconPath = BULLET_ICONS[icon]?.path || BULLET_ICONS['check'].path;
+
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          ${generateGradientDef(`grad_${uniqueId}`, 'linear', mainColor, 'vertical')}
+          ${generateShadowEffect(uniqueId)}
+        </defs>
+
+        <!-- Rounded square background -->
+        <rect x="15" y="10" width="90" height="90" rx="15" fill="url(#grad_${uniqueId})" filter="url(#shadow_${uniqueId})"/>
+
+        <!-- Step number in corner -->
+        <text x="25" y="28" font-family="Arial, sans-serif" font-size="11" font-weight="600" fill="white" fill-opacity="0.95">
+          Step ${number.toString().padStart(2, '0')}
+        </text>
+
+        <!-- Icon centered -->
+        <g transform="translate(-10, 5)">
+          <path d="${iconPath}" fill="white" opacity="0.95"/>
+        </g>
+
+        <!-- Bottom label -->
+        <text x="60" y="122" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="${darkColor}" text-anchor="middle">
+          ${text}
+        </text>
+      </svg>
+    `;
+  },
+  thumbnailSVG: `
+    <svg width="100" height="120" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <rect x="15" y="10" width="90" height="90" rx="15" fill="#A8D08D" opacity="0.9"/>
+      <text x="25" y="28" font-family="Arial" font-size="11" font-weight="600" fill="white">Step 01</text>
+      <text x="60" y="122" font-family="Arial" font-size="12" font-weight="600" fill="#6B8E23" text-anchor="middle">Analysis</text>
+    </svg>
+  `,
+  tags: ['square', 'rounded', 'icon', 'step', 'modern'],
+  isPremium: false,
+  createdAt: new Date(),
+};
+
+// ============================================================================
+// DOUBLE_RING_BADGE - Concentric circles with step (from 4266.jpg)
+// Row 1, Middle panel - Shows vertical stacked circles with step numbers
+// ============================================================================
+export const DOUBLE_RING_BADGE: IndividualBullet = {
+  id: 'double-ring-badge',
+  name: 'Círculo Duplo',
+  description: 'Anéis concêntricos coloridos com número de step',
+  category: 'numbered',
+  defaultWidth: 140,
+  defaultHeight: 140,
+  defaultColor: 'orange',
+  customizable: {
+    text: true,    // Center text or label
+    number: true,  // Step number
+    icon: false,   // No icon
+    color: true,
+    size: true,
+  },
+  generateSVG: (options: BulletRenderOptions) => {
+    const { width, height, color = 'orange', number = 1, text = 'Step' } = options;
+    const uniqueId = `double_ring_${Date.now()}_${Math.random()}`;
+    const mainColor = getColor(color, 'medium');
+    const darkColor = getColor(color, 'dark');
+
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          ${generateGradientDef(`grad_outer_${uniqueId}`, 'radial', mainColor)}
+          ${generateGradientDef(`grad_inner_${uniqueId}`, 'radial', darkColor)}
+          ${generateShadowEffect(uniqueId)}
+        </defs>
+
+        <!-- Outer ring -->
+        <circle cx="70" cy="70" r="50" fill="none" stroke="url(#grad_outer_${uniqueId})" stroke-width="12" opacity="0.3" filter="url(#shadow_${uniqueId})"/>
+
+        <!-- Middle ring -->
+        <circle cx="70" cy="70" r="38" fill="none" stroke="url(#grad_outer_${uniqueId})" stroke-width="8" opacity="0.6"/>
+
+        <!-- Inner circle (solid) -->
+        <circle cx="70" cy="70" r="28" fill="url(#grad_inner_${uniqueId})"/>
+
+        <!-- Step label -->
+        <text x="70" y="62" font-family="Arial, sans-serif" font-size="10" font-weight="600" fill="white" fill-opacity="0.85" text-anchor="middle">
+          ${text.toUpperCase()}
+        </text>
+
+        <!-- Step number -->
+        <text x="70" y="78" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white" text-anchor="middle">
+          ${number.toString().padStart(2, '0')}
+        </text>
+      </svg>
+    `;
+  },
+  thumbnailSVG: `
+    <svg width="100" height="100" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="70" cy="70" r="50" fill="none" stroke="#F4B183" stroke-width="12" opacity="0.3"/>
+      <circle cx="70" cy="70" r="38" fill="none" stroke="#F4B183" stroke-width="8" opacity="0.6"/>
+      <circle cx="70" cy="70" r="28" fill="#ED7D31"/>
+      <text x="70" y="78" font-family="Arial" font-size="18" font-weight="bold" fill="white" text-anchor="middle">01</text>
+    </svg>
+  `,
+  tags: ['circle', 'ring', 'concentric', 'step', 'elegant'],
+  isPremium: false,
+  createdAt: new Date(),
+};
+
+// ============================================================================
+// RIBBON_STEP_BADGE - Angled ribbon with step number (from 4266.jpg)
+// Row 3, Middle panel - Shows connected steps in ribbon/arrow format
+// ============================================================================
+export const RIBBON_STEP_BADGE: IndividualBullet = {
+  id: 'ribbon-step-badge',
+  name: 'Faixa Step',
+  description: 'Faixa angular colorida com número de step',
+  category: 'numbered',
+  defaultWidth: 180,
+  defaultHeight: 100,
+  defaultColor: 'limeGreen',
+  customizable: {
+    text: true,    // Step text label
+    number: true,  // Step number
+    icon: false,   // No icon
+    color: true,
+    size: true,
+  },
+  generateSVG: (options: BulletRenderOptions) => {
+    const { width, height, color = 'limeGreen', number = 1, text = 'Step' } = options;
+    const uniqueId = `ribbon_${Date.now()}_${Math.random()}`;
+    const mainColor = getColor(color, 'medium');
+    const darkColor = getColor(color, 'dark');
+
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 180 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          ${generateGradientDef(`grad_${uniqueId}`, 'linear', mainColor, 'horizontal')}
+          ${generateShadowEffect(uniqueId)}
+        </defs>
+
+        <!-- Angled ribbon shape -->
+        <path d="M 20 30 L 160 30 L 170 50 L 160 70 L 20 70 L 30 50 Z"
+              fill="url(#grad_${uniqueId})"
+              filter="url(#shadow_${uniqueId})"
+              opacity="0.95"/>
+
+        <!-- Step text label -->
+        <text x="50" y="46" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="white" fill-opacity="0.9">
+          ${text}
+        </text>
+
+        <!-- Step number -->
+        <text x="50" y="62" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white">
+          ${number.toString().padStart(2, '0')}
+        </text>
+      </svg>
+    `;
+  },
+  thumbnailSVG: `
+    <svg width="120" height="70" viewBox="0 0 180 100" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 20 30 L 160 30 L 170 50 L 160 70 L 20 70 L 30 50 Z" fill="#A8D08D" opacity="0.95"/>
+      <text x="50" y="62" font-family="Arial" font-size="18" font-weight="bold" fill="white">01</text>
+    </svg>
+  `,
+  tags: ['ribbon', 'banner', 'step', 'horizontal', 'modern'],
+  isPremium: false,
+  createdAt: new Date(),
+};
+
+// ============================================================================
+// DIRECTION_DIAMOND - Diamond shape with direction text (from 4266.jpg)
+// Row 3, Right panel - Shows UP/DOWN diamond badges
+// ============================================================================
+export const DIRECTION_DIAMOND: IndividualBullet = {
+  id: 'direction-diamond',
+  name: 'Diamante Direcional',
+  description: 'Diamante colorido com texto direcional (UP/DOWN/LEFT/RIGHT)',
+  category: 'directional',
+  defaultWidth: 120,
+  defaultHeight: 140,
+  defaultColor: 'red',
+  customizable: {
+    text: true,    // Direction text (UP, DOWN, LEFT, RIGHT, etc)
+    number: false, // No number
+    icon: true,    // Icon above text (graphical icons)
+    color: true,
+    size: true,
+  },
+  generateSVG: (options: BulletRenderOptions) => {
+    const { width, height, color = 'red', text = 'UP', icon = 'arrow-up' } = options;
+    const uniqueId = `direction_${Date.now()}_${Math.random()}`;
+    const mainColor = getColor(color, 'medium');
+    const darkColor = getColor(color, 'dark');
+    const iconPath = BULLET_ICONS[icon]?.path || BULLET_ICONS['arrow-up'].path;
+
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          ${generateGradientDef(`grad_${uniqueId}`, 'radial', mainColor)}
+          ${generateShadowEffect(uniqueId)}
+        </defs>
+
+        <!-- Diamond shape (rotated square) -->
+        <rect x="35" y="35" width="50" height="50"
+              transform="rotate(45 60 60)"
+              fill="url(#grad_${uniqueId})"
+              filter="url(#shadow_${uniqueId})"
+              opacity="0.95"/>
+
+        <!-- Icon above diamond -->
+        <g transform="translate(-10, -5)">
+          <path d="${iconPath}" fill="${darkColor}" opacity="0.9"/>
+        </g>
+
+        <!-- Direction text -->
+        <text x="60" y="68" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">
+          ${text.toUpperCase()}
+        </text>
+
+        <!-- Optional label below -->
+        <text x="60" y="115" font-family="Arial, sans-serif" font-size="11" font-weight="600" fill="${darkColor}" text-anchor="middle">
+          Title
+        </text>
+      </svg>
+    `;
+  },
+  thumbnailSVG: `
+    <svg width="100" height="120" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <rect x="35" y="35" width="50" height="50" transform="rotate(45 60 60)" fill="#E74C3C" opacity="0.95"/>
+      <text x="60" y="68" font-family="Arial" font-size="14" font-weight="bold" fill="white" text-anchor="middle">UP</text>
+    </svg>
+  `,
+  tags: ['diamond', 'direction', 'arrow', 'navigation'],
+  isPremium: false,
+  createdAt: new Date(),
+};
