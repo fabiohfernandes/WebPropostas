@@ -572,10 +572,279 @@ export const PILL_BADGE: IndividualBullet = {
 };
 
 // ============================================================================
+// DOUBLE_RING_CIRCLE_BADGE - Double ring circle with icon, step, and connector
+// From IMAGE 2 analysis - 5 circular badges with icons and connectors
+// ============================================================================
+export const DOUBLE_RING_CIRCLE_BADGE: IndividualBullet = {
+  id: 'double-ring-circle-badge',
+  name: 'Círculo Duplo Anel com Ícone',
+  category: 'process-steps',
+  description: 'Círculo com dois anéis coloridos, ícone, número de step e conector',
+  shape: 'circle',
+  baseColor: 'limeGreen',
+  defaultWidth: 140,
+  defaultHeight: 220,
+  aspectRatio: 140 / 220,
+  effects: {
+    gradient: {
+      type: 'radial',
+      direction: 'radial',
+      stops: [
+        { color: '#ffffff', position: 0, opacity: 0.2 },
+        { color: '#B4D432', position: 60, opacity: 1 },
+        { color: '#B4D432', position: 100, opacity: 0.9 },
+      ],
+    },
+    glass: DEFAULT_GLASS_EFFECT,
+    shadow: DEFAULT_SHADOW_EFFECT,
+  },
+  customizable: {
+    text: true,      // "Step" label, title, paragraph
+    number: true,    // Step number (01, 02, 03...)
+    icon: true,      // Icon from BULLET_ICONS library
+    color: true,     // Ring and center colors
+    size: true,
+  },
+  generateSVG: (options: BulletRenderOptions) => {
+    const { width, height, color = 'limeGreen', number = 1, text = 'Step', icon = 'check' } = options;
+    const mainColor = getColor(color, 'medium');
+    const darkColor = getColor(color, 'dark');
+    const uniqueId = `double_ring_${number}_${Date.now()}`;
+    const iconPath = BULLET_ICONS[icon]?.path || BULLET_ICONS['check'].path;
+
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 140 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          ${generateGradientDef(`grad_outer_${uniqueId}`, 'radial', mainColor)}
+          ${generateGradientDef(`grad_inner_${uniqueId}`, 'radial', darkColor)}
+          ${generateShadowEffect(uniqueId)}
+          ${generateGlassEffect(uniqueId)}
+        </defs>
+
+        <!-- Shadow base -->
+        <circle cx="70" cy="72" r="52"
+                fill="rgba(0,0,0,0.12)"
+                filter="url(#shadow_${uniqueId})"/>
+
+        <!-- Outer thick ring -->
+        <circle cx="70" cy="70" r="52"
+                fill="none"
+                stroke="url(#grad_outer_${uniqueId})"
+                stroke-width="8"
+                opacity="0.9"
+                filter="url(#shadow_${uniqueId})"/>
+
+        <!-- Inner thin ring (darker) -->
+        <circle cx="70" cy="70" r="45"
+                fill="none"
+                stroke="${darkColor}"
+                stroke-width="6"
+                opacity="0.85"/>
+
+        <!-- Solid center circle (darkest) -->
+        <circle cx="70" cy="70" r="38"
+                fill="url(#grad_inner_${uniqueId})"
+                filter="url(#shadow_${uniqueId})"/>
+
+        <!-- Glass effect border on center -->
+        <circle cx="70" cy="70" r="38"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-opacity="0.4"
+                filter="url(#glass_${uniqueId})"/>
+
+        <!-- Icon at top of center circle (centered at 70, 55 in icon coordinate system) -->
+        <g transform="translate(0, 15)">
+          <path d="${iconPath}" fill="white" opacity="0.95"/>
+        </g>
+
+        <!-- "Step" text label -->
+        <text x="70" y="80"
+              font-family="Arial, sans-serif"
+              font-size="12"
+              font-weight="600"
+              fill="white"
+              fill-opacity="0.9"
+              text-anchor="middle">
+          ${text}
+        </text>
+
+        <!-- Number (3D effect) -->
+        <text x="70" y="99"
+              font-family="Arial, sans-serif"
+              font-size="18"
+              font-weight="bold"
+              fill="rgba(0,0,0,0.2)"
+              text-anchor="middle">
+          ${number.toString().padStart(2, '0')}
+        </text>
+        <text x="70" y="97"
+              font-family="Arial, sans-serif"
+              font-size="18"
+              font-weight="bold"
+              fill="white"
+              text-anchor="middle">
+          ${number.toString().padStart(2, '0')}
+        </text>
+
+        <!-- Dotted connector line -->
+        <line x1="70" y1="125" x2="70" y2="155"
+              stroke="${mainColor}"
+              stroke-width="2"
+              stroke-dasharray="4,4"
+              opacity="0.7"/>
+
+        <!-- Arrow at end of connector -->
+        <path d="M 70 155 L 65 148 L 75 148 Z"
+              fill="${mainColor}"
+              opacity="0.8"/>
+
+        <!-- Title text below connector -->
+        <text x="70" y="175"
+              font-family="Arial, sans-serif"
+              font-size="14"
+              font-weight="bold"
+              fill="${darkColor}"
+              text-anchor="middle">
+          Title
+        </text>
+
+        <!-- Paragraph text (smaller) -->
+        <text x="70" y="192"
+              font-family="Arial, sans-serif"
+              font-size="9"
+              fill="${darkColor}"
+              fill-opacity="0.7"
+              text-anchor="middle">
+          Lorem ipsum dolor
+        </text>
+        <text x="70" y="204"
+              font-family="Arial, sans-serif"
+              font-size="9"
+              fill="${darkColor}"
+              fill-opacity="0.7"
+              text-anchor="middle">
+          sit amet consectetur
+        </text>
+      </svg>
+    `;
+  },
+  thumbnailSVG: `
+    <svg width="70" height="110" viewBox="0 0 140 220" xmlns="http://www.w3.org/2000/svg">
+      <!-- Outer ring -->
+      <circle cx="70" cy="70" r="52" fill="none" stroke="#B4D432" stroke-width="8" opacity="0.9"/>
+      <!-- Inner ring -->
+      <circle cx="70" cy="70" r="45" fill="none" stroke="#8FBD20" stroke-width="6" opacity="0.85"/>
+      <!-- Center -->
+      <circle cx="70" cy="70" r="38" fill="#6B8E23"/>
+      <!-- Icon simplified -->
+      <circle cx="70" cy="55" r="8" fill="white"/>
+      <!-- Number -->
+      <text x="70" y="97" font-family="Arial" font-size="18" font-weight="bold" fill="white" text-anchor="middle">01</text>
+      <!-- Connector -->
+      <line x1="70" y1="125" x2="70" y2="155" stroke="#B4D432" stroke-width="2" stroke-dasharray="4,4"/>
+      <path d="M 70 155 L 65 148 L 75 148 Z" fill="#B4D432"/>
+      <!-- Title -->
+      <text x="70" y="175" font-family="Arial" font-size="14" font-weight="bold" fill="#6B8E23" text-anchor="middle">Title</text>
+    </svg>
+  `,
+  tags: ['circle', 'double-ring', 'icon', 'step', 'process', 'connector'],
+  isPremium: false,
+  createdAt: new Date(),
+
+// ============================================================================
+// ROUNDED_SQUARE_FLOW - Rounded square with icon and flow arrow
+// From IMAGE 3 analysis - Rounded squares with step text and icons
+// ============================================================================
+export const ROUNDED_SQUARE_FLOW: IndividualBullet = {
+  id: 'rounded-square-flow',
+  name: 'Quadrado Arredondado com Fluxo',
+  category: 'process-steps',
+  description: 'Quadrado arredondado com ícone, step text e seta de conexão',
+  shape: 'square',
+  baseColor: 'limeGreen',
+  defaultWidth: 280,
+  defaultHeight: 160,
+  aspectRatio: 280 / 160,
+  effects: {
+    gradient: {
+      type: 'linear',
+      direction: 'vertical',
+      stops: [
+        { color: '#B4D432', position: 0, opacity: 1 },
+        { color: '#B4D432', position: 100, opacity: 0.85 },
+      ],
+    },
+    glass: DEFAULT_GLASS_EFFECT,
+    shadow: DEFAULT_SHADOW_EFFECT,
+  },
+  customizable: {
+    text: true,
+    number: true,
+    icon: true,
+    color: true,
+    size: true,
+  },
+  generateSVG: (options: BulletRenderOptions) => {
+    const { width, height, color = 'limeGreen', number = 1, text = 'Title', icon = 'check' } = options;
+    const mainColor = getColor(color, 'medium');
+    const darkColor = getColor(color, 'dark');
+    const uniqueId = `rounded_square_${number}_${Date.now()}`;
+    const iconPath = BULLET_ICONS[icon]?.path || BULLET_ICONS['check'].path;
+
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          ${generateGradientDef(`grad_${uniqueId}`, 'linear', mainColor, 'vertical')}
+          ${generateShadowEffect(uniqueId)}
+          ${generateGlassEffect(uniqueId)}
+        </defs>
+
+        <rect x="12" y="12" width="110" height="110" rx="15" fill="rgba(0,0,0,0.12)" filter="url(#shadow_${uniqueId})"/>
+        <rect x="10" y="10" width="110" height="110" rx="15" fill="url(#grad_${uniqueId})" filter="url(#shadow_${uniqueId})"/>
+        <rect x="10" y="10" width="110" height="110" rx="15" fill="none" stroke="white" stroke-width="3" stroke-opacity="0.5" filter="url(#glass_${uniqueId})"/>
+
+        <text x="65" y="30" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="white" fill-opacity="0.95" text-anchor="middle">Step ${number.toString().padStart(2, '0')}</text>
+        <line x1="35" y1="35" x2="95" y2="35" stroke="white" stroke-width="1" stroke-dasharray="3,3" stroke-opacity="0.7"/>
+
+        <g transform="translate(-5, 15)">
+          <path d="${iconPath}" fill="white" opacity="0.95" filter="url(#shadow_${uniqueId})"/>
+        </g>
+
+        <path d="M 120 65 L 155 65 L 145 60 M 155 65 L 145 70" stroke="${mainColor}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" fill="none"/>
+
+        <text x="165" y="50" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="start">${text}</text>
+        <line x1="165" y1="55" x2="270" y2="55" stroke="white" stroke-width="1" stroke-dasharray="3,3" stroke-opacity="0.6"/>
+
+        <text x="165" y="75" font-family="Arial, sans-serif" font-size="10" fill="white" fill-opacity="0.85" text-anchor="start">Nam pretium turpis et arcu.</text>
+        <text x="165" y="90" font-family="Arial, sans-serif" font-size="10" fill="white" fill-opacity="0.85" text-anchor="start">Duis arcu tortor, suscipit eget,</text>
+        <text x="165" y="105" font-family="Arial, sans-serif" font-size="10" fill="white" fill-opacity="0.85" text-anchor="start">imperdiet nec, imperdiet.</text>
+      </svg>
+    `;
+  },
+  thumbnailSVG: `
+    <svg width="140" height="80" viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg">
+      <rect x="10" y="10" width="110" height="110" rx="15" fill="#B4D432" opacity="0.9"/>
+      <rect x="10" y="10" width="110" height="110" rx="15" fill="none" stroke="white" stroke-width="3" opacity="0.5"/>
+      <text x="65" y="30" font-family="Arial" font-size="13" font-weight="700" fill="white" text-anchor="middle">Step 01</text>
+      <line x1="35" y1="35" x2="95" y2="35" stroke="white" stroke-width="1" stroke-dasharray="3,3" opacity="0.7"/>
+      <circle cx="65" cy="70" r="15" fill="white" opacity="0.9"/>
+      <path d="M 120 65 L 155 65 L 145 60 M 155 65 L 145 70" stroke="#B4D432" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <text x="165" y="50" font-family="Arial" font-size="16" font-weight="bold" fill="white">Title</text>
+    </svg>
+  `,
+  tags: ['square', 'rounded', 'icon', 'step', 'process', 'flow', 'arrow'],
+  isPremium: false,
+  createdAt: new Date(),
+};
+
+// ============================================================================
 export const INDIVIDUAL_BULLETS_LIBRARY: IndividualBullet[] = [
   STEP_CIRCLE,
   HEXAGON_BADGE,
   DIAMOND_BADGE,
   PILL_BADGE,
-
+  DOUBLE_RING_CIRCLE_BADGE,
+  ROUNDED_SQUARE_FLOW,
 ];
