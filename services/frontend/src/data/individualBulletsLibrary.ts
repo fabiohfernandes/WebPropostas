@@ -572,11 +572,10 @@ export const PILL_BADGE: IndividualBullet = {
 };
 
 // ============================================================================
-// Export library
-// ============================================================================
 export const INDIVIDUAL_BULLETS_LIBRARY: IndividualBullet[] = [
   STEP_CIRCLE,
   HEXAGON_BADGE,
   DIAMOND_BADGE,
   PILL_BADGE,
+
 ];
