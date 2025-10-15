@@ -17,7 +17,7 @@ import { BuilderToolbar } from './BuilderToolbar';
 import type { Element, FrameElement } from '@/types/builder';
 import Image from 'next/image';
 import { INDIVIDUAL_BULLETS_LIBRARY } from '@/data/individualBulletsLibrary';
-import { BULLET_SETS_LIBRARY } from '@/data/bulletSetsLibrary';
+// import { BULLET_SETS_LIBRARY } from '@/data/bulletSetsLibrary'; // TODO: Re-enable when bullet sets are implemented
 
 interface BuilderLayoutProps {
   templateId?: string;
@@ -423,6 +423,8 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
     }
 
     // CASE 3: Bullet set dropped on canvas
+    // TODO: Re-enable when bullet sets library is implemented
+    /*
     if (dragData?.type === 'bullet-set' && over.id === 'canvas-drop-zone') {
       console.log('🟠 Bullet set dropped:', dragData);
 
@@ -471,6 +473,7 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
       addElement(newElement);
       return;
     }
+    */
 
     // CASE 4: Regular element drag (existing behavior)
     if (over.id === 'canvas-drop-zone') {

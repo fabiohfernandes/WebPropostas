@@ -27,6 +27,12 @@ interface TextPreset {
       letterSpacing: number;
       color: string;
       backgroundColor?: string;
+      shadow?: {
+        blur: number;
+        color: string;
+        offsetX: number;
+        offsetY: number;
+      };
     };
   };
 }
@@ -50,6 +56,12 @@ const textPresets: TextPreset[] = [
         lineHeight: 1.2,
         letterSpacing: 0,
         color: '#1F2937',
+        shadow: {
+          blur: 4,
+          color: 'rgba(0, 0, 0, 0.15)',
+          offsetX: 2,
+          offsetY: 2,
+        },
       },
     },
   },
@@ -71,6 +83,12 @@ const textPresets: TextPreset[] = [
         lineHeight: 1.3,
         letterSpacing: 0,
         color: '#374151',
+        shadow: {
+          blur: 3,
+          color: 'rgba(0, 0, 0, 0.12)',
+          offsetX: 1,
+          offsetY: 1,
+        },
       },
     },
   },
@@ -92,6 +110,12 @@ const textPresets: TextPreset[] = [
         lineHeight: 1.6,
         letterSpacing: 0,
         color: '#4B5563',
+        shadow: {
+          blur: 2,
+          color: 'rgba(0, 0, 0, 0.08)',
+          offsetX: 1,
+          offsetY: 1,
+        },
       },
     },
   },
@@ -113,6 +137,12 @@ const textPresets: TextPreset[] = [
         lineHeight: 1.2,
         letterSpacing: -1,
         color: '#059669',
+        shadow: {
+          blur: 4,
+          color: 'rgba(5, 150, 105, 0.2)',
+          offsetX: 2,
+          offsetY: 2,
+        },
       },
     },
   },
@@ -135,6 +165,12 @@ const textPresets: TextPreset[] = [
         letterSpacing: 0,
         color: '#FFFFFF',
         backgroundColor: '#DC2626',
+        shadow: {
+          blur: 3,
+          color: 'rgba(220, 38, 38, 0.3)',
+          offsetX: 1,
+          offsetY: 1,
+        },
       },
     },
   },
@@ -156,6 +192,12 @@ const textPresets: TextPreset[] = [
         lineHeight: 1.5,
         letterSpacing: 0,
         color: '#6B7280',
+        shadow: {
+          blur: 2,
+          color: 'rgba(0, 0, 0, 0.1)',
+          offsetX: 1,
+          offsetY: 1,
+        },
       },
     },
   },
