@@ -544,7 +544,6 @@ function BulletProperties({ element }: { element: BulletElement }) {
               onChange={(e) => setSelectedColorSchema(e.target.value)}
               className="w-full px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
             >
-              <option value="todas">Todas as Cores</option>
               {COLOR_SCHEMAS.map((schema) => (
                 <option key={schema.id} value={schema.id}>
                   {schema.name}
@@ -903,7 +902,6 @@ function IconProperties({ element }: { element: IconElement }) {
             onChange={(e) => setSelectedColorSchema(e.target.value)}
             className="w-full px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
-            <option value="todas">Todas as Cores</option>
             {COLOR_SCHEMAS.map((schema) => (
               <option key={schema.id} value={schema.id}>
                 {schema.name}
@@ -1889,7 +1887,6 @@ export function PropertiesPanel() {
                   onChange={(e) => setSelectedColorSchema(e.target.value)}
                   className="w-full px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 >
-                  <option value="todas">Todas as Cores</option>
                   {COLOR_SCHEMAS.map((schema) => (
                     <option key={schema.id} value={schema.id}>
                       {schema.name}

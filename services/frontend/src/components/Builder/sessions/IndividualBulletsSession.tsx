@@ -14,6 +14,7 @@ import { INDIVIDUAL_BULLETS_LIBRARY } from '@/data/individualBulletsLibrary';
 import type { IndividualBullet, BulletCategory, ColorScaleName } from '@/types/bulletSystemV2';
 import { COLOR_SCALES } from '@/types/bulletSystemV2';
 import type { Element } from '@/types/builder';
+import { COLOR_SCHEMAS } from './ColorsSessionEnhanced';
 
 const CATEGORIES: { id: BulletCategory | 'all'; label: string; icon: React.ReactNode }[] = [
   { id: 'all', label: 'Todos', icon: <Sparkles className="w-4 h-4" /> },
@@ -21,63 +22,6 @@ const CATEGORIES: { id: BulletCategory | 'all'; label: string; icon: React.React
   { id: 'process-steps', label: 'Processos', icon: <Pill className="w-4 h-4" /> },
   { id: 'icons', label: 'Ícones', icon: <Hexagon className="w-4 h-4" /> },
   { id: 'decorative', label: 'Decorativo', icon: <Diamond className="w-4 h-4" /> },
-];
-
-interface ColorSchema {
-  id: string;
-  name: string;
-  colors: ColorScaleName[];
-}
-
-// Color Schemas (matching ColorsSessionEnhanced) - SORTED ALPHABETICALLY
-const COLOR_SCHEMAS: ColorSchema[] = [
-  { id: 'all', name: 'Todas as Cores', colors: Object.keys(COLOR_SCALES) as ColorScaleName[] },
-  { id: 'aesthetic', name: 'Aesthetic', colors: ['maroonRed', 'ivoryWhite', 'lightGrayBeige', 'shadowGray', 'taupeBrown'] },
-  { id: 'blackberry', name: 'Blackberry', colors: ['paleBeige', 'dustyTealGray', 'softBlue', 'mutedPurple', 'charcoalPurple'] },
-  { id: 'bubblegum', name: 'Bubblegum', colors: ['amethyst', 'skyBlue', 'hotPink', 'sunflower', 'electricBlue', 'brightFuchsia'] },
-  { id: 'chicago', name: 'Chicago', colors: ['lightCream', 'warmTerracottaRust', 'darkForestGreen', 'deepCharcoalBlack'] },
-  { id: 'classic', name: 'Classic', colors: ['forestGreen', 'silverGray', 'lightGray', 'mustardYellow', 'mediumSteelBlue'] },
-  { id: 'coconut', name: 'Coconut', colors: ['tangerine', 'coconutCream', 'espresso', 'khaki', 'mediumKhaki'] },
-  { id: 'deep-water', name: 'Deep Water', colors: ['deepNavy', 'mediumNavy', 'softNavy', 'lightNavyGray', 'paleNavyBlue'] },
-  { id: 'dreamer', name: 'Dreamer', colors: ['aquaMist', 'lavenderGray', 'sandBeige', 'lilacMist'] },
-  { id: 'dusk', name: 'Dusk', colors: ['darkBrown', 'rosewood', 'dustySage', 'paleGray', 'softTaupe', 'paleSand'] },
-  { id: 'earth', name: 'Earth', colors: ['charcoalBlack', 'forestBrown', 'doveGray', 'sandstone', 'parchment', 'ivory'] },
-  { id: 'fresh', name: 'Fresh', colors: ['warmBrown', 'sageGreen', 'steelBlue', 'lightGray', 'coconutCream', 'darkWarmBrown'] },
-  { id: 'frosted', name: 'Frosted', colors: ['midnightSlate', 'steelSlate', 'sageGray', 'mistyBlue', 'frostBlue', 'paleIce'] },
-  { id: 'golden', name: 'Golden', colors: ['antiqueBronze', 'sandyBeige', 'lightGray', 'khaki', 'darkChocolate'] },
-  { id: 'greenwich', name: 'Greenwich', colors: ['yaleBlue', 'dustyTeal', 'cambridgeBlue', 'mindaro'] },
-  { id: 'haze-sunset', name: 'Haze Sunset', colors: ['peach', 'coral', 'dustyRose', 'purpleGray', 'slateBlue'] },
-  { id: 'hazy', name: 'Hazy', colors: ['deepForest', 'dustyTeal', 'sageGray', 'seafoam', 'lightGray', 'mintCream'] },
-  { id: 'lullaby', name: 'Lullaby', colors: ['paleRose', 'dustyPink', 'lightGray', 'warmGray', 'warmTerracotta'] },
-  { id: 'luxor', name: 'Luxor', colors: ['onyxBlack', 'mahogany', 'taupeBrown', 'champagneGold', 'paleChampagne', 'creamWhite'] },
-  { id: 'mediterranean', name: 'Mediterranean', colors: ['deepTeal', 'skyBlue', 'lightBlue', 'coconutCream', 'tangerine', 'richGold'] },
-  { id: 'miami', name: 'Miami', colors: ['deepPurple', 'crimson', 'rubyRed', 'tangerineDream', 'goldenSun'] },
-  { id: 'mocha', name: 'Mocha', colors: ['espressoDark', 'caramel', 'latte', 'milkCream', 'ivoryCream', 'deepChocolate', 'mediumBrown', 'softBeige'] },
-  { id: 'nude', name: 'Nude', colors: ['deepCharcoal', 'rosyBrown', 'sandyBeige', 'lightTan', 'creamBeige', 'ivoryCream'] },
-  { id: 'officer', name: 'Officer', colors: ['slateGray', 'tealBlue', 'softBlue', 'amber', 'tangerine', 'mediumCharcoal'] },
-  { id: 'officer2', name: 'Officer 2', colors: ['slateGray', 'tealBlue', 'softBlue', 'amber', 'tangerine', 'mediumSlate'] },
-  { id: 'officer3', name: 'Officer 3', colors: ['darkSlate', 'royalPurple', 'silverGray', 'lightSilver'] },
-  { id: 'pastel', name: 'Pastel', colors: ['softLavender', 'blushPink', 'softCoral', 'warmGray', 'mediumGrayBrown'] },
-  { id: 'regal', name: 'Regal', colors: ['jetBlack', 'plumWine', 'bronze', 'mintJade', 'paleAlmond', 'ivoryCream'] },
-  { id: 'sensual', name: 'Sensual', colors: ['nero', 'wineRed', 'desertSand', 'blushBeige', 'porcelain', 'ivoryCream'] },
-  { id: 'sinopsys', name: 'Sinopsys', colors: ['softPeach', 'vintagePlum', 'midnightNavy', 'darkTeal', 'mutedMauve'] },
-  { id: 'spiced', name: 'Spiced', colors: ['obsidian', 'cayenne', 'cinnamon', 'goldenHoney', 'champagne', 'ivoryCream'] },
-  { id: 'studio', name: 'Studio', colors: ['goldenYellow', 'iceBlue', 'powderBlue', 'charcoal', 'mauve'] },
-  { id: 'summer-vibes', name: 'Summer Vibes', colors: ['mintGreen', 'lemonChiffon', 'blushPink', 'coralPink', 'softCoralPink'] },
-  { id: 'suvinil-amarelos', name: 'Suvinil Amarelos', colors: ['luzDeInverno', 'gengibre', 'cacauDaBahia', 'amareloReal', 'poDeGengibre', 'bananada'] },
-  { id: 'suvinil-azuis', name: 'Suvinil Azuis', colors: ['aguaFresca', 'ceuSereno', 'ilhasGregas', 'azulMarinho', 'nevoaIntensa', 'jeansLavado'] },
-  { id: 'suvinil-beges', name: 'Suvinil Beges', colors: ['gelo', 'calopsita', 'algodaoEgipcio', 'invernoGelado', 'cromio', 'rafia'] },
-  { id: 'suvinil-cinzas', name: 'Suvinil Cinzas', colors: ['fotoRetro', 'banhoDePlatina', 'cinzaNatural', 'aventurinaPreta', 'fantasiaPrateada', 'cinzaTecnologico'] },
-  { id: 'suvinil-laranjas', name: 'Suvinil Laranjas', colors: ['areia', 'naturale', 'maraca', 'vitaminaDePapaia', 'castanhaPortuguesa', 'viraLataCaramelo'] },
-  { id: 'suvinil-rosas', name: 'Suvinil Rosas', colors: ['rosaPastel', 'contoDeFadas', 'rosaNeon', 'valentino', 'saiaJusta', 'tapecaria'] },
-  { id: 'suvinil-teals', name: 'Suvinil Teals', colors: ['luzDaManha', 'calmaria', 'marMediterraneo', 'marVerde', 'martimPescador', 'vasoDeCeramica'] },
-  { id: 'suvinil-verde-amarelo', name: 'Suvinil Verde-Amarelo', colors: ['rioPaine', 'capimSanto', 'cheiroVerde', 'capimSeco', 'temperoSirio', 'chenile'] },
-  { id: 'suvinil-verdes', name: 'Suvinil Verdes', colors: ['verdeLavado', 'igarape', 'rioLimpido', 'trilhaNaMata', 'verdeTrevo', 'verdePastel'] },
-  { id: 'suvinil-violetas', name: 'Suvinil Violetas', colors: ['chaDeRosas', 'chuvaDePetalas', 'florDeGeranio', 'roxoRustico', 'maravilha', 'violetaQueimado'] },
-  { id: 'terrace', name: 'Terrace', colors: ['deepViolet', 'burgundy', 'darkPlum', 'deepWine', 'darkPurpleGray', 'charcoalGray', 'lightStone'] },
-  { id: 'tropical', name: 'Tropical', colors: ['harvestGold', 'calico', 'hampton', 'seaNymph', 'smaltBlue'] },
-  { id: 'viola', name: 'Viola', colors: ['deepAmethyst', 'orchid', 'goldCream', 'vanillaIce', 'richPurple', 'lightLavender'] },
-  { id: 'winter', name: 'Winter', colors: ['winterSky', 'steelBlue', 'deepOcean', 'mediumSlateGray'] },
 ];
 
 interface DraggableBulletProps {

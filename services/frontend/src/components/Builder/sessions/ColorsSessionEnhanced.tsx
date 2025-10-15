@@ -26,8 +26,13 @@ interface ColorSchema {
   isDefault?: boolean;
 }
 
-// ALL 44 Color Schemas from palette images - SORTED ALPHABETICALLY
+// ALL 46 Color Schemas - ORDERED: Todas as Cores, Favoritos, then Alphabetical
 export const COLOR_SCHEMAS: ColorSchema[] = [
+  // Special schemas first
+  { id: 'todas', name: 'Todas as Cores', colors: Object.keys(COLOR_SCALES) as ColorScaleName[], isDefault: true },
+  { id: 'favoritos', name: 'Favoritos', colors: ['limeGreen', 'teal', 'coral', 'amethyst', 'navy', 'orange', 'emerald', 'purple'], isDefault: true },
+
+  // Alphabetical schemas
   { id: 'aesthetic', name: 'Aesthetic', colors: ['maroonRed', 'ivoryWhite', 'lightGrayBeige', 'shadowGray', 'taupeBrown'], isDefault: true },
   { id: 'blackberry', name: 'Blackberry', colors: ['paleBeige', 'dustyTealGray', 'softBlue', 'mutedPurple', 'charcoalPurple'], isDefault: true },
   { id: 'bubblegum', name: 'Bubblegum', colors: ['amethyst', 'skyBlue', 'hotPink', 'sunflower', 'electricBlue', 'brightFuchsia'], isDefault: true },
