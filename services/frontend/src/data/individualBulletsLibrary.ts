@@ -757,6 +757,7 @@ export const DOUBLE_RING_CIRCLE_BADGE: IndividualBullet = {
 // ROUNDED_SQUARE_FLOW - Rounded square with icon and flow arrow
 // From IMAGE 3 analysis - Rounded squares with step text and icons
 // ============================================================================
+};
 export const ROUNDED_SQUARE_FLOW: IndividualBullet = {
   id: 'rounded-square-flow',
   name: 'Quadrado Arredondado com Fluxo',
