@@ -14,6 +14,11 @@ export interface ColorScale {
 }
 
 export const COLOR_SCALES = {
+  black: {
+    light: '#4A4A4A',
+    medium: '#000000',
+    dark: '#000000',
+  },
   limeGreen: {
     light: '#C3D82E',
     medium: '#B4D432',

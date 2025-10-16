@@ -880,9 +880,9 @@ function IconProperties({ element }: { element: IconElement }) {
   // Find color name from hex value
   const getCurrentColorName = (): ColorScaleName => {
     const colorEntry = Object.entries(COLOR_SCALES).find(
-      ([_, scale]) => scale.medium === element.properties.color
+      ([_, scale]) => scale.medium.toLowerCase() === element.properties.color.toLowerCase()
     );
-    return (colorEntry?.[0] as ColorScaleName) || 'limeGreen';
+    return (colorEntry?.[0] as ColorScaleName) || 'black';
   };
 
   const currentIcon = iconLibrary.find((icon) => icon.id === element.properties.iconName);
@@ -1227,9 +1227,9 @@ function TextProperties({ element }: { element: TextElement }) {
   // Find color name from hex value
   const getCurrentColorName = (): ColorScaleName => {
     const colorEntry = Object.entries(COLOR_SCALES).find(
-      ([_, scale]) => scale.medium === element.properties.color
+      ([_, scale]) => scale.medium.toLowerCase() === element.properties.color.toLowerCase()
     );
-    return (colorEntry?.[0] as ColorScaleName) || 'limeGreen';
+    return (colorEntry?.[0] as ColorScaleName) || 'black';
   };
 
   return (
@@ -1451,7 +1451,7 @@ function TextProperties({ element }: { element: TextElement }) {
             onChange={(e) => {
               if (!element.properties?.shadow) return;
               const hex = e.target.value;
-              const rgba = `rgba(${parseInt(hex.slice(1, 3), 16)}, ${parseInt(hex.slice(3, 5), 16)}, ${parseInt(hex.slice(5, 7), 16)}, 0.15)`;
+              const rgba = `rgba(${parseInt(hex.slice(1, 3), 16)}, ${parseInt(hex.slice(3, 5), 16)}, ${parseInt(hex.slice(5, 7), 16)}, 0.5)`;
               updateElement(element.id, {
                 properties: {
                   ...element.properties,

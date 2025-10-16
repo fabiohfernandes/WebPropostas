@@ -48,6 +48,7 @@ export function ColorDropdown({ value, onChange, colors, label, className = '' }
 
   const getColorLabel = (colorKey: ColorScaleName): string => {
     const labels: Record<string, string> = {
+      black: 'Preto',
       limeGreen: 'Verde Limão',
       teal: 'Verde Água',
       navy: 'Azul Marinho',
@@ -61,7 +62,7 @@ export function ColorDropdown({ value, onChange, colors, label, className = '' }
   };
 
   const isDarkColor = (colorKey: ColorScaleName): boolean => {
-    const darkColors = ['navy', 'emerald', 'darkBrown', 'espresso', 'darkChocolate', 'deepOcean', 'deepForest',
+    const darkColors = ['black', 'navy', 'emerald', 'darkBrown', 'espresso', 'darkChocolate', 'deepOcean', 'deepForest',
       'deepTeal', 'deepPurple', 'deepViolet', 'nero', 'jetBlack', 'obsidian', 'onyxBlack', 'charcoalBlack',
       'midnightNavy', 'midnightSlate', 'aventurinaPreta', 'azulMarinho', 'marVerde', 'trilhaNaMata',
       'capimSeco', 'cinzaTecnologico', 'roxoRustico'];
