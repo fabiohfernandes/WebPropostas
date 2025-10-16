@@ -461,7 +461,7 @@ function VideoProperties({ element }: { element: VideoElement }) {
 function BulletProperties({ element }: { element: BulletElement }) {
   const { updateElement } = useBuilderStore();
   const { INDIVIDUAL_BULLETS_LIBRARY } = require('@/data/individualBulletsLibrary');
-  const [selectedColorSchema, setSelectedColorSchema] = useState('todas');
+  const [selectedColorSchema, setSelectedColorSchema] = useState('favoritos');
 
   // Check if this is an individual bullet or a set
   const isIndividualBullet = !!element.properties.bulletId;
@@ -875,7 +875,7 @@ function IconProperties({ element }: { element: IconElement }) {
   const { updateElement, favoriteIcons, toggleFavoriteIcon } = useBuilderStore();
   const [iconPickerOpen, setIconPickerOpen] = useState(false);
   const [favoritesPickerOpen, setFavoritesPickerOpen] = useState(false);
-  const [selectedColorSchema, setSelectedColorSchema] = useState('todas');
+  const [selectedColorSchema, setSelectedColorSchema] = useState('favoritos');
 
   // Find color name from hex value
   const getCurrentColorName = (): ColorScaleName => {
@@ -1222,7 +1222,7 @@ function IconProperties({ element }: { element: IconElement }) {
 
 function TextProperties({ element }: { element: TextElement }) {
   const { updateElement } = useBuilderStore();
-  const [selectedColorSchema, setSelectedColorSchema] = useState('todas');
+  const [selectedColorSchema, setSelectedColorSchema] = useState('favoritos');
 
   // Find color name from hex value
   const getCurrentColorName = (): ColorScaleName => {
@@ -1236,9 +1236,51 @@ function TextProperties({ element }: { element: TextElement }) {
     <div className="space-y-2">
       {/* Content */}
       <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">
-          Conteúdo
-        </label>
+        <div className="flex items-center justify-between mb-1">
+          <label className="text-xs font-medium text-gray-700">
+            Conteúdo
+          </label>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
+              <input
+                type="checkbox"
+                id="price-format"
+                checked={element.properties.format === 'currency'}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      format: e.target.checked ? 'currency' : 'none'
+                    },
+                  } as Partial<TextElement>)
+                }
+                className="w-3 h-3 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+              />
+              <label htmlFor="price-format" className="text-xs text-gray-600 cursor-pointer">
+                Preço
+              </label>
+            </div>
+            <div className="flex items-center gap-1">
+              <input
+                type="checkbox"
+                id="percent-format"
+                checked={element.properties.format === 'percentage'}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      format: e.target.checked ? 'percentage' : 'none'
+                    },
+                  } as Partial<TextElement>)
+                }
+                className="w-3 h-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <label htmlFor="percent-format" className="text-xs text-gray-600 cursor-pointer">
+                Percent
+              </label>
+            </div>
+          </div>
+        </div>
         <textarea
           value={element.properties.content}
           onChange={(e) =>
@@ -1247,64 +1289,69 @@ function TextProperties({ element }: { element: TextElement }) {
             } as Partial<TextElement>)
           }
           onFocus={(e) => e.target.select()}
+          placeholder={
+            element.properties.format === 'currency'
+              ? 'Digite apenas o valor'
+              : element.properties.format === 'percentage'
+              ? 'Digite o número (ex: 50)'
+              : ''
+          }
           className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none"
           rows={2}
         />
       </div>
 
-      {/* Font Family */}
-      <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">
-          Fonte
-        </label>
-        <select
-          value={element.properties.fontFamily}
-          onChange={(e) =>
-            updateElement(element.id, {
-              properties: { ...element.properties, fontFamily: e.target.value },
-            } as Partial<TextElement>)
-          }
-          className="w-full px-2 py-1 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-          style={{ fontFamily: getFontFamily(element.properties.fontFamily) }}
-        >
-          <optgroup label="Sans-serif">
-            {getFontsByCategory('sans-serif').map((font) => (
-              <option
-                key={font.name}
-                value={font.name}
-                style={{ fontFamily: font.value }}
-              >
-                {font.name}
-              </option>
-            ))}
-          </optgroup>
-          <optgroup label="Serif">
-            {getFontsByCategory('serif').map((font) => (
-              <option
-                key={font.name}
-                value={font.name}
-                style={{ fontFamily: font.value }}
-              >
-                {font.name}
-              </option>
-            ))}
-          </optgroup>
-          <optgroup label="Monospace">
-            {getFontsByCategory('monospace').map((font) => (
-              <option
-                key={font.name}
-                value={font.name}
-                style={{ fontFamily: font.value }}
-              >
-                {font.name}
-              </option>
-            ))}
-          </optgroup>
-        </select>
-      </div>
-
-      {/* Font Size & Weight */}
-      <div className="grid grid-cols-2 gap-2">
+      {/* FONTE | TAMANHO | PESO */}
+      <div className="grid grid-cols-3 gap-1.5">
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1">
+            Fonte
+          </label>
+          <select
+            value={element.properties.fontFamily}
+            onChange={(e) =>
+              updateElement(element.id, {
+                properties: { ...element.properties, fontFamily: e.target.value },
+              } as Partial<TextElement>)
+            }
+            className="w-full px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+            style={{ fontFamily: getFontFamily(element.properties.fontFamily) }}
+          >
+            <optgroup label="Sans-serif">
+              {getFontsByCategory('sans-serif').map((font) => (
+                <option
+                  key={font.name}
+                  value={font.name}
+                  style={{ fontFamily: font.value }}
+                >
+                  {font.name}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="Serif">
+              {getFontsByCategory('serif').map((font) => (
+                <option
+                  key={font.name}
+                  value={font.name}
+                  style={{ fontFamily: font.value }}
+                >
+                  {font.name}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="Monospace">
+              {getFontsByCategory('monospace').map((font) => (
+                <option
+                  key={font.name}
+                  value={font.name}
+                  style={{ fontFamily: font.value }}
+                >
+                  {font.name}
+                </option>
+              ))}
+            </optgroup>
+          </select>
+        </div>
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">
             Tamanho
@@ -1321,7 +1368,7 @@ function TextProperties({ element }: { element: TextElement }) {
               } as Partial<TextElement>)
             }
             onFocus={(e) => e.target.select()}
-            className="w-full px-2 py-1 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
         <div>
@@ -1335,7 +1382,7 @@ function TextProperties({ element }: { element: TextElement }) {
                 properties: { ...element.properties, fontWeight: e.target.value },
               } as Partial<TextElement>)
             }
-            className="w-full px-2 py-1 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
           >
             <option value="normal">Normal</option>
             <option value="bold">Negrito</option>
@@ -1345,12 +1392,12 @@ function TextProperties({ element }: { element: TextElement }) {
         </div>
       </div>
 
-      {/* Color - DROPDOWN INSTEAD OF PICKER */}
-      <div className="grid grid-cols-2 gap-1.5">
+      {/* ESQUEMA | COR | TRANSP */}
+      <div className="grid grid-cols-3 gap-1.5">
         {/* Schema Selection */}
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">
-            Esquema de Cores
+            Esquema
           </label>
           <select
             value={selectedColorSchema}
@@ -1380,6 +1427,29 @@ function TextProperties({ element }: { element: TextElement }) {
           })()}
           label="Cor"
         />
+
+        {/* Transparency (Opacity) */}
+        <div>
+          <div className="flex justify-between items-center mb-0.5">
+            <label className="text-xs font-medium text-gray-700">
+              Transp
+            </label>
+            <span className="text-xs text-gray-500">{Math.round((element.properties.opacity || 1) * 100)}%</span>
+          </div>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={(element.properties.opacity || 1) * 100}
+            onChange={(e) => {
+              const opacity = parseInt(e.target.value) / 100;
+              updateElement(element.id, {
+                properties: { ...element.properties, opacity },
+              } as Partial<TextElement>);
+            }}
+            className="w-full h-1.5"
+          />
+        </div>
       </div>
 
       {/* Text Align */}
@@ -2204,8 +2274,8 @@ export function PropertiesPanel() {
   const { deleteElement, duplicateElement, currentPageId, updatePageBackground, pages } = useBuilderStore();
   const { images } = useImageLibrary();
   const [showBgLibrary, setShowBgLibrary] = useState(false);
-  const [selectedColorSchema, setSelectedColorSchema] = useState('todas');
-  const [selectedColor, setSelectedColor] = useState<ColorScaleName>('ivoryWhite');
+  const [selectedColorSchema, setSelectedColorSchema] = useState('favoritos');
+  const [selectedColor, setSelectedColor] = useState<ColorScaleName>('white');
   const currentPage = pages.find(p => p.id === currentPageId);
 
   if (!selectedElement) {
@@ -2222,34 +2292,67 @@ export function PropertiesPanel() {
           <h3 className="text-sm font-semibold text-gray-900">Fundo da Página</h3>
         </div>
         <div className="flex-1 overflow-y-auto p-2 space-y-2">
-          {/* Background Type */}
-          <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
-              Tipo de Fundo
-            </label>
-            <select
-              value={bgType}
-              onChange={(e) => {
-                const type = e.target.value as 'color' | 'image';
-                if (type === 'color') {
-                  updatePageBackground(currentPageId, {
-                    type: 'color',
-                    color: bgColor,
-                    opacity: bgOpacity,
-                  });
-                } else {
-                  updatePageBackground(currentPageId, {
-                    type: 'image',
-                    image: bgImage || '',
-                    opacity: bgOpacity,
-                  });
-                }
-              }}
-              className="w-full px-2 py-1 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-            >
-              <option value="color">Cor Sólida</option>
-              <option value="image">Imagem</option>
-            </select>
+          {/* Background Type and Opacity */}
+          <div className="grid grid-cols-2 gap-1.5">
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                Tipo de Fundo
+              </label>
+              <select
+                value={bgType}
+                onChange={(e) => {
+                  const type = e.target.value as 'color' | 'image';
+                  if (type === 'color') {
+                    updatePageBackground(currentPageId, {
+                      type: 'color',
+                      color: COLOR_SCALES[selectedColor].medium,
+                      opacity: bgOpacity,
+                    });
+                  } else {
+                    updatePageBackground(currentPageId, {
+                      type: 'image',
+                      image: bgImage || '',
+                      opacity: bgOpacity,
+                    });
+                  }
+                }}
+                className="w-full px-2 py-1 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                <option value="color">Cor Sólida</option>
+                <option value="image">Imagem</option>
+              </select>
+            </div>
+            <div>
+              <div className="flex justify-between items-center mb-0.5">
+                <label className="text-xs font-medium text-gray-700">
+                  Opacidade
+                </label>
+                <span className="text-xs text-gray-500">{Math.round(bgOpacity * 100)}%</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={bgOpacity * 100}
+                onChange={(e) => {
+                  const opacity = parseInt(e.target.value) / 100;
+                  if (bgType === 'color') {
+                    updatePageBackground(currentPageId, {
+                      type: 'color',
+                      color: bgColor,
+                      opacity,
+                    });
+                  } else {
+                    updatePageBackground(currentPageId, {
+                      type: 'image',
+                      image: bgImage,
+                      opacity,
+                    });
+                  }
+                }}
+                className="w-full h-1.5"
+              />
+            </div>
           </div>
 
           {/* Color Background */}
@@ -2347,38 +2450,6 @@ export function PropertiesPanel() {
             </div>
           )}
 
-          {/* Opacity */}
-          <div>
-            <div className="flex justify-between items-center mb-0.5">
-              <label className="text-xs font-medium text-gray-700">
-                Opacidade
-              </label>
-              <span className="text-xs text-gray-500">{Math.round(bgOpacity * 100)}%</span>
-            </div>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={bgOpacity * 100}
-              onChange={(e) => {
-                const opacity = parseInt(e.target.value) / 100;
-                if (bgType === 'color') {
-                  updatePageBackground(currentPageId, {
-                    type: 'color',
-                    color: bgColor,
-                    opacity,
-                  });
-                } else {
-                  updatePageBackground(currentPageId, {
-                    type: 'image',
-                    image: bgImage,
-                    opacity,
-                  });
-                }
-              }}
-              className="w-full h-1.5"
-            />
-          </div>
         </div>
       </div>
     );

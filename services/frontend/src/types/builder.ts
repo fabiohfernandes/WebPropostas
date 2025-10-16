@@ -71,6 +71,7 @@ export interface TextElement extends BaseElement {
     backgroundColor?: string;
     textDecoration?: 'none' | 'underline' | 'line-through';
     textStyle?: TextStyle;
+    format?: 'none' | 'currency' | 'percentage'; // Format type for automatic formatting
     // Text effects
     shadow?: {
       blur: number;

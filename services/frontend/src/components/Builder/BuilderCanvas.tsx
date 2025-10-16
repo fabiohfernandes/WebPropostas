@@ -2074,7 +2074,13 @@ function CanvasElement({ element, onFrameHover, hoverFrameId, onVideoDoubleClick
           y={0}
           width={element.width}
           height={element.height}
-          text={textEl.properties.content}
+          text={
+            textEl.properties.format === 'currency'
+              ? `R$ ${textEl.properties.content}`
+              : textEl.properties.format === 'percentage'
+              ? `${textEl.properties.content}%`
+              : textEl.properties.content
+          }
           fontSize={textEl.properties.fontSize}
           fontFamily={getFontFamily(textEl.properties.fontFamily)}
           fill={textEl.properties.color}

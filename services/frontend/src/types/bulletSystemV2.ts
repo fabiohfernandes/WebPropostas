@@ -19,6 +19,11 @@ export const COLOR_SCALES = {
     medium: '#000000',
     dark: '#000000',
   },
+  white: {
+    light: '#FFFFFF',
+    medium: '#FFFFFF',
+    dark: '#E5E5E5',
+  },
   limeGreen: {
     light: '#C3D82E',
     medium: '#B4D432',
@@ -58,6 +63,26 @@ export const COLOR_SCALES = {
     light: '#6EE7B7',
     medium: '#34D399',
     dark: '#10B981',
+  },
+  darkEmerald: {
+    light: '#10B981',
+    medium: '#059669',
+    dark: '#047857',
+  },
+  brightRed: {
+    light: '#EF4444',
+    medium: '#DC2626',
+    dark: '#B91C1C',
+  },
+  brightBlue: {
+    light: '#60A5FA',
+    medium: '#3B82F6',
+    dark: '#2563EB',
+  },
+  brightAmber: {
+    light: '#FCD34D',
+    medium: '#F59E0B',
+    dark: '#D97706',
   },
   // Fresh palette - earthy natural tones
   sageGreen: {

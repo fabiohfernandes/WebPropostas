@@ -240,8 +240,8 @@ const textPresets: TextPreset[] = [
     tags: ['preço', 'valor', 'dinheiro'],
     example: 'R$ 999.999',
     defaultProps: {
-      width: 250,
-      height: 70,
+      width: 400,
+      height: 80,
       properties: {
         content: 'R$ 999.999',
         fontFamily: 'Inter',
@@ -263,8 +263,8 @@ const textPresets: TextPreset[] = [
     tags: ['preço', 'valor'],
     example: 'R$ 99.990',
     defaultProps: {
-      width: 200,
-      height: 50,
+      width: 300,
+      height: 60,
       properties: {
         content: 'R$ 99.990',
         fontFamily: 'Inter',
@@ -286,8 +286,8 @@ const textPresets: TextPreset[] = [
     tags: ['preço', 'a partir de'],
     example: 'A partir de R$ 450K',
     defaultProps: {
-      width: 250,
-      height: 45,
+      width: 350,
+      height: 50,
       properties: {
         content: 'A partir de R$ 450.000',
         fontFamily: 'Inter',
@@ -309,8 +309,8 @@ const textPresets: TextPreset[] = [
     tags: ['desconto', 'oferta', 'promoção'],
     example: 'DE R$ 150K POR R$ 120K',
     defaultProps: {
-      width: 300,
-      height: 60,
+      width: 350,
+      height: 70,
       properties: {
         content: 'De R$ 150.000\nPOR R$ 120.000',
         fontFamily: 'Inter',
@@ -577,8 +577,8 @@ const textPresets: TextPreset[] = [
     tags: ['imóvel', 'casa', 'apartamento', 'preço'],
     example: 'R$ 1.250.000',
     defaultProps: {
-      width: 280,
-      height: 70,
+      width: 400,
+      height: 80,
       properties: {
         content: 'R$ 1.250.000',
         fontFamily: 'Inter',
@@ -742,8 +742,8 @@ const textPresets: TextPreset[] = [
     tags: ['preço', 'valor', 'carro'],
     example: 'R$ 89.990',
     defaultProps: {
-      width: 250,
-      height: 70,
+      width: 350,
+      height: 80,
       properties: {
         content: 'R$ 89.990',
         fontFamily: 'Inter',
@@ -855,6 +855,15 @@ export function TextSessionEnhanced() {
       y: page.canvasSize.height / 2,
     };
 
+    // Auto-enable currency format for price templates
+    const isPriceTemplate = preset.category === 'pricing' || preset.id === 're-price' || preset.id === 'auto-price';
+
+    // Strip "R$" prefix from content if it's a price template
+    let cleanContent = preset.defaultProps.properties.content;
+    if (isPriceTemplate && cleanContent.startsWith('R$ ')) {
+      cleanContent = cleanContent.replace(/^R\$\s*/, '');
+    }
+
     addElement({
       id: `text-${Date.now()}`,
       type: 'text',
@@ -867,7 +876,11 @@ export function TextSessionEnhanced() {
       zIndex: 0,
       locked: false,
       visible: true,
-      properties: preset.defaultProps.properties,
+      properties: {
+        ...preset.defaultProps.properties,
+        content: cleanContent,
+        format: isPriceTemplate ? 'currency' : 'none',
+      },
     });
   };
 

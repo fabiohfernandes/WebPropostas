@@ -26,18 +26,17 @@ interface ColorSchema {
   isDefault?: boolean;
 }
 
-// ALL 46 Color Schemas - ORDERED: Todas as Cores, Favoritos, then Alphabetical
+// ALL Color Schemas - ORDERED: Favoritos, then Alphabetical
 export const COLOR_SCHEMAS: ColorSchema[] = [
   // Special schemas first
-  { id: 'todas', name: 'Todas as Cores', colors: Object.keys(COLOR_SCALES) as ColorScaleName[], isDefault: true },
-  { id: 'favoritos', name: 'Favoritos', colors: ['limeGreen', 'teal', 'coral', 'amethyst', 'navy', 'orange', 'emerald', 'purple'], isDefault: true },
+  { id: 'favoritos', name: 'Favoritos', colors: ['black', 'white', 'darkEmerald', 'brightRed', 'brightBlue', 'brightAmber', 'limeGreen', 'teal', 'coral', 'amethyst', 'navy', 'orange', 'emerald', 'purple'], isDefault: true },
 
   // Alphabetical schemas
   { id: 'aesthetic', name: 'Aesthetic', colors: ['maroonRed', 'ivoryWhite', 'lightGrayBeige', 'shadowGray', 'taupeBrown'], isDefault: true },
   { id: 'blackberry', name: 'Blackberry', colors: ['paleBeige', 'dustyTealGray', 'softBlue', 'mutedPurple', 'charcoalPurple'], isDefault: true },
   { id: 'bubblegum', name: 'Bubblegum', colors: ['amethyst', 'skyBlue', 'hotPink', 'sunflower', 'electricBlue', 'brightFuchsia'], isDefault: true },
   { id: 'chicago', name: 'Chicago', colors: ['lightCream', 'warmTerracottaRust', 'darkForestGreen', 'deepCharcoalBlack'], isDefault: true },
-  { id: 'classic', name: 'Classic', colors: ['forestGreen', 'silverGray', 'lightGray', 'mustardYellow', 'mediumSteelBlue'], isDefault: true },
+  { id: 'classic', name: 'Classic', colors: ['darkEmerald', 'silverGray', 'lightGray', 'mustardYellow', 'mediumSteelBlue'], isDefault: true },
   { id: 'coconut', name: 'Coconut', colors: ['tangerine', 'coconutCream', 'espresso', 'khaki', 'mediumKhaki'], isDefault: true },
   { id: 'deep-water', name: 'Deep Water', colors: ['deepNavy', 'mediumNavy', 'softNavy', 'lightNavyGray', 'paleNavyBlue'], isDefault: true },
   { id: 'dreamer', name: 'Dreamer', colors: ['aquaMist', 'lavenderGray', 'sandBeige', 'lilacMist'], isDefault: true },
@@ -83,7 +82,9 @@ export const COLOR_SCHEMAS: ColorSchema[] = [
 
 export function ColorsSessionEnhanced() {
   const [schemas, setSchemas] = useState<ColorSchema[]>(COLOR_SCHEMAS);
-  const [favorites, setFavorites] = useState<ColorScaleName[]>(['limeGreen', 'teal', 'coral', 'amethyst']);
+  // Get favorites from hardcoded schema
+  const defaultFavoritos = COLOR_SCHEMAS.find(s => s.id === 'favoritos')?.colors || [];
+  const [favorites, setFavorites] = useState<ColorScaleName[]>(defaultFavoritos);
   const [editingSchema, setEditingSchema] = useState<string | null>(null);
   const [newSchemaName, setNewSchemaName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -96,6 +97,14 @@ export function ColorsSessionEnhanced() {
   const [customColorName, setCustomColorName] = useState('');
   const [showCustomColorSection, setShowCustomColorSection] = useState(false);
   const COLORS_PER_PAGE = 50;
+
+  // Sync favorites with hardcoded schema on mount
+  useEffect(() => {
+    const favoritosSchema = COLOR_SCHEMAS.find(s => s.id === 'favoritos');
+    if (favoritosSchema) {
+      setFavorites(favoritosSchema.colors);
+    }
+  }, []);
 
   // Get all available colors
   const allColors = Object.keys(COLOR_SCALES) as ColorScaleName[];
@@ -116,7 +125,7 @@ export function ColorsSessionEnhanced() {
     },
     greens: {
       label: 'Verdes',
-      colors: ['limeGreen', 'emerald', 'sageGreen', 'mintGreen', 'seaNymph', 'forestGreen', 'mindaro', 'deepForest', 'seafoam', 'mintCream', 'mintJade', 'verdeLavado', 'igarape', 'rioLimpido', 'trilhaNaMata', 'rioPaine', 'capimSanto', 'cheiroVerde', 'capimSeco']
+      colors: ['limeGreen', 'emerald', 'sageGreen', 'mintGreen', 'seaNymph', 'darkEmerald', 'mindaro', 'deepForest', 'seafoam', 'mintCream', 'mintJade', 'verdeLavado', 'igarape', 'rioLimpido', 'trilhaNaMata', 'rioPaine', 'capimSanto', 'cheiroVerde', 'capimSeco']
     },
     teals: {
       label: 'Verde-Água & Turquesa',
@@ -189,8 +198,12 @@ export function ColorsSessionEnhanced() {
     setModalContext(null);
   };
 
-  // Toggle favorite
+  // Toggle favorite - BLACK, WHITE, GREEN, RED, BLUE, AMBER CANNOT BE REMOVED
   const toggleFavorite = (color: ColorScaleName) => {
+    // Prevent removing colors used in text templates
+    if (color === 'black' || color === 'white' || color === 'darkEmerald' || color === 'brightRed' || color === 'brightBlue' || color === 'brightAmber') {
+      return;
+    }
     setFavorites(prev =>
       prev.includes(color) ? prev.filter(c => c !== color) : [...prev, color]
     );
@@ -269,11 +282,13 @@ export function ColorsSessionEnhanced() {
 
   // Schema Card Component
   const SchemaCard = ({ schema, isFavorites = false }: { schema?: ColorSchema; isFavorites?: boolean }) => {
-    const isRemoving = schema ? removeMode[schema.id] : removeMode['favorites'];
-    const colors = isFavorites ? favorites : schema?.colors || [];
+    // If schema is 'favoritos', use state-based favorites instead of hardcoded colors
+    const useFavoritesState = schema?.id === 'favoritos' || isFavorites;
+    const schemaId = useFavoritesState ? 'favorites' : schema?.id || '';
+    const isRemoving = removeMode[schemaId];
+    const colors = useFavoritesState ? favorites : schema?.colors || [];
     const validColors = colors.filter(color => COLOR_SCALES[color]);
-    const schemaId = isFavorites ? 'favorites' : schema?.id || '';
-    const schemaName = isFavorites ? 'Favoritos' : schema?.name || '';
+    const schemaName = useFavoritesState ? 'Favoritos' : schema?.name || '';
 
     return (
       <div className="p-3 rounded-lg border-2 border-gray-200 bg-white hover:border-fuchsia-300 transition-all">
@@ -303,14 +318,14 @@ export function ColorsSessionEnhanced() {
           ) : (
             <>
               <div className="flex items-center gap-2">
-                {isFavorites && <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />}
+                {useFavoritesState && <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />}
                 <h4 className="text-xs font-semibold text-gray-800">{schemaName}</h4>
                 <span className="text-[10px] text-gray-400">({validColors.length})</span>
               </div>
               <div className="flex items-center gap-1">
                 {/* Add Color Button */}
                 <button
-                  onClick={() => openModal(isFavorites ? 'favorites' : 'schema', schemaId, schemaName)}
+                  onClick={() => openModal(useFavoritesState ? 'favorites' : 'schema', schemaId, schemaName)}
                   className="p-1 text-green-600 hover:bg-green-50 rounded transition-colors"
                   title="Adicionar cor"
                 >
@@ -331,7 +346,7 @@ export function ColorsSessionEnhanced() {
                 </button>
 
                 {/* Edit/Delete Buttons (only for custom schemas) */}
-                {!isFavorites && schema && !schema.isDefault && (
+                {!useFavoritesState && schema && !schema.isDefault && (
                   <>
                     <button
                       onClick={() => setEditingSchema(schema.id)}
@@ -365,10 +380,10 @@ export function ColorsSessionEnhanced() {
                 style={{ backgroundColor: COLOR_SCALES[color].medium }}
                 title={color}
               />
-              {isRemoving && (
+              {isRemoving && !(useFavoritesState && (color === 'black' || color === 'white' || color === 'darkEmerald' || color === 'brightRed' || color === 'brightBlue' || color === 'brightAmber')) && (
                 <button
                   onClick={() => {
-                    if (isFavorites) {
+                    if (useFavoritesState) {
                       toggleFavorite(color);
                     } else if (schema) {
                       removeColorFromSchema(schema.id, color);
@@ -383,7 +398,7 @@ export function ColorsSessionEnhanced() {
           ))}
           {colors.length === 0 && (
             <p className="text-xs text-gray-400 italic py-2">
-              {isFavorites ? 'Nenhuma cor favoritada ainda.' : 'Nenhuma cor neste esquema.'}
+              {useFavoritesState ? 'Nenhuma cor favoritada ainda.' : 'Nenhuma cor neste esquema.'}
             </p>
           )}
         </div>
@@ -406,9 +421,6 @@ export function ColorsSessionEnhanced() {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-3 space-y-3">
-        {/* Favoritos Card */}
-        <SchemaCard isFavorites />
-
         {/* Create New Schema Button */}
         <div className="flex items-center justify-between pt-2 border-t border-gray-200">
           <h4 className="text-xs font-semibold text-gray-700">Esquemas ({schemas.length})</h4>
