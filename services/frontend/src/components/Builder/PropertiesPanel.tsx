@@ -730,7 +730,7 @@ function BulletProperties({ element }: { element: BulletElement }) {
                   properties: {
                     ...element.properties,
                     shadow: {
-                      blur: 2,
+                      blur: 4,
                       color: 'rgba(0, 0, 0, 0.5)',
                       offsetX: 2,
                       offsetY: 2,
@@ -1078,7 +1078,7 @@ function IconProperties({ element }: { element: IconElement }) {
                   properties: {
                     ...element.properties,
                     shadow: {
-                      blur: 2,
+                      blur: 4,
                       color: 'rgba(0, 0, 0, 0.5)',
                       offsetX: 2,
                       offsetY: 2,
@@ -1222,6 +1222,15 @@ function IconProperties({ element }: { element: IconElement }) {
 
 function TextProperties({ element }: { element: TextElement }) {
   const { updateElement } = useBuilderStore();
+  const [selectedColorSchema, setSelectedColorSchema] = useState('todas');
+
+  // Find color name from hex value
+  const getCurrentColorName = (): ColorScaleName => {
+    const colorEntry = Object.entries(COLOR_SCALES).find(
+      ([_, scale]) => scale.medium === element.properties.color
+    );
+    return (colorEntry?.[0] as ColorScaleName) || 'limeGreen';
+  };
 
   return (
     <div className="space-y-2">
@@ -1336,33 +1345,41 @@ function TextProperties({ element }: { element: TextElement }) {
         </div>
       </div>
 
-      {/* Color */}
-      <div>
-        <label className="block text-xs font-medium text-gray-700 mb-1">
-          Cor
-        </label>
-        <div className="flex gap-2">
-          <input
-            type="color"
-            value={element.properties.color}
-            onChange={(e) =>
-              updateElement(element.id, {
-                properties: { ...element.properties, color: e.target.value },
-              } as Partial<TextElement>)
-            }
-            className="w-10 h-8 rounded border border-gray-200 cursor-pointer"
-          />
-          <input
-            type="text"
-            value={element.properties.color}
-            onChange={(e) =>
-              updateElement(element.id, {
-                properties: { ...element.properties, color: e.target.value },
-              } as Partial<TextElement>)
-            }
-            className="flex-1 px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono"
-          />
+      {/* Color - DROPDOWN INSTEAD OF PICKER */}
+      <div className="grid grid-cols-2 gap-1.5">
+        {/* Schema Selection */}
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1">
+            Esquema de Cores
+          </label>
+          <select
+            value={selectedColorSchema}
+            onChange={(e) => setSelectedColorSchema(e.target.value)}
+            className="w-full px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          >
+            {COLOR_SCHEMAS.map((schema) => (
+              <option key={schema.id} value={schema.id}>
+                {schema.name}
+              </option>
+            ))}
+          </select>
         </div>
+
+        {/* Color Dropdown */}
+        <ColorDropdown
+          value={getCurrentColorName()}
+          onChange={(colorName) => {
+            updateElement(element.id, {
+              properties: { ...element.properties, color: COLOR_SCALES[colorName].medium },
+            } as Partial<TextElement>);
+          }}
+          colors={(() => {
+            const schema = COLOR_SCHEMAS.find(s => s.id === selectedColorSchema);
+            const availableColors = schema ? schema.colors : Object.keys(COLOR_SCALES) as ColorScaleName[];
+            return availableColors.filter(colorKey => COLOR_SCALES[colorKey]);
+          })()}
+          label="Cor"
+        />
       </div>
 
       {/* Text Align */}
@@ -1395,6 +1412,159 @@ function TextProperties({ element }: { element: TextElement }) {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Shadow Controls */}
+      <div className="pt-2 border-t border-gray-200">
+        <div className="flex items-center gap-2 mb-1.5">
+          <label className="text-xs font-medium text-gray-700">
+            Sombra
+          </label>
+          <input
+            type="checkbox"
+            checked={!!element.properties?.shadow}
+            onChange={(e) => {
+              if (e.target.checked) {
+                updateElement(element.id, {
+                  properties: {
+                    ...element.properties,
+                    shadow: {
+                      blur: 4,
+                      color: 'rgba(0, 0, 0, 0.5)',
+                      offsetX: 2,
+                      offsetY: 2,
+                    },
+                  } as Partial<TextElement>['properties'],
+                });
+              } else {
+                const { shadow, ...restProperties } = element.properties;
+                updateElement(element.id, {
+                  properties: restProperties,
+                } as Partial<TextElement>);
+              }
+            }}
+            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+          />
+          <input
+            type="color"
+            value={element.properties?.shadow?.color.startsWith('rgba') ? '#000000' : (element.properties?.shadow?.color || '#000000')}
+            onChange={(e) => {
+              if (!element.properties?.shadow) return;
+              const hex = e.target.value;
+              const rgba = `rgba(${parseInt(hex.slice(1, 3), 16)}, ${parseInt(hex.slice(3, 5), 16)}, ${parseInt(hex.slice(5, 7), 16)}, 0.15)`;
+              updateElement(element.id, {
+                properties: {
+                  ...element.properties,
+                  shadow: {
+                    ...element.properties.shadow,
+                    color: rgba,
+                  },
+                } as Partial<TextElement>['properties'],
+              });
+            }}
+            disabled={!element.properties?.shadow}
+            className="w-8 h-6 rounded border border-gray-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          />
+          <input
+            type="text"
+            value={element.properties?.shadow?.color.startsWith('rgba') ? '#000000' : (element.properties?.shadow?.color || '#000000')}
+            onChange={(e) => {
+              if (!element.properties?.shadow) return;
+              updateElement(element.id, {
+                properties: {
+                  ...element.properties,
+                  shadow: {
+                    ...element.properties.shadow,
+                    color: e.target.value,
+                  },
+                } as Partial<TextElement>['properties'],
+              });
+            }}
+            onFocus={(e) => e.target.select()}
+            disabled={!element.properties?.shadow}
+            placeholder="#000000"
+            className="w-20 px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed font-mono"
+          />
+        </div>
+
+        {element.properties?.shadow && (
+          <div className="grid grid-cols-3 gap-1.5 pl-2">
+            <div>
+              <div className="flex justify-between items-center mb-0.5">
+                <label className="text-xs text-gray-600">Desfoque</label>
+                <span className="text-xs text-gray-500">{element.properties.shadow.blur}px</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="20"
+                value={element.properties.shadow.blur}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        blur: parseInt(e.target.value),
+                      },
+                    } as Partial<TextElement>['properties'],
+                  })
+                }
+                className="w-full h-1.5"
+              />
+            </div>
+
+            <div>
+              <div className="flex justify-between items-center mb-0.5">
+                <label className="text-xs text-gray-600">Offset X</label>
+                <span className="text-xs text-gray-500">{element.properties.shadow.offsetX}px</span>
+              </div>
+              <input
+                type="range"
+                min="-20"
+                max="20"
+                value={element.properties.shadow.offsetX}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        offsetX: parseInt(e.target.value),
+                      },
+                    } as Partial<TextElement>['properties'],
+                  })
+                }
+                className="w-full h-1.5"
+              />
+            </div>
+
+            <div>
+              <div className="flex justify-between items-center mb-0.5">
+                <label className="text-xs text-gray-600">Offset Y</label>
+                <span className="text-xs text-gray-500">{element.properties.shadow.offsetY}px</span>
+              </div>
+              <input
+                type="range"
+                min="-20"
+                max="20"
+                value={element.properties.shadow.offsetY}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        offsetY: parseInt(e.target.value),
+                      },
+                    } as Partial<TextElement>['properties'],
+                  })
+                }
+                className="w-full h-1.5"
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -1687,6 +1857,159 @@ function ImageProperties({ element }: { element: ImageElement }) {
             <p className="text-xs text-gray-500 italic">
               ✨ A moldura segue o contorno da imagem PNG
             </p>
+          </div>
+        )}
+      </div>
+
+      {/* Shadow Controls */}
+      <div className="pt-2 border-t border-gray-200">
+        <div className="flex items-center gap-2 mb-1.5">
+          <label className="text-xs font-medium text-gray-700">
+            Sombra
+          </label>
+          <input
+            type="checkbox"
+            checked={!!element.properties?.shadow}
+            onChange={(e) => {
+              if (e.target.checked) {
+                updateElement(element.id, {
+                  properties: {
+                    ...element.properties,
+                    shadow: {
+                      blur: 8,
+                      color: 'rgba(0, 0, 0, 0.5)',
+                      offsetX: 2,
+                      offsetY: 2,
+                    },
+                  } as Partial<ImageElement>['properties'],
+                });
+              } else {
+                const { shadow, ...restProperties } = element.properties;
+                updateElement(element.id, {
+                  properties: restProperties,
+                } as Partial<ImageElement>);
+              }
+            }}
+            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+          />
+          <input
+            type="color"
+            value={element.properties?.shadow?.color.startsWith('rgba') ? '#000000' : (element.properties?.shadow?.color || '#000000')}
+            onChange={(e) => {
+              if (!element.properties?.shadow) return;
+              const hex = e.target.value;
+              const rgba = `rgba(${parseInt(hex.slice(1, 3), 16)}, ${parseInt(hex.slice(3, 5), 16)}, ${parseInt(hex.slice(5, 7), 16)}, 0.3)`;
+              updateElement(element.id, {
+                properties: {
+                  ...element.properties,
+                  shadow: {
+                    ...element.properties.shadow,
+                    color: rgba,
+                  },
+                } as Partial<ImageElement>['properties'],
+              });
+            }}
+            disabled={!element.properties?.shadow}
+            className="w-8 h-6 rounded border border-gray-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          />
+          <input
+            type="text"
+            value={element.properties?.shadow?.color.startsWith('rgba') ? '#000000' : (element.properties?.shadow?.color || '#000000')}
+            onChange={(e) => {
+              if (!element.properties?.shadow) return;
+              updateElement(element.id, {
+                properties: {
+                  ...element.properties,
+                  shadow: {
+                    ...element.properties.shadow,
+                    color: e.target.value,
+                  },
+                } as Partial<ImageElement>['properties'],
+              });
+            }}
+            onFocus={(e) => e.target.select()}
+            disabled={!element.properties?.shadow}
+            placeholder="#000000"
+            className="w-20 px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed font-mono"
+          />
+        </div>
+
+        {element.properties?.shadow && (
+          <div className="grid grid-cols-3 gap-1.5 pl-2">
+            <div>
+              <div className="flex justify-between items-center mb-0.5">
+                <label className="text-xs text-gray-600">Desfoque</label>
+                <span className="text-xs text-gray-500">{element.properties.shadow.blur}px</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="50"
+                value={element.properties.shadow.blur}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        blur: parseInt(e.target.value),
+                      },
+                    } as Partial<ImageElement>['properties'],
+                  })
+                }
+                className="w-full h-1.5"
+              />
+            </div>
+
+            <div>
+              <div className="flex justify-between items-center mb-0.5">
+                <label className="text-xs text-gray-600">Offset X</label>
+                <span className="text-xs text-gray-500">{element.properties.shadow.offsetX}px</span>
+              </div>
+              <input
+                type="range"
+                min="-30"
+                max="30"
+                value={element.properties.shadow.offsetX}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        offsetX: parseInt(e.target.value),
+                      },
+                    } as Partial<ImageElement>['properties'],
+                  })
+                }
+                className="w-full h-1.5"
+              />
+            </div>
+
+            <div>
+              <div className="flex justify-between items-center mb-0.5">
+                <label className="text-xs text-gray-600">Offset Y</label>
+                <span className="text-xs text-gray-500">{element.properties.shadow.offsetY}px</span>
+              </div>
+              <input
+                type="range"
+                min="-30"
+                max="30"
+                value={element.properties.shadow.offsetY}
+                onChange={(e) =>
+                  updateElement(element.id, {
+                    properties: {
+                      ...element.properties,
+                      shadow: {
+                        ...element.properties.shadow,
+                        offsetY: parseInt(e.target.value),
+                      },
+                    } as Partial<ImageElement>['properties'],
+                  })
+                }
+                className="w-full h-1.5"
+              />
+            </div>
           </div>
         )}
       </div>
