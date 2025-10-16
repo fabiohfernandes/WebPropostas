@@ -1447,17 +1447,40 @@ function TextProperties({ element }: { element: TextElement }) {
           />
           <input
             type="color"
-            value={element.properties?.shadow?.color.startsWith('rgba') ? '#000000' : (element.properties?.shadow?.color || '#000000')}
+            value={(() => {
+              if (!element.properties?.shadow) return '#000000';
+              const rgba = element.properties.shadow.color;
+              if (rgba.startsWith('rgba')) {
+                const match = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+                if (match) {
+                  const r = parseInt(match[1]).toString(16).padStart(2, '0');
+                  const g = parseInt(match[2]).toString(16).padStart(2, '0');
+                  const b = parseInt(match[3]).toString(16).padStart(2, '0');
+                  return `#${r}${g}${b}`;
+                }
+              }
+              return rgba.startsWith('#') ? rgba : '#000000';
+            })()}
             onChange={(e) => {
               if (!element.properties?.shadow) return;
               const hex = e.target.value;
-              const rgba = `rgba(${parseInt(hex.slice(1, 3), 16)}, ${parseInt(hex.slice(3, 5), 16)}, ${parseInt(hex.slice(5, 7), 16)}, 0.5)`;
+              const currentOpacity = (() => {
+                const rgba = element.properties.shadow.color;
+                if (rgba.startsWith('rgba')) {
+                  const match = rgba.match(/rgba?\([^,]+,[^,]+,[^,]+,\s*([\d.]+)\)/);
+                  return match ? parseFloat(match[1]) : 0.5;
+                }
+                return 0.5;
+              })();
+              const r = parseInt(hex.slice(1, 3), 16);
+              const g = parseInt(hex.slice(3, 5), 16);
+              const b = parseInt(hex.slice(5, 7), 16);
               updateElement(element.id, {
                 properties: {
                   ...element.properties,
                   shadow: {
                     ...element.properties.shadow,
-                    color: rgba,
+                    color: `rgba(${r}, ${g}, ${b}, ${currentOpacity})`,
                   },
                 } as Partial<TextElement>['properties'],
               });
@@ -1465,26 +1488,58 @@ function TextProperties({ element }: { element: TextElement }) {
             disabled={!element.properties?.shadow}
             className="w-8 h-6 rounded border border-gray-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           />
+          <label className="text-xs text-gray-600">
+            Transparência
+          </label>
           <input
-            type="text"
-            value={element.properties?.shadow?.color.startsWith('rgba') ? '#000000' : (element.properties?.shadow?.color || '#000000')}
+            type="range"
+            min="0"
+            max="100"
+            value={(() => {
+              if (!element.properties?.shadow) return 50;
+              const rgba = element.properties.shadow.color;
+              if (rgba.startsWith('rgba')) {
+                const match = rgba.match(/rgba?\([^,]+,[^,]+,[^,]+,\s*([\d.]+)\)/);
+                return match ? Math.round(parseFloat(match[1]) * 100) : 50;
+              }
+              return 50;
+            })()}
             onChange={(e) => {
               if (!element.properties?.shadow) return;
+              const opacity = parseInt(e.target.value) / 100;
+              const rgba = element.properties.shadow.color;
+              let r = 0, g = 0, b = 0;
+              if (rgba.startsWith('rgba')) {
+                const match = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+                if (match) {
+                  r = parseInt(match[1]);
+                  g = parseInt(match[2]);
+                  b = parseInt(match[3]);
+                }
+              }
               updateElement(element.id, {
                 properties: {
                   ...element.properties,
                   shadow: {
                     ...element.properties.shadow,
-                    color: e.target.value,
+                    color: `rgba(${r}, ${g}, ${b}, ${opacity})`,
                   },
                 } as Partial<TextElement>['properties'],
               });
             }}
-            onFocus={(e) => e.target.select()}
             disabled={!element.properties?.shadow}
-            placeholder="#000000"
-            className="w-20 px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed font-mono"
+            className="flex-1 h-1.5"
           />
+          <span className="text-xs text-gray-500 w-8 text-right">
+            {element.properties?.shadow ? (() => {
+              const rgba = element.properties.shadow.color;
+              if (rgba.startsWith('rgba')) {
+                const match = rgba.match(/rgba?\([^,]+,[^,]+,[^,]+,\s*([\d.]+)\)/);
+                return match ? Math.round(parseFloat(match[1]) * 100) : 50;
+              }
+              return 50;
+            })() : 50}%
+          </span>
         </div>
 
         {element.properties?.shadow && (
