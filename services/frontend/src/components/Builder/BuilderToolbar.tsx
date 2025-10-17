@@ -8,6 +8,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useBuilderStore, useHistoryState } from '@/store/builder';
+import { PAPER_SIZES } from '@/store/builder';
 import {
   Undo2,
   Redo2,
@@ -16,9 +17,6 @@ import {
   Grid3x3,
   ChevronDown,
   Plus,
-  Smartphone,
-  Monitor,
-  Palette,
 } from 'lucide-react';
 import { Button } from '@/components/UI';
 import { PreviewModal } from './PreviewModal';
@@ -39,6 +37,7 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
     gridVisible,
     toggleGrid,
     toggleOrientation,
+    setPaperSize,
     currentCanvasSize,
     currentPageId,
     updatePageBackground,
@@ -48,6 +47,7 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
   } = useBuilderStore();
   const { canUndo, canRedo } = useHistoryState();
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
+  const [paperSizeDropdownOpen, setPaperSizeDropdownOpen] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
@@ -186,11 +186,52 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
           <ZoomIn className="w-5 h-5 text-blue-600" strokeWidth={2.5} />
         </button>
 
-        {/* Page Size Display */}
-        <div className="px-3 py-1 text-xs text-gray-600 bg-gray-50 rounded-lg">
-          {canvasSize.preset === 'A4-portrait' && 'A4 (210×297mm)'}
-          {canvasSize.preset === 'A4-landscape' && 'A4 (297×210mm)'}
-          {!canvasSize.preset.startsWith('A4') && `${canvasSize.width} × ${canvasSize.height}px`}
+        {/* Paper Size Dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => setPaperSizeDropdownOpen(!paperSizeDropdownOpen)}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <span className="text-gray-700 font-medium">
+              {canvasSize.preset?.includes('A4') && `A4 (${isPortrait ? '210×297' : '297×210'}mm)`}
+              {canvasSize.preset?.includes('A3') && `A3 (${isPortrait ? '297×420' : '420×297'}mm)`}
+              {canvasSize.preset?.includes('A2') && `A2 (${isPortrait ? '420×594' : '594×420'}mm)`}
+              {canvasSize.preset?.includes('A1') && `A1 (${isPortrait ? '594×841' : '841×594'}mm)`}
+            </span>
+            <ChevronDown className="w-3 h-3 text-gray-500" />
+          </button>
+
+          {paperSizeDropdownOpen && (
+            <>
+              <div
+                className="fixed inset-0 z-10"
+                onClick={() => setPaperSizeDropdownOpen(false)}
+              />
+              <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
+                {(['A4', 'A3', 'A2', 'A1'] as const).map((size) => {
+                  const portraitPreset = `${size}-portrait` as keyof typeof PAPER_SIZES;
+                  const landscapePreset = `${size}-landscape` as keyof typeof PAPER_SIZES;
+                  const currentPreset = isPortrait ? portraitPreset : landscapePreset;
+                  const isActive = canvasSize.preset?.startsWith(size);
+
+                  return (
+                    <button
+                      key={size}
+                      onClick={() => {
+                        setPaperSize(currentPreset);
+                        setPaperSizeDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-1.5 text-xs hover:bg-gray-50 transition-colors ${
+                        isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  );
+                })}
+              </div>
+            </>
+          )}
         </div>
 
         <div className="w-px h-6 bg-gray-300 mx-2" />
@@ -224,20 +265,6 @@ export function BuilderToolbar({ templateId }: BuilderToolbarProps) {
           <Grid3x3 className={`w-5 h-5 ${gridVisible ? 'text-green-600' : 'text-gray-600'}`} strokeWidth={2.5} />
         </button>
 
-        <div className="w-px h-6 bg-gray-300 mx-2" />
-
-        {/* Canvas Background */}
-        <div className="flex items-center gap-2">
-          <Palette className="w-4 h-4 text-pink-600" strokeWidth={2.5} />
-          <span className="text-xs font-medium text-gray-600">Fundo:</span>
-          <input
-            type="color"
-            value={currentPage?.background || '#FFFFFF'}
-            onChange={(e) => updatePageBackground(currentPageId, e.target.value)}
-            className="w-8 h-8 rounded cursor-pointer border border-gray-300"
-            title="Cor do Fundo"
-          />
-        </div>
       </div>
 
       {/* Right Section - Save/Export */}

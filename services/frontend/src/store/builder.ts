@@ -17,7 +17,8 @@ import type {
 
 const HISTORY_LIMIT = 50;
 
-// A4 dimensions at 72 DPI (screen resolution)
+// Paper dimensions at 72 DPI (screen resolution)
+// A4 (210 × 297 mm)
 const A4_PORTRAIT: CanvasSize = {
   width: 595,  // 210mm at 72dpi
   height: 842, // 297mm at 72dpi
@@ -31,6 +32,63 @@ const A4_LANDSCAPE: CanvasSize = {
   preset: 'A4-landscape',
   orientation: 'landscape',
 };
+
+// A3 (297 × 420 mm)
+const A3_PORTRAIT: CanvasSize = {
+  width: 842,   // 297mm at 72dpi
+  height: 1191, // 420mm at 72dpi
+  preset: 'A3-portrait',
+  orientation: 'portrait',
+};
+
+const A3_LANDSCAPE: CanvasSize = {
+  width: 1191,  // 420mm at 72dpi
+  height: 842,  // 297mm at 72dpi
+  preset: 'A3-landscape',
+  orientation: 'landscape',
+};
+
+// A2 (420 × 594 mm)
+const A2_PORTRAIT: CanvasSize = {
+  width: 1191,  // 420mm at 72dpi
+  height: 1684, // 594mm at 72dpi
+  preset: 'A2-portrait',
+  orientation: 'portrait',
+};
+
+const A2_LANDSCAPE: CanvasSize = {
+  width: 1684,  // 594mm at 72dpi
+  height: 1191, // 420mm at 72dpi
+  preset: 'A2-landscape',
+  orientation: 'landscape',
+};
+
+// A1 (594 × 841 mm)
+const A1_PORTRAIT: CanvasSize = {
+  width: 1684,  // 594mm at 72dpi
+  height: 2384, // 841mm at 72dpi
+  preset: 'A1-portrait',
+  orientation: 'portrait',
+};
+
+const A1_LANDSCAPE: CanvasSize = {
+  width: 2384,  // 841mm at 72dpi
+  height: 1684, // 594mm at 72dpi
+  preset: 'A1-landscape',
+  orientation: 'landscape',
+};
+
+// Paper size presets map
+export const PAPER_SIZES = {
+  'A4-portrait': A4_PORTRAIT,
+  'A4-landscape': A4_LANDSCAPE,
+  'A3-portrait': A3_PORTRAIT,
+  'A3-landscape': A3_LANDSCAPE,
+  'A2-portrait': A2_PORTRAIT,
+  'A2-landscape': A2_LANDSCAPE,
+  'A1-portrait': A1_PORTRAIT,
+  'A1-landscape': A1_LANDSCAPE,
+} as const;
 
 // Create initial page
 function createInitialPage(): Page {
@@ -48,7 +106,7 @@ export const useBuilderStore = create<BuilderState>()(
   devtools(
     (set, get) => ({
       // Session State - Navigation
-      activeSession: 'text' as 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets-individual' | 'bullets-sets' | 'ai' | 'colors' | 'tips',
+      activeSession: 'text' as 'drawing' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets-individual' | 'bullets-sets' | 'ai' | 'colors' | 'effects',
 
       // Initial State - Pages
       pages: [createInitialPage()],
@@ -307,7 +365,7 @@ export const useBuilderStore = create<BuilderState>()(
       },
 
       // Actions - Session Navigation
-      setActiveSession: (session: 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets-individual' | 'bullets-sets' | 'ai' | 'colors' | 'tips') => {
+      setActiveSession: (session: 'drawing' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets-individual' | 'bullets-sets' | 'ai' | 'colors' | 'effects') => {
         set({ activeSession: session });
       },
 
@@ -359,10 +417,35 @@ export const useBuilderStore = create<BuilderState>()(
           const page = state.pages.find((p) => p.id === state.currentPageId);
           if (!page) return state;
 
-          const newCanvasSize: CanvasSize =
-            page.canvasSize.orientation === 'portrait'
-              ? A4_LANDSCAPE
-              : A4_PORTRAIT;
+          // Extract paper size from preset (e.g., 'A4-portrait' -> 'A4')
+          const currentPreset = page.canvasSize.preset || 'A4-portrait';
+          const paperSize = currentPreset.split('-')[0]; // 'A4', 'A3', 'A2', 'A1'
+          const isPortrait = page.canvasSize.orientation === 'portrait';
+
+          // Toggle orientation while keeping same paper size
+          const newPreset = `${paperSize}-${isPortrait ? 'landscape' : 'portrait'}` as keyof typeof PAPER_SIZES;
+          const newCanvasSize = PAPER_SIZES[newPreset] || A4_PORTRAIT;
+
+          const updatedPage = {
+            ...page,
+            canvasSize: newCanvasSize,
+          };
+
+          return {
+            pages: state.pages.map((p) =>
+              p.id === state.currentPageId ? updatedPage : p
+            ),
+          };
+        });
+        get().saveHistory();
+      },
+
+      setPaperSize: (preset: keyof typeof PAPER_SIZES) => {
+        set((state) => {
+          const page = state.pages.find((p) => p.id === state.currentPageId);
+          if (!page) return state;
+
+          const newCanvasSize = PAPER_SIZES[preset];
 
           const updatedPage = {
             ...page,
