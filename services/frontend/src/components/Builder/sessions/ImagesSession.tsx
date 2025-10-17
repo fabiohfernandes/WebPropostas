@@ -21,6 +21,8 @@ export function ImagesSession() {
     const page = currentPage();
     if (!page) return;
 
+    console.log('🖱️ Image clicked - Received dimensions:', width, 'x', height);
+
     const canvasCenter = {
       x: page.canvasSize.width / 2,
       y: page.canvasSize.height / 2,
@@ -28,6 +30,8 @@ export function ImagesSession() {
 
     const imageWidth = width || 300;
     const imageHeight = height || 200;
+
+    console.log('📌 Inserting image with dimensions:', imageWidth, 'x', imageHeight);
 
     addElement({
       id: `image-${Date.now()}`,
@@ -61,6 +65,7 @@ export function ImagesSession() {
         const src = event.target?.result as string;
 
         const img = new Image();
+        img.crossOrigin = 'anonymous'; // Enable CORS for images
         img.onload = () => {
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d', {
@@ -75,8 +80,14 @@ export function ImagesSession() {
           canvas.width = img.width * ratio;
           canvas.height = img.height * ratio;
 
+          // CRITICAL: Explicitly clear canvas to transparent BEFORE drawing
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          // Enable high-quality smoothing
           ctx.imageSmoothingEnabled = true;
           ctx.imageSmoothingQuality = 'high';
+
+          // Draw image with alpha channel preserved
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
           const thumbnail = canvas.toDataURL('image/png', 1.0);
