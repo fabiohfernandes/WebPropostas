@@ -841,6 +841,272 @@ export const ROUNDED_SQUARE_FLOW: IndividualBullet = {
 };
 
 // ============================================================================
+// POST-IT NOTE BULLETS - Simple sticky notes with handwritten text
+// ============================================================================
+export const POSTIT_SQUARE: IndividualBullet = {
+  id: 'postit-square',
+  name: 'Post-it Quadrado',
+  category: 'decorative',
+  description: 'Nota adesiva quadrada com fonte manuscrita',
+  shape: 'square',
+  baseColor: 'canaryYellow',
+  defaultWidth: 120,
+  defaultHeight: 120,
+  aspectRatio: 1,
+  effects: {
+    shadow: {
+      offsetX: 2,
+      offsetY: 3,
+      blur: 4,
+      color: 'rgba(0,0,0,0.25)',
+    },
+  },
+  customizable: {
+    text: true,    // Post-its use TEXT, not numbers!
+    number: false,
+    icon: false,
+    color: true,
+    size: true,
+  },
+  generateSVG: (options: BulletRenderOptions) => {
+    const { width, height, color = 'canaryYellow', text = 'Note' } = options;
+    const mainColor = getColor(color, 'medium');
+    const uniqueId = `postit_${Date.now()}_${Math.random()}`;
+
+    // Break text into multiple lines (max ~8 chars per line for readability)
+    const words = text.split(' ');
+    const lines: string[] = [];
+    let currentLine = '';
+
+    words.forEach(word => {
+      if ((currentLine + ' ' + word).trim().length <= 12) {
+        currentLine = (currentLine + ' ' + word).trim();
+      } else {
+        if (currentLine) lines.push(currentLine);
+        currentLine = word;
+      }
+    });
+    if (currentLine) lines.push(currentLine);
+
+    // Limit to 4 lines max
+    const displayLines = lines.slice(0, 4);
+    const fontSize = width * 0.16; // Responsive font size
+    const lineHeight = fontSize * 1.2;
+    const startY = (height / 2) - ((displayLines.length - 1) * lineHeight / 2);
+
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          ${generateShadowEffect(uniqueId)}
+        </defs>
+
+        <!-- Post-it paper -->
+        <rect x="0" y="0" width="120" height="120" fill="${mainColor}" filter="url(#shadow_${uniqueId})"/>
+
+        <!-- Top fold/corner effect -->
+        <path d="M 100 0 L 120 0 L 120 20 Z" fill="rgba(0,0,0,0.05)"/>
+
+        <!-- Handwritten text (multi-line) -->
+        ${displayLines.map((line, i) => `
+          <text x="60" y="${startY + (i * lineHeight)}"
+                font-family="'Caveat', 'Patrick Hand', 'Indie Flower', cursive"
+                font-size="${fontSize}"
+                font-weight="600"
+                fill="#374151"
+                text-anchor="middle">${line}</text>
+        `).join('')}
+      </svg>
+    `;
+  },
+  thumbnailSVG: `
+    <svg width="60" height="60" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <rect width="120" height="120" fill="#FFEB3B"/>
+      <path d="M 100 0 L 120 0 L 120 20 Z" fill="rgba(0,0,0,0.05)"/>
+      <text x="60" y="60" font-family="'Caveat', cursive" font-size="24" font-weight="600" fill="#374151" text-anchor="middle">Note</text>
+    </svg>
+  `,
+  tags: ['postit', 'nota', 'adesivo', 'square', 'texto'],
+  isPremium: false,
+  createdAt: new Date(),
+};
+
+export const POSTIT_ROUNDED: IndividualBullet = {
+  id: 'postit-rounded',
+  name: 'Post-it Arredondado',
+  category: 'decorative',
+  description: 'Nota adesiva com cantos arredondados',
+  shape: 'square',
+  baseColor: 'neonPink',
+  defaultWidth: 120,
+  defaultHeight: 120,
+  aspectRatio: 1,
+  effects: {
+    shadow: {
+      offsetX: 2,
+      offsetY: 3,
+      blur: 4,
+      color: 'rgba(0,0,0,0.25)',
+    },
+  },
+  customizable: {
+    text: true,    // Post-its use TEXT, not numbers!
+    number: false,
+    icon: false,
+    color: true,
+    size: true,
+  },
+  generateSVG: (options: BulletRenderOptions) => {
+    const { width, height, color = 'neonPink', text = 'Note' } = options;
+    const mainColor = getColor(color, 'medium');
+    const uniqueId = `postit_rounded_${Date.now()}_${Math.random()}`;
+    const radius = width * 0.15;
+
+    // Break text into multiple lines (max ~8 chars per line for readability)
+    const words = text.split(' ');
+    const lines: string[] = [];
+    let currentLine = '';
+
+    words.forEach(word => {
+      if ((currentLine + ' ' + word).trim().length <= 12) {
+        currentLine = (currentLine + ' ' + word).trim();
+      } else {
+        if (currentLine) lines.push(currentLine);
+        currentLine = word;
+      }
+    });
+    if (currentLine) lines.push(currentLine);
+
+    // Limit to 4 lines max
+    const displayLines = lines.slice(0, 4);
+    const fontSize = width * 0.16; // Responsive font size
+    const lineHeight = fontSize * 1.2;
+    const startY = (height / 2) - ((displayLines.length - 1) * lineHeight / 2);
+
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          ${generateShadowEffect(uniqueId)}
+        </defs>
+
+        <!-- Post-it paper with rounded corners -->
+        <rect x="0" y="0" width="120" height="120" rx="${radius}" ry="${radius}" fill="${mainColor}" filter="url(#shadow_${uniqueId})"/>
+
+        <!-- Top fold/corner effect -->
+        <path d="M 95 0 Q 110 0 115 15 L 120 20 L 120 0 Z" fill="rgba(0,0,0,0.05)"/>
+
+        <!-- Handwritten text (multi-line) -->
+        ${displayLines.map((line, i) => `
+          <text x="60" y="${startY + (i * lineHeight)}"
+                font-family="'Caveat', 'Patrick Hand', 'Indie Flower', cursive"
+                font-size="${fontSize}"
+                font-weight="600"
+                fill="#374151"
+                text-anchor="middle">${line}</text>
+        `).join('')}
+      </svg>
+    `;
+  },
+  thumbnailSVG: `
+    <svg width="60" height="60" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <rect width="120" height="120" rx="18" ry="18" fill="#FF80AB"/>
+      <path d="M 95 0 Q 110 0 115 15 L 120 20 L 120 0 Z" fill="rgba(0,0,0,0.05)"/>
+      <text x="60" y="60" font-family="'Caveat', cursive" font-size="24" font-weight="600" fill="#374151" text-anchor="middle">Note</text>
+    </svg>
+  `,
+  tags: ['postit', 'nota', 'adesivo', 'rounded', 'arredondado', 'texto'],
+  isPremium: false,
+  createdAt: new Date(),
+};
+
+export const POSTIT_CIRCLE: IndividualBullet = {
+  id: 'postit-circle',
+  name: 'Post-it Circular',
+  category: 'decorative',
+  description: 'Nota adesiva circular',
+  shape: 'circle',
+  baseColor: 'electricBlue',
+  defaultWidth: 120,
+  defaultHeight: 120,
+  aspectRatio: 1,
+  effects: {
+    shadow: {
+      offsetX: 2,
+      offsetY: 3,
+      blur: 4,
+      color: 'rgba(0,0,0,0.25)',
+    },
+  },
+  customizable: {
+    text: true,    // Post-its use TEXT, not numbers!
+    number: false,
+    icon: false,
+    color: true,
+    size: true,
+  },
+  generateSVG: (options: BulletRenderOptions) => {
+    const { width, height, color = 'electricBlue', text = 'Note' } = options;
+    const mainColor = getColor(color, 'medium');
+    const uniqueId = `postit_circle_${Date.now()}_${Math.random()}`;
+    const radius = width / 2;
+
+    // Break text into multiple lines (max ~8 chars per line for readability)
+    const words = text.split(' ');
+    const lines: string[] = [];
+    let currentLine = '';
+
+    words.forEach(word => {
+      if ((currentLine + ' ' + word).trim().length <= 10) {
+        currentLine = (currentLine + ' ' + word).trim();
+      } else {
+        if (currentLine) lines.push(currentLine);
+        currentLine = word;
+      }
+    });
+    if (currentLine) lines.push(currentLine);
+
+    // Limit to 3 lines max (circle has less space)
+    const displayLines = lines.slice(0, 3);
+    const fontSize = width * 0.15; // Slightly smaller for circle
+    const lineHeight = fontSize * 1.2;
+    const startY = (height / 2) - ((displayLines.length - 1) * lineHeight / 2);
+
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          ${generateShadowEffect(uniqueId)}
+        </defs>
+
+        <!-- Post-it paper circle -->
+        <circle cx="60" cy="60" r="60" fill="${mainColor}" filter="url(#shadow_${uniqueId})"/>
+
+        <!-- Top fold/corner effect (partial arc) -->
+        <path d="M 95 15 Q 105 10 110 20 Q 115 30 105 35 Z" fill="rgba(0,0,0,0.05)"/>
+
+        <!-- Handwritten text (multi-line) -->
+        ${displayLines.map((line, i) => `
+          <text x="60" y="${startY + (i * lineHeight)}"
+                font-family="'Caveat', 'Patrick Hand', 'Indie Flower', cursive"
+                font-size="${fontSize}"
+                font-weight="600"
+                fill="#374151"
+                text-anchor="middle">${line}</text>
+        `).join('')}
+      </svg>
+    `;
+  },
+  thumbnailSVG: `
+    <svg width="60" height="60" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="60" fill="#4FC3F7"/>
+      <path d="M 95 15 Q 105 10 110 20 Q 115 30 105 35 Z" fill="rgba(0,0,0,0.05)"/>
+      <text x="60" y="60" font-family="'Caveat', cursive" font-size="22" font-weight="600" fill="#374151" text-anchor="middle">Note</text>
+    </svg>
+  `,
+  tags: ['postit', 'nota', 'adesivo', 'circle', 'circular', 'texto'],
+  isPremium: false,
+  createdAt: new Date(),
+};
+
+// ============================================================================
 export const INDIVIDUAL_BULLETS_LIBRARY: IndividualBullet[] = [
   STEP_CIRCLE,
   HEXAGON_BADGE,
@@ -848,4 +1114,8 @@ export const INDIVIDUAL_BULLETS_LIBRARY: IndividualBullet[] = [
   PILL_BADGE,
   DOUBLE_RING_CIRCLE_BADGE,
   ROUNDED_SQUARE_FLOW,
+  // Post-its
+  POSTIT_SQUARE,
+  POSTIT_ROUNDED,
+  POSTIT_CIRCLE,
 ];

@@ -14,6 +14,7 @@ export type BulletCategory =
   | 'gradient'        // Gradient styled
   | 'outlined'        // Outline style
   | 'filled'          // Solid fill style
+  | 'postit'          // Post-it sticky notes
   | 'custom';         // User uploaded
 
 export interface BulletGraphic {
@@ -111,6 +112,12 @@ export const BULLET_CATEGORIES = [
     name: 'Preenchido',
     icon: '⚫',
     description: 'Estilo sólido preenchido',
+  },
+  {
+    id: 'postit' as BulletCategory,
+    name: 'Post-it',
+    icon: '📝',
+    description: 'Notas adesivas e post-its',
   },
   {
     id: 'custom' as BulletCategory,

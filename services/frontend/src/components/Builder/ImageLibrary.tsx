@@ -6,13 +6,12 @@
 
 import { useState } from 'react';
 import { useDraggable } from '@dnd-kit/core';
-import { Plus, Trash2, Upload } from 'lucide-react';
+import { Plus, Trash2, Upload, MousePointerClick } from 'lucide-react';
 import type { UploadedImage } from '@/types/builder';
 
 interface ImageLibraryProps {
   images: UploadedImage[];
   onImageClick: (imageSrc: string, width: number, height: number) => void;
-  onImageUpload: (image: UploadedImage) => void;
   onImageDelete: (imageId: string) => void;
 }
 
@@ -25,6 +24,8 @@ function DraggableImageItem({
   onImageClick: (src: string, width: number, height: number) => void;
   onImageDelete: (id: string) => void;
 }) {
+  const [pointerDownPos, setPointerDownPos] = useState<{ x: number; y: number } | null>(null);
+
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `image-${image.id}`,
     data: {
@@ -35,25 +36,61 @@ function DraggableImageItem({
     },
   });
 
+  const handlePointerDown = (e: React.PointerEvent) => {
+    setPointerDownPos({ x: e.clientX, y: e.clientY });
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (!pointerDownPos) return;
+
+    // Calculate distance moved
+    const deltaX = Math.abs(e.clientX - pointerDownPos.x);
+    const deltaY = Math.abs(e.clientY - pointerDownPos.y);
+    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+    // If moved less than 5 pixels, treat as click
+    if (distance < 5) {
+      onImageClick(image.src, image.width, image.height);
+    }
+
+    setPointerDownPos(null);
+  };
+
   return (
     <div
       ref={setNodeRef}
-      {...listeners}
-      {...attributes}
       className="relative group"
       style={{ opacity: isDragging ? 0.5 : 1 }}
     >
-      <button
-        onClick={() => onImageClick(image.src, image.width, image.height)}
-        className="w-full aspect-square rounded border border-gray-200 overflow-hidden hover:border-blue-500 transition-colors bg-white cursor-grab active:cursor-grabbing"
+      {/* Draggable Image Thumbnail - Canva-style */}
+      <div
+        {...listeners}
+        {...attributes}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        className="w-full rounded border border-gray-200 overflow-hidden hover:border-blue-500 transition-colors cursor-pointer"
+        style={{
+          // Checkerboard pattern for transparent images (like Canva/Photoshop)
+          backgroundImage:
+            'linear-gradient(45deg, #f0f0f0 25%, transparent 25%), ' +
+            'linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), ' +
+            'linear-gradient(45deg, transparent 75%, #f0f0f0 75%), ' +
+            'linear-gradient(-45deg, transparent 75%, #f0f0f0 75%)',
+          backgroundSize: '16px 16px',
+          backgroundPosition: '0 0, 0 8px, 8px -8px, -8px 0px',
+          backgroundColor: '#ffffff'
+        }}
         title={`${image.name} - Clique para inserir ou arraste para moldura`}
       >
         <img
           src={image.thumbnail}
           alt={image.name}
-          className="w-full h-full object-cover pointer-events-none"
+          className="w-full h-auto object-contain pointer-events-none select-none"
+          draggable="false"
         />
-      </button>
+      </div>
+
+      {/* Delete Button */}
       <button
         onClick={(e) => {
           e.stopPropagation();
@@ -68,87 +105,62 @@ function DraggableImageItem({
   );
 }
 
-export function ImageLibrary({ images, onImageClick, onImageUpload, onImageDelete }: ImageLibraryProps) {
-  const [uploading, setUploading] = useState(false);
-
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
-
-    try {
-      // Create full-size base64
-      const reader = new FileReader();
-      reader.onload = async (event) => {
-        const src = event.target?.result as string;
-
-        // Load image to get dimensions
-        const img = new Image();
-        img.onload = () => {
-          // Create thumbnail (max 100px)
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d')!;
-          const maxSize = 100;
-          const ratio = Math.min(maxSize / img.width, maxSize / img.height);
-          canvas.width = img.width * ratio;
-          canvas.height = img.height * ratio;
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          const thumbnail = canvas.toDataURL('image/jpeg', 0.7);
-
-          const uploadedImage: UploadedImage = {
-            id: `img-${Date.now()}`,
-            name: file.name,
-            src,
-            thumbnail,
-            width: img.width,
-            height: img.height,
-            size: file.size,
-            uploadedAt: Date.now(),
-          };
-
-          onImageUpload(uploadedImage);
-          setUploading(false);
-        };
-        img.src = src;
-      };
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      setUploading(false);
-    }
-  };
-
+export function ImageLibrary({ images, onImageClick, onImageDelete }: ImageLibraryProps) {
   return (
     <div>
-      {/* Upload Button */}
-      <div className="mb-2">
-        <label className="w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg cursor-pointer hover:from-blue-600 hover:to-blue-700 transition-all shadow-sm text-xs font-medium">
-          <Upload className="w-4 h-4" strokeWidth={2.5} />
-          {uploading ? 'Carregando...' : 'Carregar Imagem'}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileUpload}
-            className="hidden"
-            disabled={uploading}
-          />
-        </label>
+
+      {/* Image Grid - Row-based layout with uniform heights */}
+      <div className="p-3 space-y-2">
+        {images.reduce<UploadedImage[][]>((rows, image, index) => {
+          // Group images into rows of 2
+          const rowIndex = Math.floor(index / 2);
+          if (!rows[rowIndex]) {
+            rows[rowIndex] = [];
+          }
+          rows[rowIndex].push(image);
+          return rows;
+        }, []).map((rowImages, rowIndex) => {
+          // Calculate uniform height for this row
+          // Find the minimum aspect ratio in the row to determine height
+          const aspectRatios = rowImages.map(img => img.width / img.height);
+          const totalAspectRatio = aspectRatios.reduce((sum, ratio) => sum + ratio, 0);
+
+          // If only one image in row, make it full width
+          if (rowImages.length === 1) {
+            return (
+              <div key={rowIndex} className="w-full">
+                <DraggableImageItem
+                  image={rowImages[0]}
+                  onImageClick={onImageClick}
+                  onImageDelete={onImageDelete}
+                />
+              </div>
+            );
+          }
+
+          // For 2 images, distribute width based on aspect ratios to maintain same height
+          return (
+            <div key={rowIndex} className="flex gap-2">
+              {rowImages.map((image, imageIndex) => {
+                const imageAspectRatio = image.width / image.height;
+                const widthPercentage = (imageAspectRatio / totalAspectRatio) * 100;
+
+                return (
+                  <div key={image.id} style={{ width: `${widthPercentage}%` }}>
+                    <DraggableImageItem
+                      image={image}
+                      onImageClick={onImageClick}
+                      onImageDelete={onImageDelete}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
       </div>
 
-      {/* Image Grid */}
-      <div className="grid grid-cols-2 gap-1.5">
-        {images.map((image) => (
-          <DraggableImageItem
-            key={image.id}
-            image={image}
-            onImageClick={onImageClick}
-            onImageDelete={onImageDelete}
-          />
-        ))}
-      </div>
-
-      {images.length === 0 && !uploading && (
+      {images.length === 0 && (
         <div className="text-center py-6 text-gray-400">
           <Upload className="w-8 h-8 mx-auto mb-2 opacity-50" strokeWidth={2} />
           <p className="text-xs">Nenhuma imagem carregada</p>

@@ -27,10 +27,11 @@ const CATEGORIES: { id: BulletCategory | 'all'; label: string; icon: React.React
 interface DraggableBulletProps {
   bullet: IndividualBullet;
   color: ColorScaleName;
-  number: number;
+  number?: number;
+  text?: string;
 }
 
-function DraggableBullet({ bullet, color, number }: DraggableBulletProps) {
+function DraggableBullet({ bullet, color, number, text }: DraggableBulletProps) {
   const { addElement, currentCanvasSize } = useBuilderStore();
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `bullet-${bullet.id}-${Date.now()}`,
@@ -39,6 +40,7 @@ function DraggableBullet({ bullet, color, number }: DraggableBulletProps) {
       bulletId: bullet.id,
       color,
       number,
+      text,
     },
   });
 
@@ -47,6 +49,7 @@ function DraggableBullet({ bullet, color, number }: DraggableBulletProps) {
     height: bullet.defaultHeight,
     color,
     number,
+    text,
   });
 
   const svgDataUrl = `data:image/svg+xml;base64,${btoa(svgContent)}`;
@@ -73,6 +76,7 @@ function DraggableBullet({ bullet, color, number }: DraggableBulletProps) {
         bulletName: bullet.name,
         color: color,
         number: number,
+        text: text,
         svgDataUrl: svgDataUrl,
       },
     } as Element;
@@ -137,6 +141,7 @@ export function IndividualBulletsSession() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedColor, setSelectedColor] = useState<ColorScaleName>('limeGreen');
   const [currentNumber, setCurrentNumber] = useState(1);
+  const [currentText, setCurrentText] = useState('Note');
   const [selectedColorSchema, setSelectedColorSchema] = useState<string>('all');
 
   // Filter bullets
@@ -149,6 +154,9 @@ export function IndividualBulletsSession() {
 
     return matchesCategory && matchesSearch;
   });
+
+  // Check if any filtered bullet uses text (like Post-its)
+  const usesText = filteredBullets.some(b => b.customizable?.text && !b.customizable?.number);
 
   return (
     <div className="flex flex-col h-full">
@@ -192,7 +200,7 @@ export function IndividualBulletsSession() {
 
       {/* Compact Controls */}
       <div className="p-2 border-b border-gray-200 space-y-1.5">
-        {/* Search (75%) + Number (25%) */}
+        {/* Search + Number/Text input */}
         <div className="flex items-center gap-1.5">
           <div className="relative flex-[3]">
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
@@ -205,29 +213,42 @@ export function IndividualBulletsSession() {
             />
           </div>
 
-          {/* Compact Number selector (25%) */}
-          <div className="flex items-center gap-1 flex-1">
-            <button
-              onClick={() => setCurrentNumber(Math.max(1, currentNumber - 1))}
-              className="px-1.5 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium"
-            >
-              −
-            </button>
-            <input
-              type="number"
-              value={currentNumber}
-              onChange={(e) => setCurrentNumber(Math.max(1, parseInt(e.target.value) || 1))}
-              className="w-10 px-1 py-1 text-center border border-gray-300 rounded text-xs"
-              min="1"
-              max="99"
-            />
-            <button
-              onClick={() => setCurrentNumber(Math.min(99, currentNumber + 1))}
-              className="px-1.5 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium"
-            >
-              +
-            </button>
-          </div>
+          {/* Conditional: Text input for Post-its, Number selector for bullets */}
+          {usesText ? (
+            <div className="flex-1">
+              <input
+                type="text"
+                placeholder="Texto..."
+                value={currentText}
+                onChange={(e) => setCurrentText(e.target.value)}
+                className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-violet-500"
+                maxLength={30}
+              />
+            </div>
+          ) : (
+            <div className="flex items-center gap-1 flex-1">
+              <button
+                onClick={() => setCurrentNumber(Math.max(1, currentNumber - 1))}
+                className="px-1.5 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium"
+              >
+                −
+              </button>
+              <input
+                type="number"
+                value={currentNumber}
+                onChange={(e) => setCurrentNumber(Math.max(1, parseInt(e.target.value) || 1))}
+                className="w-10 px-1 py-1 text-center border border-gray-300 rounded text-xs"
+                min="1"
+                max="99"
+              />
+              <button
+                onClick={() => setCurrentNumber(Math.min(99, currentNumber + 1))}
+                className="px-1.5 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-medium"
+              >
+                +
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Category */}
@@ -301,7 +322,8 @@ export function IndividualBulletsSession() {
                 key={bullet.id}
                 bullet={bullet}
                 color={selectedColor}
-                number={currentNumber}
+                number={bullet.customizable?.number ? currentNumber : undefined}
+                text={bullet.customizable?.text ? currentText : undefined}
               />
             ))}
           </div>
