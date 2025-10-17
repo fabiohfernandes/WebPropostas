@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import { BULLET_CATEGORIES, BulletGraphic } from '@/types/bullet';
+import { POSTIT_BULLETS } from '@/data/postitBullets';
 import { Search, Settings, Upload, Wand2 } from 'lucide-react';
 import Link from 'next/link';
 import { BulletCustomizer } from '../BulletCustomizer';
@@ -78,23 +79,31 @@ export function BulletsSessionEnhanced() {
   const [isLoading, setIsLoading] = useState(true);
   const [showCustomizer, setShowCustomizer] = useState(false);
 
-  // Load bullets from localStorage (admin selections)
+  // Load bullets from localStorage (admin selections) + Pre-made Post-its
   useEffect(() => {
     const loadBullets = () => {
       const saved = localStorage.getItem('admin_bullet_graphics');
+      let customBullets: BulletGraphic[] = [];
+
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
           // Only show active bullets to users
-          const activeBullets = parsed.filter((b: BulletGraphic) => b.isActive);
-          setBullets(activeBullets);
+          customBullets = parsed.filter((b: BulletGraphic) => b.isActive);
         } catch (e) {
           console.error('Failed to load bullets:', e);
-          setBullets([]);
+          customBullets = [];
         }
-      } else {
-        setBullets([]);
       }
+
+      // Combine pre-made Post-its with custom bullets
+      const postits = POSTIT_BULLETS.map(p => ({
+        ...p,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }));
+
+      setBullets([...postits, ...customBullets]);
       setIsLoading(false);
     };
 

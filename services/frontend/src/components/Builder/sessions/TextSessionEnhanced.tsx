@@ -846,6 +846,114 @@ export function TextSessionEnhanced() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Helper function to convert hex color to ColorScaleName
+  const hexToColorScaleName = (hex: string): any => {
+    const colorMap: Record<string, string> = {
+      // Emerald greens
+      '#059669': 'darkEmerald',
+      '#10B981': 'emerald',
+
+      // Reds
+      '#DC2626': 'brightRed',
+
+      // Blues
+      '#3B82F6': 'brightBlue',
+
+      // Ambers/Oranges
+      '#F59E0B': 'brightAmber',
+
+      // Whites
+      '#FFFFFF': 'white',
+
+      // Grays (from darkest to lightest)
+      '#1F2937': 'darkSlate',      // Very dark gray (hero text)
+      '#374151': 'shadowGray',     // Dark gray (subtitle)
+      '#4B5563': 'slateGray',      // Medium-dark gray (body text)
+      '#6B7280': 'mediumSlateGray', // Medium gray (caption/label)
+    };
+    return colorMap[hex.toUpperCase()] || 'black';
+  };
+
+  // Helper function to parse price templates into parts
+  const parsePriceTemplate = (preset: TextPreset): { type: 'label' | 'value'; content: string; offsetX: number; offsetY: number }[] => {
+    const content = preset.defaultProps.properties.content;
+    const fontSize = preset.defaultProps.properties.fontSize;
+
+    // price-large: "R$ 999.999" → [value]
+    if (preset.id === 'price-large' || preset.id === 'price-medium') {
+      return [
+        {
+          type: 'value',
+          content: content.replace(/^R\$\s*/, ''),
+          offsetX: 0,
+          offsetY: 0,
+        },
+      ];
+    }
+
+    // price-from: "A partir de R$ 450.000" → [label, value]
+    if (preset.id === 'price-from') {
+      return [
+        {
+          type: 'label',
+          content: 'A partir de',
+          offsetX: 0,
+          offsetY: 0,
+        },
+        {
+          type: 'value',
+          content: '450.000',
+          offsetX: 0,
+          offsetY: fontSize * 1.2,
+        },
+      ];
+    }
+
+    // price-discount: "De R$ 150.000\nPOR R$ 120.000" → [label, value, label, value]
+    if (preset.id === 'price-discount') {
+      return [
+        {
+          type: 'label',
+          content: 'De',
+          offsetX: 0,
+          offsetY: 0,
+        },
+        {
+          type: 'value',
+          content: '150.000',
+          offsetX: fontSize * 1.5,  // Position to the right of "De"
+          offsetY: 0,
+        },
+        {
+          type: 'label',
+          content: 'POR',
+          offsetX: 0,
+          offsetY: fontSize * 1.3,
+        },
+        {
+          type: 'value',
+          content: '120.000',
+          offsetX: fontSize * 2.2,  // Position to the right of "POR"
+          offsetY: fontSize * 1.3,
+        },
+      ];
+    }
+
+    // re-price, auto-price: "R$ 1.250.000" → [value]
+    if (preset.id === 're-price' || preset.id === 'auto-price') {
+      return [
+        {
+          type: 'value',
+          content: content.replace(/^R\$\s*/, ''),
+          offsetX: 0,
+          offsetY: 0,
+        },
+      ];
+    }
+
+    return [];
+  };
+
   const handleInsertText = (preset: TextPreset) => {
     const page = currentPage();
     if (!page) return;
@@ -855,33 +963,68 @@ export function TextSessionEnhanced() {
       y: page.canvasSize.height / 2,
     };
 
-    // Auto-enable currency format for price templates
+    // Check if this is a price template
     const isPriceTemplate = preset.category === 'pricing' || preset.id === 're-price' || preset.id === 'auto-price';
 
-    // Strip "R$" prefix from content if it's a price template
-    let cleanContent = preset.defaultProps.properties.content;
-    if (isPriceTemplate && cleanContent.startsWith('R$ ')) {
-      cleanContent = cleanContent.replace(/^R\$\s*/, '');
-    }
+    if (isPriceTemplate) {
+      // Create Price Group Element
+      const parts = parsePriceTemplate(preset);
+      const priceType = preset.id === 'price-large' ? 'large'
+        : preset.id === 'price-medium' ? 'medium'
+        : preset.id === 'price-from' ? 'from'
+        : preset.id === 'price-discount' ? 'discount'
+        : 'large';
 
-    addElement({
-      id: `text-${Date.now()}`,
-      type: 'text',
-      x: canvasCenter.x,
-      y: canvasCenter.y,
-      width: preset.defaultProps.width,
-      height: preset.defaultProps.height,
-      rotation: 0,
-      opacity: 1,
-      zIndex: 0,
-      locked: false,
-      visible: true,
-      properties: {
-        ...preset.defaultProps.properties,
-        content: cleanContent,
-        format: isPriceTemplate ? 'currency' : 'none',
-      },
-    });
+      addElement({
+        id: `price-${Date.now()}`,
+        type: 'price',
+        x: canvasCenter.x,
+        y: canvasCenter.y,
+        width: preset.defaultProps.width,
+        height: preset.defaultProps.height,
+        rotation: 0,
+        opacity: 1,
+        zIndex: 0,
+        locked: false,
+        visible: true,
+        properties: {
+          priceType,
+          parts: parts.map((part) => ({
+            type: part.type,
+            content: part.content,
+            offsetX: part.offsetX,
+            offsetY: part.offsetY,
+            fontFamily: preset.defaultProps.properties.fontFamily,
+            fontSize: preset.defaultProps.properties.fontSize,
+            fontWeight: preset.defaultProps.properties.fontWeight,
+            fontStyle: preset.defaultProps.properties.fontStyle,
+            textAlign: preset.defaultProps.properties.textAlign,
+            lineHeight: preset.defaultProps.properties.lineHeight,
+            letterSpacing: preset.defaultProps.properties.letterSpacing,
+            color: hexToColorScaleName(preset.defaultProps.properties.color),
+            editable: part.type === 'value', // Only values are editable
+          })),
+        },
+      });
+    } else {
+      // Regular text element
+      addElement({
+        id: `text-${Date.now()}`,
+        type: 'text',
+        x: canvasCenter.x,
+        y: canvasCenter.y,
+        width: preset.defaultProps.width,
+        height: preset.defaultProps.height,
+        rotation: 0,
+        opacity: 1,
+        zIndex: 0,
+        locked: false,
+        visible: true,
+        properties: {
+          ...preset.defaultProps.properties,
+        },
+      });
+    }
   };
 
   // Filter presets

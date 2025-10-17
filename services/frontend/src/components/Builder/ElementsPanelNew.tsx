@@ -6,7 +6,7 @@
 'use client';
 
 import { useBuilderStore } from '@/store/builder';
-import { TemplatesSession } from './sessions/TemplatesSession';
+import { DrawingSession } from './sessions/DrawingSession';
 import { TextSessionEnhanced } from './sessions/TextSessionEnhanced';
 import { IconsSessionEnhanced } from './sessions/IconsSessionEnhanced';
 import { FramesSessionEnhanced } from './sessions/FramesSessionEnhanced';
@@ -16,15 +16,15 @@ import { IndividualBulletsSession } from './sessions/IndividualBulletsSession';
 import { BulletSetsSession } from './sessions/BulletSetsSession';
 import { AISessionEnhanced } from './sessions/AISessionEnhanced';
 import { ColorsSessionEnhanced } from './sessions/ColorsSessionEnhanced';
-import { TipsSession } from './sessions/TipsSession';
+import { EffectsSession } from './sessions/EffectsSession';
 
 export function ElementsPanelNew() {
   const { activeSession } = useBuilderStore();
 
   const renderSession = () => {
     switch (activeSession) {
-      case 'templates':
-        return <TemplatesSession />;
+      case 'drawing':
+        return <DrawingSession />;
       case 'text':
         return <TextSessionEnhanced />;
       case 'icons':
@@ -43,8 +43,8 @@ export function ElementsPanelNew() {
         return <AISessionEnhanced />;
       case 'colors':
         return <ColorsSessionEnhanced />;
-      case 'tips':
-        return <TipsSession />;
+      case 'effects':
+        return <EffectsSession />;
       default:
         return <TextSessionEnhanced />;
     }

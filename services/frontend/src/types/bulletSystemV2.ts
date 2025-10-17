@@ -497,6 +497,38 @@ export const COLOR_SCALES = {
 
   // Winter
   mediumSlateGray: { light: '#A8B8C0', medium: '#8EA3A6', dark: '#677A7E' },
+
+  // ============================================================================
+  // POST-IT / STICKY NOTES PAPER TEXTURES - 2025-10-17
+  // ============================================================================
+
+  // Classic Post-it Colors
+  canaryYellow: { light: '#FFF9A8', medium: '#FFEB3B', dark: '#FDD835' },
+  neonPink: { light: '#FFB3D9', medium: '#FF80AB', dark: '#FF4081' },
+  neonOrange: { light: '#FFCC80', medium: '#FFB74D', dark: '#FFA726' },
+  electricBlue: { light: '#81D4FA', medium: '#4FC3F7', dark: '#29B6F6' },
+  limeLight: { light: '#DCE775', medium: '#CDDC39', dark: '#C0CA33' },
+
+  // Pastel Paper Textures
+  pastelMint: { light: '#B2DFDB', medium: '#80CBC4', dark: '#4DB6AC' },
+  pastelLilac: { light: '#E1BEE7', medium: '#CE93D8', dark: '#BA68C8' },
+  pastelPeach: { light: '#FFE0B2', medium: '#FFCC80', dark: '#FFB74D' },
+  pastelSky: { light: '#BBDEFB', medium: '#90CAF9', dark: '#64B5F6' },
+
+  // Recycled Paper Tones
+  recycledTan: { light: '#EFEBE9', medium: '#D7CCC8', dark: '#BCAAA4' },
+  recycledGray: { light: '#ECEFF1', medium: '#CFD8DC', dark: '#B0BEC5' },
+  kraft: { light: '#D7CCC8', medium: '#BCAAA4', dark: '#A1887F' },
+
+  // Linen & Vellum Textures
+  linenWhite: { light: '#FAFAFA', medium: '#F5F5F5', dark: '#EEEEEE' },
+  linenBeige: { light: '#F5F5DC', medium: '#F0E68C', dark: '#E6DB74' },
+  vellumCream: { light: '#FFFEF0', medium: '#FFFFF0', dark: '#F5F5DC' },
+
+  // Sticky Note Paper Variants
+  stickyPurple: { light: '#D1C4E9', medium: '#B39DDB', dark: '#9575CD' },
+  stickyGreen: { light: '#C5E1A5', medium: '#AED581', dark: '#9CCC65' },
+  stickyAqua: { light: '#B2EBF2', medium: '#80DEEA', dark: '#4DD0E1' },
 } as const;
 
 export type ColorScaleName = keyof typeof COLOR_SCALES;

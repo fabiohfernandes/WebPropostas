@@ -7,7 +7,7 @@
 
 import { useState } from 'react';
 import {
-  LayoutTemplate,
+  Pen,
   Type,
   Shapes,
   Frame,
@@ -17,12 +17,12 @@ import {
   Layers,
   Sparkles,
   Palette,
-  Lightbulb,
+  Wand2,
 } from 'lucide-react';
 import { useBuilderStore } from '@/store/builder';
 
 interface Session {
-  id: 'templates' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets-individual' | 'bullets-sets' | 'ai' | 'colors' | 'tips';
+  id: 'drawing' | 'text' | 'icons' | 'frames' | 'images' | 'videos' | 'bullets-individual' | 'bullets-sets' | 'ai' | 'colors' | 'effects';
   label: string;
   icon: React.ReactNode;
   color: string;
@@ -31,9 +31,9 @@ interface Session {
 
 const sessions: Session[] = [
   {
-    id: 'templates',
-    label: 'Templates',
-    icon: <LayoutTemplate className="w-5 h-5" strokeWidth={2.5} />,
+    id: 'drawing',
+    label: 'Desenho',
+    icon: <Pen className="w-5 h-5" strokeWidth={2.5} />,
     color: 'text-purple-600',
     gradient: 'from-purple-500 to-purple-600',
   },
@@ -101,9 +101,9 @@ const sessions: Session[] = [
     gradient: 'from-fuchsia-500 to-fuchsia-600',
   },
   {
-    id: 'tips',
-    label: 'Dicas',
-    icon: <Lightbulb className="w-5 h-5" strokeWidth={2.5} />,
+    id: 'effects',
+    label: 'Efeitos',
+    icon: <Wand2 className="w-5 h-5" strokeWidth={2.5} />,
     color: 'text-yellow-600',
     gradient: 'from-yellow-500 to-yellow-600',
   },

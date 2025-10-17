@@ -9,7 +9,7 @@ import { useSelectedElement } from '@/store/builder';
 import { useBuilderStore } from '@/store/builder';
 import { useImageLibrary } from '@/store/imageLibrary';
 import { AVAILABLE_FONTS, getFontsByCategory, getFontFamily } from '@/utils/fonts';
-import type { TextElement, ShapeElement, ImageElement, FormElement, FrameElement, IconElement, VideoElement, BulletElement } from '@/types/builder';
+import type { TextElement, ShapeElement, ImageElement, FormElement, FrameElement, IconElement, VideoElement, BulletElement, PriceElement, PricePart } from '@/types/builder';
 import { useState } from 'react';
 import {
   AdjustmentsHorizontalIcon,
@@ -1226,8 +1226,44 @@ function TextProperties({ element }: { element: TextElement }) {
 
   // Find color name from hex value
   const getCurrentColorName = (): ColorScaleName => {
+    const hexColor = element.properties.color.toUpperCase();
+
+    // Direct mapping for common text preset colors
+    const colorMap: Record<string, ColorScaleName> = {
+      // Emerald greens
+      '#059669': 'darkEmerald',
+      '#10B981': 'emerald',
+
+      // Reds
+      '#DC2626': 'brightRed',
+
+      // Blues
+      '#3B82F6': 'brightBlue',
+
+      // Ambers/Oranges
+      '#F59E0B': 'brightAmber',
+
+      // Whites
+      '#FFFFFF': 'white',
+
+      // Grays (from darkest to lightest)
+      '#1F2937': 'darkSlate',
+      '#374151': 'shadowGray',
+      '#4B5563': 'slateGray',
+      '#6B7280': 'mediumSlateGray',
+
+      // Black
+      '#000000': 'black',
+    };
+
+    // Check direct mapping first
+    if (colorMap[hexColor]) {
+      return colorMap[hexColor];
+    }
+
+    // Fallback: search COLOR_SCALES
     const colorEntry = Object.entries(COLOR_SCALES).find(
-      ([_, scale]) => scale.medium.toLowerCase() === element.properties.color.toLowerCase()
+      ([_, scale]) => scale.medium.toUpperCase() === hexColor
     );
     return (colorEntry?.[0] as ColorScaleName) || 'black';
   };
@@ -1482,6 +1518,85 @@ function TextProperties({ element }: { element: TextElement }) {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Background Color Controls */}
+      <div className="pt-2 border-t border-gray-200">
+        <div className="flex items-center gap-2 mb-1.5">
+          <label className="text-xs font-medium text-gray-700">
+            Fundo
+          </label>
+          <input
+            type="checkbox"
+            checked={!!element.properties?.backgroundColor}
+            onChange={(e) => {
+              if (e.target.checked) {
+                updateElement(element.id, {
+                  properties: {
+                    ...element.properties,
+                    backgroundColor: '#3B82F6',
+                  } as Partial<TextElement>['properties'],
+                });
+              } else {
+                const { backgroundColor, ...restProperties } = element.properties;
+                updateElement(element.id, {
+                  properties: restProperties,
+                } as Partial<TextElement>);
+              }
+            }}
+            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+          />
+        </div>
+
+        {element.properties?.backgroundColor && (
+          <div className="grid grid-cols-2 gap-1.5 mt-2">
+            {/* Background Color Schema */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                Esquema
+              </label>
+              <select
+                value={selectedColorSchema}
+                onChange={(e) => setSelectedColorSchema(e.target.value)}
+                className="w-full px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              >
+                {COLOR_SCHEMAS.map((schema) => (
+                  <option key={schema.id} value={schema.id}>
+                    {schema.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Background Color Dropdown */}
+            <ColorDropdown
+              value={(() => {
+                const bgColor = element.properties.backgroundColor;
+                if (!bgColor) return 'brightBlue';
+                // Find color name from hex
+                const hexColor = bgColor.toUpperCase();
+                const colorEntry = Object.entries(COLOR_SCALES).find(
+                  ([_, scale]) => scale.medium.toUpperCase() === hexColor
+                );
+                return (colorEntry?.[0] as ColorScaleName) || 'brightBlue';
+              })()}
+              onChange={(colorName) => {
+                updateElement(element.id, {
+                  properties: {
+                    ...element.properties,
+                    backgroundColor: COLOR_SCALES[colorName].medium
+                  },
+                } as Partial<TextElement>);
+              }}
+              colors={(() => {
+                const schema = COLOR_SCHEMAS.find(s => s.id === selectedColorSchema);
+                const availableColors = schema ? schema.colors : Object.keys(COLOR_SCALES) as ColorScaleName[];
+                return availableColors.filter(colorKey => COLOR_SCALES[colorKey]);
+              })()}
+              label="Cor Fundo"
+            />
+          </div>
+        )}
       </div>
 
       {/* Shadow Controls */}
@@ -2455,6 +2570,77 @@ export function PropertiesPanel() {
     );
   }
 
+  // ============================================================================
+  // Price Properties Component
+  // ============================================================================
+  function PriceProperties({ element }: { element: PriceElement }) {
+    const { updateElement } = useBuilderStore();
+    const [selectedColorSchema, setSelectedColorSchema] = useState('favoritos');
+
+    // Only show VALUE parts (editable numbers) - labels are fixed
+    const editableParts = element.properties.parts.filter(part => part.type === 'value');
+
+    // Get colors from selected schema
+    const schemaColors = COLOR_SCHEMAS.find(s => s.id === selectedColorSchema)?.colors || [];
+
+    const updatePart = (partIndex: number, updates: Partial<PricePart>) => {
+      const newParts = [...element.properties.parts];
+      newParts[partIndex] = { ...newParts[partIndex], ...updates };
+      updateElement(element.id, {
+        properties: {
+          ...element.properties,
+          parts: newParts,
+        },
+      } as Partial<PriceElement>);
+    };
+
+    return (
+      <div className="space-y-3">
+        {/* Editable Values Only - One Line: Input | Color Scheme Picker | Color */}
+        {editableParts.map((part, index) => {
+          const actualIndex = element.properties.parts.findIndex(p => p === part);
+          return (
+            <div key={actualIndex}>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                💰 Valor {editableParts.length > 1 ? index + 1 : ''}
+              </label>
+              <div className="flex items-center gap-1">
+                {/* Input - Tight width for numbers */}
+                <input
+                  type="text"
+                  value={part.content}
+                  onChange={(e) => updatePart(actualIndex, { content: e.target.value })}
+                  className="w-20 px-1.5 py-1.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="999.999"
+                />
+
+                {/* Color Schema Picker - Compact */}
+                <select
+                  value={selectedColorSchema}
+                  onChange={(e) => setSelectedColorSchema(e.target.value)}
+                  className="w-20 px-1 py-1.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  {COLOR_SCHEMAS.map((schema) => (
+                    <option key={schema.id} value={schema.id}>
+                      {schema.name}
+                    </option>
+                  ))}
+                </select>
+
+                {/* Color Dropdown with selected schema colors */}
+                <ColorDropdown
+                  value={part.color}
+                  onChange={(newColor) => updatePart(actualIndex, { color: newColor })}
+                  colors={schemaColors}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
@@ -2472,6 +2658,7 @@ export function PropertiesPanel() {
               {selectedElement.type === 'frame' && 'Moldura'}
               {selectedElement.type === 'video' && 'Vídeo'}
               {selectedElement.type === 'bullet' && 'Bullet'}
+              {selectedElement.type === 'price' && 'Preço'}
             </span>
             <span className="text-[10px] text-gray-500">
               {selectedElement.id.slice(0, 8)}...
@@ -2525,6 +2712,9 @@ export function PropertiesPanel() {
           )}
           {selectedElement.type === 'bullet' && (
             <BulletProperties element={selectedElement as BulletElement} />
+          )}
+          {selectedElement.type === 'price' && (
+            <PriceProperties element={selectedElement as PriceElement} />
           )}
         </div>
 

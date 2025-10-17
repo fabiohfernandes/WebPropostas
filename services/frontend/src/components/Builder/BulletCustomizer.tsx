@@ -13,11 +13,21 @@ interface BulletCustomizerProps {
 export function BulletCustomizer({ onClose, onAdd }: BulletCustomizerProps) {
   const [selectedTemplate, setSelectedTemplate] = useState<BulletTemplate>(BULLET_TEMPLATES[0]);
   const [steps, setSteps] = useState(4);
-  const [color, setColor] = useState('#10b981');
+  const [color, setColor] = useState('#FFEB3B'); // Default to canary yellow (Post-it color)
   const [size, setSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [customText, setCustomText] = useState('');
+  const [showPin, setShowPin] = useState(false);
 
-  const previewSVGs = generateBulletSequence(selectedTemplate.id, steps, color, size);
+  // Check if selected template is a Post-it type
+  const isPostitTemplate = selectedTemplate.id.startsWith('postit-');
+
+  const previewSVGs = generateBulletSequence(
+    selectedTemplate.id,
+    steps,
+    color,
+    size,
+    isPostitTemplate ? { showPin, text: customText } : undefined
+  );
 
   const handleAddToCanvas = (stepIndex: number) => {
     const svgData = previewSVGs[stepIndex];
@@ -142,16 +152,42 @@ export function BulletCustomizer({ onClose, onAdd }: BulletCustomizerProps) {
 
                 {/* Color Presets */}
                 <div className="flex gap-2 mt-3">
-                  {['#10b981', '#3b82f6', '#8b5cf6', '#ef4444', '#f59e0b', '#ec4899'].map((c) => (
-                    <button
-                      key={c}
-                      onClick={() => setColor(c)}
-                      className={`w-10 h-10 rounded-lg border-2 transition-all ${
-                        color === c ? 'border-slate-900 scale-110' : 'border-slate-200 hover:scale-105'
-                      }`}
-                      style={{ backgroundColor: c }}
-                    />
-                  ))}
+                  {isPostitTemplate
+                    ? // Post-it color presets
+                      ['#FFEB3B', '#FF80AB', '#FFB74D', '#4FC3F7', '#CDDC39', '#80CBC4'].map((c) => (
+                        <button
+                          key={c}
+                          onClick={() => setColor(c)}
+                          className={`w-10 h-10 rounded-lg border-2 transition-all ${
+                            color === c ? 'border-slate-900 scale-110' : 'border-slate-200 hover:scale-105'
+                          }`}
+                          style={{ backgroundColor: c }}
+                          title={
+                            c === '#FFEB3B'
+                              ? 'Canary Yellow'
+                              : c === '#FF80AB'
+                              ? 'Neon Pink'
+                              : c === '#FFB74D'
+                              ? 'Neon Orange'
+                              : c === '#4FC3F7'
+                              ? 'Electric Blue'
+                              : c === '#CDDC39'
+                              ? 'Lime Light'
+                              : 'Pastel Mint'
+                          }
+                        />
+                      ))
+                    : // Classic bullet color presets
+                      ['#10b981', '#3b82f6', '#8b5cf6', '#ef4444', '#f59e0b', '#ec4899'].map((c) => (
+                        <button
+                          key={c}
+                          onClick={() => setColor(c)}
+                          className={`w-10 h-10 rounded-lg border-2 transition-all ${
+                            color === c ? 'border-slate-900 scale-110' : 'border-slate-200 hover:scale-105'
+                          }`}
+                          style={{ backgroundColor: c }}
+                        />
+                      ))}
                 </div>
               </div>
 
@@ -194,6 +230,28 @@ export function BulletCustomizer({ onClose, onAdd }: BulletCustomizerProps) {
                   Máximo 4 caracteres (ex: A, B, C ou 1º, 2º, 3º)
                 </p>
               </div>
+
+              {/* Pin Option (Post-it only) */}
+              {isPostitTemplate && (
+                <div className="pt-2 border-t border-slate-200">
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={showPin}
+                      onChange={(e) => setShowPin(e.target.checked)}
+                      className="w-5 h-5 text-red-600 rounded focus:ring-red-500 cursor-pointer"
+                    />
+                    <div>
+                      <p className="text-sm font-semibold text-slate-700 group-hover:text-purple-600 transition-colors">
+                        📌 Adicionar Alfinete
+                      </p>
+                      <p className="text-xs text-slate-500">
+                        Adiciona um alfinete vermelho no canto superior direito
+                      </p>
+                    </div>
+                  </label>
+                </div>
+              )}
             </div>
 
             {/* Right: Preview */}

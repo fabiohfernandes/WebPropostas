@@ -6,7 +6,7 @@
 /**
  * Element Types supported in the builder
  */
-export type ElementType = 'text' | 'image' | 'shape' | 'icon' | 'chart' | 'form' | 'frame' | 'video' | 'bullet';
+export type ElementType = 'text' | 'image' | 'shape' | 'icon' | 'chart' | 'form' | 'frame' | 'video' | 'bullet' | 'price';
 
 /**
  * Shape Types for shape elements
@@ -245,6 +245,45 @@ export interface BulletElement extends BaseElement {
 }
 
 /**
+ * Price element - Composite element with labels and values (like bullet groups)
+ */
+export type PricePartType = 'label' | 'value';
+export type PriceTemplateType = 'large' | 'medium' | 'from' | 'discount';
+
+// Import ColorScaleName from bulletSystemV2
+import type { ColorScaleName } from './bulletSystemV2';
+
+export interface PricePart {
+  type: PricePartType;
+  content: string;
+  offsetX: number;  // Position relative to price element
+  offsetY: number;
+  fontFamily: string;
+  fontSize: number;
+  fontWeight: number | string;
+  fontStyle: 'normal' | 'italic';
+  textAlign: TextAlign;
+  lineHeight: number;
+  letterSpacing: number;
+  color: ColorScaleName;  // Use ColorScaleName instead of string
+  editable: boolean;  // Labels are non-editable, values are editable
+}
+
+export interface PriceElement extends BaseElement {
+  type: 'price';
+  properties: {
+    priceType: PriceTemplateType;
+    parts: PricePart[];  // Array of labels and values
+    shadow?: {
+      blur: number;
+      color: string;
+      offsetX: number;
+      offsetY: number;
+    };
+  };
+}
+
+/**
  * Union type of all element types
  */
-export type Element = TextElement | ImageElement | ShapeElement | IconElement | ChartElement | FormElement | FrameElement | VideoElement | BulletElement;
+export type Element = TextElement | ImageElement | ShapeElement | IconElement | ChartElement | FormElement | FrameElement | VideoElement | BulletElement | PriceElement;

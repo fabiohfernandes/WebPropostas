@@ -12,7 +12,8 @@ import { useDroppable, useDndMonitor } from '@dnd-kit/core';
 import { useBuilderStore } from '@/store/builder';
 import { getFontFamily } from '@/utils/fonts';
 import { useElasticAnimation } from '@/hooks/useElasticAnimation';
-import type { Element, TextElement, ShapeElement, ImageElement, FormElement, IconElement, FrameElement, VideoElement, BulletElement } from '@/types/builder';
+import type { Element, TextElement, ShapeElement, ImageElement, FormElement, IconElement, FrameElement, VideoElement, BulletElement, PriceElement } from '@/types/builder';
+import { COLOR_SCALES } from '@/types/bulletSystemV2';
 import Konva from 'konva';
 import { renderToString } from 'react-dom/server';
 import * as LucideIcons from 'lucide-react';
@@ -462,6 +463,7 @@ function ImageElement({ element }: { element: ImageElement }) {
             height={element.height}
             fill="transparent"
           />
+
           <KonvaImage
             ref={imageRef}
             {...getImageConfig()}
@@ -2067,6 +2069,11 @@ function CanvasElement({ element, onFrameHover, hoverFrameId, onVideoDoubleClick
             height={element.height}
             fill={textEl.properties.backgroundColor}
             cornerRadius={8}
+            // Apply shadow to background card when background exists
+            shadowColor={textEl.properties.shadow?.color}
+            shadowBlur={textEl.properties.shadow?.blur}
+            shadowOffsetX={textEl.properties.shadow?.offsetX}
+            shadowOffsetY={textEl.properties.shadow?.offsetY}
           />
         )}
         <KonvaText
@@ -2096,10 +2103,11 @@ function CanvasElement({ element, onFrameHover, hoverFrameId, onVideoDoubleClick
           }
           lineHeight={textEl.properties.lineHeight}
           letterSpacing={textEl.properties.letterSpacing}
-          shadowColor={textEl.properties.shadow?.color}
-          shadowBlur={textEl.properties.shadow?.blur}
-          shadowOffsetX={textEl.properties.shadow?.offsetX}
-          shadowOffsetY={textEl.properties.shadow?.offsetY}
+          // Only apply shadow to text when there's NO background
+          shadowColor={hasBackground ? undefined : textEl.properties.shadow?.color}
+          shadowBlur={hasBackground ? undefined : textEl.properties.shadow?.blur}
+          shadowOffsetX={hasBackground ? undefined : textEl.properties.shadow?.offsetX}
+          shadowOffsetY={hasBackground ? undefined : textEl.properties.shadow?.offsetY}
         />
       </Group>
     );
@@ -2120,6 +2128,47 @@ function CanvasElement({ element, onFrameHover, hoverFrameId, onVideoDoubleClick
 
   if (element.type === 'bullet') {
     return <BulletElementRenderer element={element as BulletElement} />;
+  }
+
+  if (element.type === 'price') {
+    const priceEl = element as PriceElement;
+    return (
+      <Group {...commonProps}>
+        {priceEl.properties.parts.map((part, index) => {
+          // Convert ColorScaleName to hex color
+          const colorHex = COLOR_SCALES[part.color]?.medium || '#059669';
+          return (
+            <KonvaText
+              key={`price-part-${index}`}
+              x={part.offsetX}
+              y={part.offsetY}
+              text={
+                part.type === 'value'
+                  ? `R$ ${part.content}`
+                  : part.content
+              }
+              fontSize={part.fontSize}
+              fontFamily={getFontFamily(part.fontFamily)}
+              fill={colorHex}
+              align={part.textAlign}
+              fontStyle={
+                part.fontStyle === 'italic'
+                  ? 'italic'
+                  : part.fontWeight === 'bold'
+                  ? 'bold'
+                  : 'normal'
+              }
+              lineHeight={part.lineHeight}
+              letterSpacing={part.letterSpacing}
+              shadowColor={priceEl.properties.shadow?.color}
+              shadowBlur={priceEl.properties.shadow?.blur}
+              shadowOffsetX={priceEl.properties.shadow?.offsetX}
+              shadowOffsetY={priceEl.properties.shadow?.offsetY}
+            />
+          );
+        })}
+      </Group>
+    );
   }
 
   if (element.type === 'form') {

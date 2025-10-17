@@ -221,8 +221,8 @@ export function IconsSessionEnhanced() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [iconSize, setIconSize] = useState(48);
-  const [selectedColor, setSelectedColor] = useState<ColorScaleName>('limeGreen');
-  const [selectedColorSchema, setSelectedColorSchema] = useState<string>('all');
+  const [selectedColor, setSelectedColor] = useState<ColorScaleName>('black');
+  const [selectedColorSchema, setSelectedColorSchema] = useState<string>('favoritos');
 
   const handleInsertIcon = (iconDef: IconDefinition) => {
     const page = currentPage();

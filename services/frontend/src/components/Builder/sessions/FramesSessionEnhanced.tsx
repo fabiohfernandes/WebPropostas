@@ -266,43 +266,33 @@ export function FramesSessionEnhanced() {
         <p className="text-xs text-gray-500 mt-0.5">Enquadre suas imagens com estilo</p>
       </div>
 
-      {/* Search */}
+      {/* Search + Category Filter (50/50) */}
       <div className="p-3 border-b border-gray-200">
-        <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" strokeWidth={2.5} />
-          <input
-            type="text"
-            placeholder="Buscar molduras..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-          />
-        </div>
-      </div>
-
-      {/* Categories */}
-      <div className="px-3 py-2 border-b border-gray-200 overflow-x-auto">
-        <div className="flex gap-1.5 min-w-max">
-          {categories.map(category => {
-            const isActive = activeCategory === category.id;
-            const colorClasses = {
-              gray: isActive ? 'bg-gray-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
-              blue: isActive ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-700 hover:bg-blue-200',
-              green: isActive ? 'bg-green-600 text-white' : 'bg-green-100 text-green-700 hover:bg-green-200',
-              purple: isActive ? 'bg-purple-600 text-white' : 'bg-purple-100 text-purple-700 hover:bg-purple-200',
-              pink: isActive ? 'bg-pink-600 text-white' : 'bg-pink-100 text-pink-700 hover:bg-pink-200',
-            };
-
-            return (
-              <button
-                key={category.id}
-                onClick={() => setActiveCategory(category.id)}
-                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors whitespace-nowrap ${colorClasses[category.color as keyof typeof colorClasses]}`}
-              >
+        <div className="grid grid-cols-2 gap-2">
+          {/* Category Dropdown */}
+          <select
+            value={activeCategory}
+            onChange={(e) => setActiveCategory(e.target.value as typeof activeCategory)}
+            className="px-2 py-1.5 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          >
+            {categories.map(category => (
+              <option key={category.id} value={category.id}>
                 {category.label} ({category.count})
-              </button>
-            );
-          })}
+              </option>
+            ))}
+          </select>
+
+          {/* Search Box */}
+          <div className="relative">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" strokeWidth={2.5} />
+            <input
+              type="text"
+              placeholder="Buscar molduras..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-8 pr-3 py-1.5 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            />
+          </div>
         </div>
       </div>
 

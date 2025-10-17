@@ -30,6 +30,7 @@ interface ColorSchema {
 export const COLOR_SCHEMAS: ColorSchema[] = [
   // Special schemas first
   { id: 'favoritos', name: 'Favoritos', colors: ['black', 'white', 'darkEmerald', 'brightRed', 'brightBlue', 'brightAmber', 'limeGreen', 'teal', 'coral', 'amethyst', 'navy', 'orange', 'emerald', 'purple'], isDefault: true },
+  { id: 'postit', name: 'Post-it', colors: ['canaryYellow', 'neonPink', 'neonOrange', 'electricBlue', 'limeLight', 'pastelMint', 'pastelLilac', 'pastelPeach', 'pastelSky', 'stickyPurple', 'stickyGreen', 'stickyAqua', 'recycledTan', 'kraft', 'linenWhite'], isDefault: true },
 
   // Alphabetical schemas
   { id: 'aesthetic', name: 'Aesthetic', colors: ['maroonRed', 'ivoryWhite', 'lightGrayBeige', 'shadowGray', 'taupeBrown'], isDefault: true },
