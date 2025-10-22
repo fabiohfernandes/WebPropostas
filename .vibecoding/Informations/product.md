@@ -59,8 +59,14 @@ A **multi-tier SaaS platform** that democratizes professional proposal creation 
 | **AI Content Editing** | ❌ No | ✅ Basic (50K tokens/mo) | ✅ Advanced (200K tokens/mo) |
 | **Hosting** | ❌ PDF download only (10/mo) | ✅ WebPropostas branding | ✅ Custom branding |
 | **Analytics Dashboard** | ❌ No | ✅ Basic (general + client) | ✅ Advanced (+ product + AI insights) |
+| **Advanced Reports** | ❌ No | ✅ Client reports only | ✅ Client + Sector + Product + Custom |
+| **Report Export** | ❌ No | ✅ PDF only | ✅ PDF + Excel + CSV |
 | **Rich Media** | Text only | Text + Images | Text + Images + Videos + Charts |
 | **Client Collaboration** | ❌ No | ✅ Comments + approval | ✅ Full collaboration |
+| **Automated Reminders** | ❌ No | ✅ Email only (basic schedule) | ✅ Multi-channel + custom intervals |
+| **Campaign Management** | ❌ No | ❌ No | ✅ Full segmentation + multi-channel |
+| **Distribution Lists** | ❌ No | ❌ No | ✅ Advanced filtering + campaigns |
+| **WhatsApp Integration** | ❌ No | ❌ No | ✅ Business API (campaigns + reminders) |
 | **Contract Generation** | ❌ No | ❌ No | ✅ Automated (future) |
 | **Support** | Community | Email (48h) | Priority (24h) + Chat |
 | **2FA Security** | ✅ Yes | ✅ Yes | ✅ Yes |
@@ -170,6 +176,28 @@ A **multi-tier SaaS platform** that democratizes professional proposal creation 
 - LGPD-compliant audit logging
 - Data minimization and access control
 - ✅ Current: COMPLETED - LGPD audit logs operational
+
+**G7. Advanced Reporting & Analytics**
+- Reports by client, sector, product type
+- Conversion metrics and performance tracking
+- Client engagement analysis
+- Revenue analytics by segment
+- 🚧 Planned: Phase 40-41
+
+**G8. Automated Follow-Up System**
+- Intelligent reminder scheduling for pending proposals
+- Multi-tiered reminder strategy (first X days, then monthly, semi-annual, annual)
+- Multi-channel delivery (email, WhatsApp)
+- Configurable reminder intervals per proposal
+- 🚧 Planned: Phase 42
+
+**G9. Distribution Lists & Campaigns**
+- Custom client segmentation by multiple criteria
+- Targeted campaign creation (new projects, launches, announcements)
+- Multi-channel distribution (WhatsApp, email)
+- Segmentation filters: area of activity, interests, class, income, city, state
+- Campaign analytics and engagement tracking
+- 🚧 Planned: Phase 43
 
 ### 1.2 Non-Goals (v1)
 - Full DTP feature parity with Canva/Gamma
@@ -453,7 +481,226 @@ Post_Signature_Workflow:
   5_Archive: Store signed document securely
 ```
 
-### 4.5 Subdomain Provisioning - AWS (Planned - Phase 25)
+### 4.5 Advanced Reporting & Analytics (Planned - Phase 40-41)
+
+**Report Types:**
+
+**Client Reports:**
+- Proposals sent per client (total, by period)
+- Client conversion rates (proposals → closed)
+- Average time-to-close per client
+- Client engagement metrics (views, comments, time spent)
+- Revenue generated per client
+- Client lifetime value (CLV)
+
+**Sector/Industry Reports:**
+- Proposals by industry vertical (e.g., real estate, tech, consulting)
+- Conversion rates by sector
+- Average proposal value by sector
+- Sector growth trends
+- Market penetration analysis
+
+**Product/Service Reports:**
+- Proposals by product/service type
+- Product conversion rates
+- Product revenue contribution
+- Product bundle analysis
+- Popular service combinations
+
+**Time-Series Analytics:**
+- Month-over-month growth metrics
+- Seasonal trends analysis
+- Year-over-year comparisons
+- Proposal velocity tracking
+- Revenue forecasting
+
+**Technical Specifications:**
+```yaml
+Reporting_Engine:
+  Database_Queries: Optimized PostgreSQL aggregations
+  Caching: Redis for report results (1-hour TTL)
+  Export_Formats: PDF, Excel, CSV
+  Scheduling: Daily/weekly/monthly automated reports
+
+Visualization:
+  Charts: Line, bar, pie, heatmap
+  Libraries: Chart.js or Recharts
+  Interactive_Filters: Date range, client, sector, product
+  Drill_Down: Click-through to detailed views
+
+Performance_Targets:
+  Report_Generation: <5 seconds
+  Export_Time: <10 seconds
+  Real_Time_Updates: Dashboard refresh every 30 seconds
+```
+
+### 4.6 Automated Follow-Up System (Planned - Phase 42)
+
+**Reminder Strategy:**
+
+**Tiered Schedule:**
+- **First Reminder:** X days after proposal sent (configurable, default 3 days)
+- **Second Reminder:** Monthly if no response
+- **Third Reminder:** Semi-annually (6 months)
+- **Fourth Reminder:** Annually (12 months)
+
+**Configurable Per Proposal:**
+- Enable/disable automatic reminders
+- Custom first reminder interval (1-30 days)
+- Custom frequency after first reminder
+- Max number of reminders
+- Stop reminders on client interaction
+
+**Multi-Channel Delivery:**
+- Email (primary)
+- WhatsApp Business API (optional)
+- Telegram Bot (optional)
+- SMS (future consideration)
+
+**Message Templates:**
+- Personalized with client name, proposal title
+- Professional tone with urgency escalation
+- Call-to-action links to proposal
+- Option to request more time or decline
+
+**Technical Specifications:**
+```yaml
+Reminder_Scheduler:
+  Job_Queue: Bull or BullMQ with Redis
+  Cron_Jobs: Daily check for pending reminders
+  Retry_Logic: 3 attempts with exponential backoff
+  Delivery_Tracking: Log all sent reminders
+
+Message_Service:
+  Email: Amazon SES or SendGrid
+  WhatsApp: WhatsApp Business API (Meta)
+  Telegram: Telegram Bot API
+  Templating: Handlebars with i18n support
+
+User_Controls:
+  Dashboard: View all scheduled reminders
+  Management: Pause, reschedule, cancel reminders
+  Preferences: Set default intervals per organization
+  Client_Opt_Out: Respect unsubscribe requests
+
+Analytics:
+  Response_Rate: Track reminder effectiveness
+  Best_Timing: Analyze optimal reminder intervals
+  Channel_Performance: Compare email vs WhatsApp response
+```
+
+### 4.7 Distribution Lists & Campaign Management (Planned - Phase 43)
+
+**Client Segmentation Filters:**
+
+**Demographic:**
+- Income level (A, B, C, D, E classes)
+- Company size (employees, revenue)
+- Location (city, state, region)
+
+**Professional:**
+- Area of activity/industry
+- Job title/role
+- Department/function
+
+**Behavioral:**
+- Interests/preferences (stored in client profile)
+- Past proposal topics
+- Engagement history
+- Previous purchases/closures
+
+**Custom Tags:**
+- User-defined labels
+- Project types
+- Relationship status
+- Priority level
+
+**Campaign Types:**
+
+**Launch Campaigns:**
+- New building/property announcements
+- Shopping mall openings
+- Product/service launches
+- Event invitations
+
+**Promotional Campaigns:**
+- Seasonal offers
+- Limited-time proposals
+- Exclusive opportunities
+- Partnership announcements
+
+**Distribution Channels:**
+- WhatsApp bulk messaging (with Meta compliance)
+- Email campaigns
+- SMS (future)
+- Multi-channel simultaneous delivery
+
+**Technical Specifications:**
+```yaml
+Segmentation_Engine:
+  Filter_Builder: Visual query builder interface
+  Boolean_Logic: AND/OR/NOT operators
+  Save_Segments: Reusable audience lists
+  Dynamic_Lists: Auto-update based on criteria
+
+Campaign_Management:
+  Template_Editor: Rich text editor with merge fields
+  Preview_Mode: Test send to small group
+  Scheduling: Send now or schedule future
+  Throttling: Rate limiting to avoid spam flags
+
+Compliance:
+  LGPD_Consent: Only send to opted-in contacts
+  Unsubscribe: One-click opt-out in all messages
+  Audit_Trail: Log all campaign sends
+  Frequency_Caps: Limit messages per client per period
+
+Analytics:
+  Delivery_Rates: Track successful sends
+  Open_Rates: Email open tracking (pixel)
+  Click_Rates: Track link clicks in messages
+  Conversion_Tracking: Proposals opened from campaigns
+  A_B_Testing: Compare different message versions
+
+WhatsApp_Integration:
+  Provider: WhatsApp Business API via Meta
+  Message_Types: Text, media, templates
+  Rate_Limits: Respect WhatsApp tier limits
+  Template_Approval: Pre-approved message templates
+  Cost_Tracking: Monitor per-message costs
+```
+
+**Campaign Workflow:**
+```yaml
+1_Create_Segment:
+  - Define filters
+  - Preview recipient count
+  - Save segment for future use
+
+2_Design_Message:
+  - Choose template or create new
+  - Personalize with merge fields
+  - Add media (images, PDFs, links)
+  - Set call-to-action
+
+3_Test_Campaign:
+  - Send test to internal users
+  - Verify formatting and links
+  - Check compliance (opt-in status)
+
+4_Schedule_Send:
+  - Send immediately or schedule
+  - Set time zone considerations
+  - Enable throttling if needed
+
+5_Monitor_Results:
+  - Real-time delivery tracking
+  - Engagement metrics dashboard
+  - Response management
+  - ROI calculation
+```
+
+### 4.8 Subdomain Provisioning - AWS (Planned - Phase 25)
 
 **Pattern:** `proposal-<ULID>.infigital.net` (kebab-case)
 
@@ -846,6 +1093,152 @@ CREATE TABLE subdomains (
   created_at TIMESTAMP DEFAULT NOW(),
   activated_at TIMESTAMP
 );
+
+-- Extended client data for segmentation (Phase 40-43)
+CREATE TABLE client_profiles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  client_id UUID REFERENCES clients(id) UNIQUE,
+  -- Demographic data
+  income_class VARCHAR(10),
+  -- Class: A, B, C, D, E
+  company_size VARCHAR(50),
+  -- Size: micro, small, medium, large, enterprise
+  annual_revenue DECIMAL(15,2),
+  employee_count INTEGER,
+  -- Location
+  city VARCHAR(255),
+  state VARCHAR(100),
+  region VARCHAR(100),
+  country VARCHAR(100) DEFAULT 'Brazil',
+  -- Professional data
+  industry VARCHAR(100),
+  -- Industry: real_estate, tech, consulting, retail, etc.
+  area_of_activity VARCHAR(100),
+  job_title VARCHAR(255),
+  department VARCHAR(100),
+  -- Behavioral data
+  interests JSONB,
+  -- Array of interest tags
+  preferences JSONB,
+  -- Communication, content preferences
+  engagement_score INTEGER DEFAULT 0,
+  -- 0-100 engagement score
+  relationship_status VARCHAR(50) DEFAULT 'prospect',
+  -- Status: prospect, active, dormant, inactive
+  priority_level VARCHAR(50) DEFAULT 'medium',
+  -- Priority: low, medium, high, vip
+  -- Custom tags
+  tags JSONB,
+  -- Array of custom tags
+  custom_fields JSONB,
+  -- Additional custom data
+  -- Consent and compliance
+  marketing_consent BOOLEAN DEFAULT false,
+  whatsapp_consent BOOLEAN DEFAULT false,
+  email_consent BOOLEAN DEFAULT true,
+  sms_consent BOOLEAN DEFAULT false,
+  consent_date TIMESTAMP,
+  unsubscribed_at TIMESTAMP,
+  -- Metadata
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Proposal reminders (Phase 42)
+CREATE TABLE proposal_reminders (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  proposal_id UUID REFERENCES proposals(id) ON DELETE CASCADE,
+  reminder_type VARCHAR(50) NOT NULL,
+  -- Type: first, monthly, semiannual, annual
+  scheduled_for TIMESTAMP NOT NULL,
+  sent_at TIMESTAMP,
+  status VARCHAR(50) DEFAULT 'pending',
+  -- Status: pending, sent, failed, cancelled
+  channel VARCHAR(50),
+  -- Channel: email, whatsapp, telegram
+  message_template TEXT,
+  metadata JSONB,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Campaign segments (Phase 43)
+CREATE TABLE campaign_segments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  organization_id UUID REFERENCES organizations(id),
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  filters JSONB NOT NULL,
+  -- Stored filter criteria
+  is_dynamic BOOLEAN DEFAULT true,
+  -- Dynamic: auto-update based on filters
+  cached_count INTEGER,
+  last_calculated_at TIMESTAMP,
+  created_by UUID REFERENCES users(id),
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Marketing campaigns (Phase 43)
+CREATE TABLE campaigns (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  organization_id UUID REFERENCES organizations(id),
+  segment_id UUID REFERENCES campaign_segments(id),
+  name VARCHAR(255) NOT NULL,
+  type VARCHAR(50),
+  -- Type: launch, promotional, announcement
+  subject VARCHAR(255),
+  message TEXT NOT NULL,
+  channels JSONB,
+  -- Array: ['email', 'whatsapp']
+  status VARCHAR(50) DEFAULT 'draft',
+  -- Status: draft, scheduled, sending, sent, failed
+  scheduled_for TIMESTAMP,
+  sent_at TIMESTAMP,
+  created_by UUID REFERENCES users(id),
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Campaign recipients tracking (Phase 43)
+CREATE TABLE campaign_recipients (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  campaign_id UUID REFERENCES campaigns(id) ON DELETE CASCADE,
+  client_id UUID REFERENCES clients(id),
+  channel VARCHAR(50) NOT NULL,
+  -- Channel: email, whatsapp, telegram
+  status VARCHAR(50) DEFAULT 'pending',
+  -- Status: pending, sent, delivered, opened, clicked, failed, bounced, unsubscribed
+  sent_at TIMESTAMP,
+  delivered_at TIMESTAMP,
+  opened_at TIMESTAMP,
+  clicked_at TIMESTAMP,
+  error_message TEXT,
+  metadata JSONB,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Campaign analytics (Phase 43)
+CREATE TABLE campaign_analytics (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  campaign_id UUID REFERENCES campaigns(id) UNIQUE,
+  total_recipients INTEGER DEFAULT 0,
+  sent_count INTEGER DEFAULT 0,
+  delivered_count INTEGER DEFAULT 0,
+  opened_count INTEGER DEFAULT 0,
+  clicked_count INTEGER DEFAULT 0,
+  bounced_count INTEGER DEFAULT 0,
+  failed_count INTEGER DEFAULT 0,
+  unsubscribed_count INTEGER DEFAULT 0,
+  proposals_opened INTEGER DEFAULT 0,
+  proposals_closed INTEGER DEFAULT 0,
+  revenue_generated DECIMAL(15,2) DEFAULT 0,
+  cost DECIMAL(10,2) DEFAULT 0,
+  roi DECIMAL(10,2),
+  -- Return on Investment
+  calculated_at TIMESTAMP DEFAULT NOW(),
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
 ```
 
 ---
@@ -921,6 +1314,55 @@ CREATE TABLE subdomains (
 - `GET /api/v1/subdomains/:id/status` - Check subdomain status
 - `DELETE /api/v1/subdomains/:id` - Remove subdomain
 
+**Advanced Reports (Phase 40-41):**
+- `GET /api/v1/reports/clients` - Client performance reports
+- `GET /api/v1/reports/clients/:id` - Individual client report
+- `GET /api/v1/reports/sectors` - Sector/industry reports
+- `GET /api/v1/reports/products` - Product/service reports
+- `GET /api/v1/reports/time-series` - Time-series analytics
+- `POST /api/v1/reports/export` - Export report (PDF/Excel/CSV)
+- `GET /api/v1/reports/scheduled` - List scheduled reports
+- `POST /api/v1/reports/schedule` - Schedule automated report
+
+**Reminders (Phase 42):**
+- `GET /api/v1/reminders` - List all scheduled reminders
+- `GET /api/v1/reminders/proposal/:id` - Get proposal reminders
+- `POST /api/v1/reminders` - Create manual reminder
+- `PUT /api/v1/reminders/:id` - Update reminder schedule
+- `DELETE /api/v1/reminders/:id` - Cancel reminder
+- `POST /api/v1/reminders/:id/send-now` - Send reminder immediately
+- `GET /api/v1/reminders/settings` - Get organization reminder defaults
+- `PUT /api/v1/reminders/settings` - Update reminder defaults
+
+**Client Segmentation (Phase 43):**
+- `GET /api/v1/segments` - List all segments
+- `POST /api/v1/segments` - Create new segment
+- `GET /api/v1/segments/:id` - Get segment details
+- `PUT /api/v1/segments/:id` - Update segment
+- `DELETE /api/v1/segments/:id` - Delete segment
+- `GET /api/v1/segments/:id/preview` - Preview segment recipients
+- `POST /api/v1/segments/:id/refresh` - Recalculate dynamic segment
+
+**Campaigns (Phase 43):**
+- `GET /api/v1/campaigns` - List all campaigns
+- `POST /api/v1/campaigns` - Create new campaign
+- `GET /api/v1/campaigns/:id` - Get campaign details
+- `PUT /api/v1/campaigns/:id` - Update campaign
+- `DELETE /api/v1/campaigns/:id` - Delete campaign
+- `POST /api/v1/campaigns/:id/test` - Send test campaign
+- `POST /api/v1/campaigns/:id/schedule` - Schedule campaign
+- `POST /api/v1/campaigns/:id/send` - Send campaign immediately
+- `GET /api/v1/campaigns/:id/analytics` - Get campaign analytics
+- `GET /api/v1/campaigns/:id/recipients` - List campaign recipients
+- `POST /api/v1/campaigns/:id/cancel` - Cancel scheduled campaign
+
+**Client Profiles (Phase 40-43):**
+- `GET /api/v1/clients/:id/profile` - Get extended client profile
+- `PUT /api/v1/clients/:id/profile` - Update client profile
+- `POST /api/v1/clients/:id/tags` - Add tags to client
+- `DELETE /api/v1/clients/:id/tags/:tag` - Remove client tag
+- `PUT /api/v1/clients/:id/consent` - Update marketing consent
+
 ---
 
 ## 9. Success Metrics & KPIs
@@ -932,6 +1374,8 @@ CREATE TABLE subdomains (
 - Time-to-close reduction (target: 50% improvement)
 - Client engagement rate (target: 80%+ view proposals)
 - Comment-to-approval ratio
+- Reminder response rate (target: 25%+ respond after reminder)
+- Campaign conversion rate (target: 10%+ open proposals from campaigns)
 
 **User Adoption:**
 - Active organizations (target: 100+ by Q2 2026)
@@ -958,6 +1402,9 @@ CREATE TABLE subdomains (
 - Import Success Rate: >95%
 - Contract Generation: <10 seconds
 - Notification Delivery: >95%
+- Report Generation: <5 seconds
+- Campaign Delivery: >98% success rate
+- Reminder Delivery: >95% success rate
 
 **Quality Metrics:**
 - Test Coverage: 80%+ (target)
@@ -1027,8 +1474,43 @@ CREATE TABLE subdomains (
 - Automatic SSL/TLS
 - Cost: $100-300/month
 
-**Total Future Timeline:** 27 weeks (6.75 months)
-**Total Future Operational Cost:** $2,900-6,100/month
+**Phase 26-39: Multi-Tier SaaS Transformation (Q2-Q3 2026 - 16 weeks)**
+- Pricing tiers implementation
+- Payment integration (Stripe + Mercado Pago)
+- Template builder (16-week implementation)
+- AI token management by tier
+- Four dashboards: Clients, Proposals, Templates, Analytics
+
+**Phase 40-41: Advanced Reporting & Analytics (Q3 2026 - 4 weeks)**
+- Client performance reports
+- Sector/industry analytics
+- Product/service reports
+- Time-series analysis
+- Automated report scheduling
+- Export functionality (PDF, Excel, CSV)
+- Cost: Minimal (PostgreSQL + Redis optimization)
+
+**Phase 42: Automated Follow-Up System (Q4 2026 - 3 weeks)**
+- Tiered reminder scheduling (first X days, monthly, semi-annual, annual)
+- Multi-channel delivery (Email, WhatsApp, Telegram)
+- Configurable intervals per proposal
+- Client opt-out management
+- Reminder effectiveness analytics
+- Cost: $100-300/month (messaging services)
+
+**Phase 43: Distribution Lists & Campaign Management (Q4 2026 - 5 weeks)**
+- Client segmentation engine (demographic, professional, behavioral)
+- Visual filter builder with boolean logic
+- Campaign creation and templates
+- Multi-channel distribution (WhatsApp Business API, Email)
+- Launch campaigns (buildings, shopping malls, events)
+- Campaign analytics and ROI tracking
+- LGPD compliance (consent management, unsubscribe)
+- A/B testing capabilities
+- Cost: $500-1,500/month (WhatsApp API + messaging costs scale with usage)
+
+**Total Future Timeline:** 43 weeks (~11 months)
+**Total Future Operational Cost:** $3,500-7,900/month (scales with user growth)
 
 ---
 
@@ -1046,6 +1528,16 @@ CREATE TABLE subdomains (
 - **DSR:** Data Subject Rights
 - **MRR:** Monthly Recurring Revenue
 - **MAU:** Monthly Active Users
+- **CLV:** Customer Lifetime Value
+- **ROI:** Return on Investment
+- **A/B Testing:** Split testing to compare two versions
+- **Segmentation:** Dividing clients into groups based on criteria
+- **Campaign:** Targeted message sent to a group of clients
+- **Distribution List:** Saved segment for repeated campaign use
+- **Engagement Score:** Metric tracking client interaction level
+- **Reminder Cadence:** Scheduled frequency of follow-up messages
+- **WhatsApp Business API:** Official Meta API for business messaging
+- **Opt-in/Opt-out:** User consent management for marketing communications
 
 ### 12.2 References
 
