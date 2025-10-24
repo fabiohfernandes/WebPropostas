@@ -998,12 +998,6 @@ Search_Engine:
 - Per-project access control
 - Activity notifications
 
-**Use Cases:**
-- Couple building home together
-- Family managing elderly parent's care services
-- Business partners on joint venture
-- Executor managing estate projects
-
 **Technical Specifications:**
 ```yaml
 Access_Control:
@@ -1022,6 +1016,443 @@ Activity_Feed:
   Events: Uploads, edits, approvals, payments
   Notifications: Real-time + daily digest
 ```
+
+#### **4.8.8 Real-World Use Cases Across Industries**
+
+The Client Portal serves diverse scenarios beyond construction, demonstrating platform versatility:
+
+---
+
+**Use Case 1: Home Construction Project**
+```yaml
+Project_Name: "Casa Nova - Florianópolis 2026"
+Client: Couple (João & Maria Silva)
+Duration: 18 months
+Budget: R$ 500,000
+Vendors: 12 service providers
+
+Proposals_Managed:
+  - Architecture (3 proposals, 1 accepted - R$ 45,000)
+  - Structural Engineering (R$ 18,000)
+  - Electrical Engineering (R$ 12,000)
+  - Plumbing Engineering (R$ 8,000)
+  - Builder/General Contractor (R$ 280,000)
+  - Interior Design (R$ 35,000)
+  - Furniture & Fixtures (R$ 55,000)
+  - Flooring & Finishes (R$ 28,000)
+  - Landscaping (R$ 19,000)
+
+Media_Library:
+  - 800+ progress photos (foundation → finishing)
+  - 50+ construction videos
+  - 12 drone footage clips
+  - 3D renderings and plans
+
+Financial_Tracking:
+  - 80+ NFe invoices
+  - Payment schedule (24 installments)
+  - Tax deduction documentation
+  - Budget vs. actual tracking
+
+Obligations:
+  - 150+ scheduled payments
+  - Delivery milestones
+  - Inspection deadlines
+  - Warranty tracking (5-year structural, 1-year finishes)
+
+Collaborators:
+  - João (Owner): Full access
+  - Maria (Owner): Full access
+  - Accountant (Viewer): Financial data only
+
+Key_Benefits:
+  - Complete project memory for future reference
+  - All spending organized for tax filing
+  - Warranty and contract repository
+  - Vendor contact information preserved
+```
+
+---
+
+**Use Case 2: Vehicle Body Shop Repair (Post-Accident)**
+```yaml
+Project_Name: "BMW X5 - Collision Repair (May 2026)"
+Client: Pedro Almeida
+Duration: 45 days
+Budget: R$ 18,500
+Vendors: 5 service providers
+
+Proposals_Managed:
+  - Body Shop #1 (declined - R$ 22,000 too high)
+  - Body Shop #2 (declined - 60 day timeline)
+  - Body Shop #3 (accepted - R$ 18,500, 45 days) ✅
+  - Paint Specialist (subcontractor - R$ 4,200)
+  - Glass Replacement (R$ 2,800)
+
+Media_Library:
+  - 25 damage photos (insurance documentation)
+  - 40+ repair progress photos (daily updates)
+  - 10 before/after comparison photos
+  - Final delivery video walkthrough
+  - PDI (Pre-Delivery Inspection) checklist photos
+
+Financial_Tracking:
+  - Insurance claim documentation (R$ 15,000 coverage)
+  - Out-of-pocket expenses (R$ 3,500)
+  - 3 NFe invoices from vendors
+  - Payment proof to insurance company
+  - Warranty documentation (6-month paint warranty)
+
+Obligations:
+  - Weekly progress check-ins
+  - Insurance adjuster visit (scheduled)
+  - Final inspection before delivery
+  - 30-day follow-up appointment
+  - 6-month warranty check
+
+Timeline:
+  - Day 1: Damage assessment, insurance photos
+  - Day 3: Proposals received, vendor selected
+  - Day 5-35: Repair work with photo updates
+  - Day 36: Paint and detailing
+  - Day 40: Final inspection
+  - Day 45: Vehicle delivery
+
+Key_Benefits:
+  - Insurance claim documentation (photos + invoices)
+  - Daily repair progress visibility
+  - Warranty and service records for resale value
+  - Vendor comparison for future reference
+  - Complete repair history preserved
+```
+
+---
+
+**Use Case 3: Children's Extracurricular Activities & Courses**
+```yaml
+Project_Name: "Lucas & Ana - Education & Activities 2026"
+Client: Mother (Camila Rodrigues)
+Duration: 12 months (school year)
+Budget: R$ 24,000 (R$ 2,000/month)
+Vendors: 8 service providers
+
+Proposals_Managed:
+  Lucas (10 years old):
+    - English Course (R$ 350/month - accepted)
+    - Soccer Training (R$ 280/month - accepted)
+    - Math Tutoring (R$ 200/month - accepted)
+    - Swimming Lessons (declined - schedule conflict)
+
+  Ana (7 years old):
+    - Ballet Classes (R$ 320/month - accepted)
+    - Art Classes (R$ 180/month - accepted)
+    - Piano Lessons (R$ 400/month - accepted)
+    - Gymnastics (on waitlist)
+
+Media_Library:
+  - 200+ class photos and videos
+  - Performance videos (ballet recital, soccer games)
+  - Art project photos
+  - Progress certificates and diplomas
+  - Report cards and evaluations
+
+Financial_Tracking:
+  - 96 monthly tuition invoices (8 activities × 12 months)
+  - Registration fees and materials
+  - Uniform and equipment costs
+  - Recital/event tickets
+  - Tax deduction for education expenses
+
+Obligations:
+  - Monthly tuition payments (8 different dates)
+  - Recital and presentation dates
+  - Parent-teacher meetings
+  - Semester evaluations
+  - Registration renewal deadlines
+  - Vacation schedule coordination
+
+Budget_Breakdown:
+  - Lucas English: R$ 4,200/year
+  - Lucas Soccer: R$ 3,360/year
+  - Lucas Math: R$ 2,400/year
+  - Ana Ballet: R$ 3,840/year
+  - Ana Art: R$ 2,160/year
+  - Ana Piano: R$ 4,800/year
+  - Materials & Events: R$ 3,240/year
+  Total: R$ 24,000/year
+
+Collaborators:
+  - Camila (Owner): Full access
+  - Husband (Viewer): View schedules and payments
+  - Accountant (Viewer): Financial data for tax deductions
+
+Key_Benefits:
+  - Centralized schedule for all activities
+  - Budget control across multiple children
+  - Performance and progress documentation
+  - Tax deduction documentation (education expenses)
+  - Easy vendor contact for schedule changes
+  - Historical record of children's development
+```
+
+---
+
+**Use Case 4: Wedding Planning & Coordination**
+```yaml
+Project_Name: "Casamento Fernanda & Ricardo - Dezembro 2026"
+Client: Couple (Fernanda & Ricardo)
+Duration: 10 months (planning period)
+Budget: R$ 80,000
+Vendors: 15 service providers
+Guests: 150 people
+
+Proposals_Managed:
+  - Wedding Venue (5 proposals, 1 accepted - R$ 18,000)
+  - Catering/Buffet (4 proposals, 1 accepted - R$ 25,000)
+  - Photography & Video (3 proposals, 1 accepted - R$ 8,500)
+  - Wedding Dress & Alterations (R$ 6,000)
+  - Groom's Suit (R$ 2,500)
+  - Decoration & Flowers (R$ 7,500)
+  - Wedding Cake (3 proposals, 1 accepted - R$ 1,800)
+  - Music/DJ (R$ 3,200)
+  - Invitations & Stationery (R$ 1,500)
+  - Wedding Planner (R$ 4,000)
+  - Hair & Makeup (R$ 1,200)
+  - Transportation (R$ 800)
+
+Media_Library:
+  - Venue tour photos and videos
+  - Food tasting photos
+  - Dress fitting photos
+  - Decoration mockups and samples
+  - Cake design photos
+  - Venue setup photos (day before)
+  - Professional wedding photos (400+)
+  - Wedding video (full ceremony + reception)
+
+Financial_Tracking:
+  - 40+ vendor invoices and NFe
+  - Payment schedule (deposits, installments, final payments)
+  - Guest gift tracking
+  - Honeymoon expenses (separate project)
+  - Credit card vs. cash payments
+  - Budget tracking by category
+
+Obligations:
+  - Venue deposit deadline
+  - Final headcount confirmation (30 days before)
+  - Dress final fitting (2 weeks before)
+  - Catering payment schedule (3 installments)
+  - Music playlist submission
+  - Seating chart finalization
+  - Vendor final confirmations (1 week before)
+  - Day-of timeline coordination
+
+Timeline:
+  - Month 1-2: Venue selection, save the date
+  - Month 3-4: Catering, photography, dress shopping
+  - Month 5-6: Invitations, decoration planning
+  - Month 7-8: Final fittings, cake tasting, music
+  - Month 9: Final payments, confirmations
+  - Month 10: Wedding week, day-of coordination
+
+Budget_Categories:
+  - Venue & Catering: R$ 43,000 (54%)
+  - Photography/Video: R$ 8,500 (11%)
+  - Attire (bride + groom): R$ 8,500 (11%)
+  - Decoration/Flowers: R$ 7,500 (9%)
+  - Wedding Planner: R$ 4,000 (5%)
+  - Music/Entertainment: R$ 3,200 (4%)
+  - Cake: R$ 1,800 (2%)
+  - Other (invites, transport, etc.): R$ 3,500 (4%)
+
+Collaborators:
+  - Fernanda (Owner): Full access
+  - Ricardo (Owner): Full access
+  - Wedding Planner (Editor): Can add vendors and updates
+  - Parents (Viewer): View progress and budget
+  - Maid of Honor (Viewer): Timeline and vendor contacts
+
+Key_Benefits:
+  - All vendor contracts in one place
+  - Payment schedule prevents missed deadlines
+  - Complete wedding memory (photos + documents)
+  - Budget control by category
+  - Vendor contact info for future recommendations
+  - Timeline coordination across 15 vendors
+  - Honeymoon planning (separate project folder)
+```
+
+---
+
+**Use Case 5: Home Renovation Project**
+```yaml
+Project_Name: "Apartamento Leblon - Reforma Completa"
+Client: Family (Santos Family)
+Duration: 4 months
+Budget: R$ 120,000
+Vendors: 9 service providers
+
+Proposals_Managed:
+  - Interior Designer (R$ 12,000)
+  - General Contractor (R$ 65,000)
+  - Electrician (R$ 8,500)
+  - Plumber (R$ 6,500)
+  - Custom Cabinetry (R$ 18,000)
+  - Flooring Specialist (R$ 9,500)
+  - Painter (R$ 4,200)
+  - Air Conditioning Installation (R$ 7,800)
+
+Media_Library:
+  - 300+ demolition and construction photos
+  - Before photos of every room
+  - 3D renderings from designer
+  - Daily progress photos
+  - After photos for each completed room
+  - Time-lapse video of full renovation
+
+Financial_Tracking:
+  - 45 invoices and receipts
+  - Payment schedule coordinated across vendors
+  - Materials vs. labor cost breakdown
+  - Change order documentation
+  - Property value increase estimate
+
+Obligations:
+  - Building permit approvals
+  - Condo board notifications
+  - Material delivery schedules
+  - Inspection checkpoints
+  - Final walkthrough with each vendor
+  - 1-year warranty tracking
+
+Key_Benefits:
+  - Property value documentation (before/after)
+  - Complete renovation history for future buyers
+  - Vendor performance for recommendations
+  - Budget control during unexpected issues
+  - Warranty and contact info preservation
+```
+
+---
+
+**Use Case 6: Corporate Event Planning**
+```yaml
+Project_Name: "Tech Summit 2026 - Annual Conference"
+Client: Marketing Manager (Startup TechBrasil)
+Duration: 6 months (planning period)
+Budget: R$ 150,000
+Attendees: 500 people
+Vendors: 20+ service providers
+
+Proposals_Managed:
+  - Event Venue (convention center - R$ 35,000)
+  - Catering (breakfast, lunch, coffee breaks - R$ 40,000)
+  - AV Equipment & Tech Support (R$ 15,000)
+  - Stage Design & Branding (R$ 12,000)
+  - Photography & Videography (R$ 8,000)
+  - Event App & Registration Platform (R$ 6,500)
+  - Security Services (R$ 4,000)
+  - Transportation (shuttle service - R$ 3,500)
+  - Accommodation (hotel block - R$ 25,000)
+  - Swag & Merchandise (R$ 8,000)
+
+Media_Library:
+  - Event photos (1000+ professional shots)
+  - Keynote presentation recordings
+  - Attendee testimonial videos
+  - Social media content
+  - Venue setup time-lapse
+
+Financial_Tracking:
+  - 60+ vendor invoices
+  - Sponsorship revenue tracking
+  - Ticket sales reconciliation
+  - ROI calculation per session
+  - Tax documentation for business expenses
+
+Obligations:
+  - Speaker confirmation deadlines
+  - Venue payment milestones
+  - Marketing campaign launches
+  - Registration deadline
+  - Final headcount to catering
+  - Post-event survey distribution
+
+Key_Benefits:
+  - Complete event documentation for next year
+  - Vendor performance evaluation
+  - Budget vs. actual analysis
+  - Sponsorship fulfillment proof
+  - Event archive for marketing
+```
+
+---
+
+**Use Case 7: Medical Treatment & Healthcare Management**
+```yaml
+Project_Name: "Tratamento Ortodôntico - Família Costa"
+Client: Parents managing children's healthcare
+Duration: 24 months
+Budget: R$ 32,000
+Patients: 3 children
+
+Proposals_Managed:
+  - Orthodontist (2 proposals, 1 accepted - R$ 28,000)
+  - Dental X-rays & Scans (R$ 1,200)
+  - Retainer Replacement (R$ 800)
+  - Emergency Visits (R$ 2,000 budget)
+
+Media_Library:
+  - Progress photos (monthly)
+  - X-ray images and scans
+  - Before/after smile comparisons
+  - Treatment plan documents
+
+Financial_Tracking:
+  - 24 monthly payment invoices
+  - Insurance reimbursement claims
+  - Tax deduction documentation
+  - Payment receipts for warranty claims
+
+Obligations:
+  - Monthly adjustment appointments
+  - 6-month cleaning checkups
+  - Annual X-ray updates
+  - Retainer delivery dates
+
+Key_Benefits:
+  - Insurance claim documentation
+  - Tax deduction for medical expenses
+  - Treatment history for future reference
+  - Before/after documentation
+  - Multiple children in one project
+```
+
+---
+
+### **Cross-Industry Application Summary**
+
+The Client Portal demonstrates value across:
+
+| Industry | Primary Use | Key Features | Typical Duration | Budget Range |
+|----------|-------------|--------------|------------------|--------------|
+| **Construction** | Home building, renovation | Multi-vendor coordination, progress photos, NFe tracking | 6-24 months | R$ 100K-1M+ |
+| **Automotive** | Body shop, customization | Insurance documentation, progress photos, warranties | 1-3 months | R$ 5K-50K |
+| **Education** | Courses, tutoring, activities | Schedule coordination, performance tracking, tax deductions | 12 months | R$ 10K-50K |
+| **Events** | Weddings, parties, conferences | Vendor coordination, timeline management, budget control | 3-12 months | R$ 30K-300K |
+| **Healthcare** | Treatments, therapies | Medical documentation, insurance claims, appointment tracking | 6-36 months | R$ 10K-100K |
+| **Professional Services** | Legal, consulting, accounting | Document repository, billable hours, project phases | 3-18 months | R$ 20K-200K |
+
+**Common Pain Points Solved:**
+- ✅ Scattered proposals and contracts across email, WhatsApp, paper
+- ✅ Lost receipts and invoices during tax season
+- ✅ Forgotten payment deadlines and late fees
+- ✅ Difficulty tracking project progress across multiple vendors
+- ✅ No central repository for warranties and service records
+- ✅ Inability to share project status with family/partners
+- ✅ Lost vendor contact information for future needs
+- ✅ No audit trail for dispute resolution
 
 ### 4.9 Subdomain Provisioning - AWS (Planned - Phase 25)
 
