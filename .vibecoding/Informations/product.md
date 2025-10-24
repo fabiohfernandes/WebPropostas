@@ -67,6 +67,11 @@ A **multi-tier SaaS platform** that democratizes professional proposal creation 
 | **Campaign Management** | ❌ No | ❌ No | ✅ Full segmentation + multi-channel |
 | **Distribution Lists** | ❌ No | ❌ No | ✅ Advanced filtering + campaigns |
 | **WhatsApp Integration** | ❌ No | ❌ No | ✅ Business API (campaigns + reminders) |
+| **Client Portal Access** | ❌ No | ✅ Basic (view proposals only) | ✅ Full (project management) |
+| **Project Folders** | ❌ No | ❌ No | ✅ Unlimited multi-vendor projects |
+| **Media Library** | ❌ No | ❌ No | ✅ Unlimited storage (fair use) |
+| **Financial Tracking** | ❌ No | ❌ No | ✅ Invoices, NFe, tax reports |
+| **Multi-User Projects** | ❌ No | ❌ No | ✅ Invite family/collaborators |
 | **Contract Generation** | ❌ No | ❌ No | ✅ Automated (future) |
 | **Support** | Community | Email (48h) | Priority (24h) + Chat |
 | **2FA Security** | ✅ Yes | ✅ Yes | ✅ Yes |
@@ -199,6 +204,17 @@ A **multi-tier SaaS platform** that democratizes professional proposal creation 
 - Campaign analytics and engagement tracking
 - 🚧 Planned: Phase 43
 
+**G10. Client Portal & Project Management Hub**
+- Centralized dashboard for all received proposals
+- Project tracking across multiple service providers
+- Media library (photos, videos, documents from providers)
+- Financial management (invoices, receipts, tax documentation)
+- Project folders for complex multi-vendor projects
+- Spending tracking and budget management
+- Contract repository with schedules and obligations
+- Complete project memory and audit trail
+- 🚧 Planned: Phase 44-45
+
 ### 1.2 Non-Goals (v1)
 - Full DTP feature parity with Canva/Gamma
 - Real-time collaborative multi-cursor editing (sequential edits supported)
@@ -223,6 +239,16 @@ A **multi-tier SaaS platform** that democratizes professional proposal creation 
 - Reviews proposal content
 - Adds comments and requests changes
 - Approves sections and final proposal
+
+**Client Portal User (External - Phase 44-45)**
+- Manages all received proposals in one place
+- Tracks project progress across multiple vendors
+- Stores and organizes media (photos, videos, documents)
+- Manages financial documents (invoices, receipts, tax records)
+- Creates project folders for complex endeavors (e.g., home construction)
+- Monitors spending and budgets
+- Accesses contracts, schedules, and obligations
+- Maintains complete project history and audit trail
 
 **Legal/Operations (Internal)**
 - Reviews final documents
@@ -700,7 +726,304 @@ WhatsApp_Integration:
   - ROI calculation
 ```
 
-### 4.8 Subdomain Provisioning - AWS (Planned - Phase 25)
+### 4.8 Client Portal & Project Management Hub (Planned - Phase 44-45)
+
+**Overview:**
+A comprehensive client-facing portal that transforms the platform from a simple proposal review system into a complete project management and financial tracking solution. Ideal for complex, multi-vendor projects like home construction, renovations, events, or any scenario requiring coordination across multiple service providers.
+
+**Core Features:**
+
+#### **4.8.1 Proposal Management Dashboard**
+
+**All Proposals View:**
+- Centralized list of all proposals received across all providers
+- Filter by status (pending, accepted, rejected, in-progress, completed)
+- Search by provider, service type, date range, project
+- Sort by date, amount, status, priority
+- Quick actions (view, accept, reject, archive)
+
+**Proposal Organization:**
+- Tag proposals with custom labels
+- Star/favorite important proposals
+- Archive old or rejected proposals
+- Link related proposals to projects
+
+**Technical Specifications:**
+```yaml
+Dashboard_Features:
+  List_View: Sortable table with pagination
+  Card_View: Visual grid with thumbnails
+  Filters: Multi-select with AND/OR logic
+  Search: Full-text search across proposal content
+  Bulk_Actions: Select multiple for archiving/tagging
+
+Performance:
+  Load_Time: <2 seconds for 1000+ proposals
+  Real_Time_Updates: WebSocket for status changes
+  Caching: Redis for frequently accessed data
+```
+
+#### **4.8.2 Project Folders (Multi-Vendor Coordination)**
+
+**Use Case Example: Home Construction**
+Create a project folder "Casa Nova - 2026" containing:
+- Architecture proposals and contracts
+- Engineering proposals (structural, electrical, plumbing)
+- Construction/builder contracts
+- Interior design proposals
+- Furniture quotes
+- Landscaping proposals
+- Finishing materials (flooring, paint, fixtures)
+
+**Project Features:**
+- Create unlimited project folders
+- Assign proposals to projects
+- Project timeline with milestones
+- Overall project budget tracking
+- Progress tracking across all vendors
+- Project-level notes and documents
+- Share project view with family members (multi-user access)
+
+**Project Dashboard:**
+- Total project spending (actual vs. budgeted)
+- Payment schedule across all vendors
+- Upcoming obligations and deadlines
+- Project completion percentage
+- Vendor performance ratings
+- Project activity timeline
+
+**Technical Specifications:**
+```yaml
+Project_Structure:
+  Hierarchy: Client → Projects → Proposals/Contracts/Documents
+  Permissions: Owner, viewer, collaborator roles
+  Sharing: Invite family/partners via email
+
+Budget_Tracking:
+  Currency: BRL with multi-currency support (future)
+  Categories: Custom budget categories
+  Alerts: Notifications when nearing budget limits
+  Reports: Spending by vendor, category, time period
+```
+
+#### **4.8.3 Media Library & Progress Tracking**
+
+**Service Provider Uploads:**
+Vendors can upload progress photos/videos to client projects:
+- Construction progress photos (daily/weekly)
+- Before/after comparisons
+- Video walkthroughs
+- 360° virtual tours
+- Drone footage (for large projects)
+- Time-lapse videos
+
+**Client Organization:**
+- Automatic organization by date, vendor, project phase
+- Tag media with custom labels (foundation, framing, finishing, etc.)
+- Create albums/collections
+- Download original files
+- Share media with stakeholders
+- Comments and annotations on media
+
+**Media Features:**
+- Image viewer with zoom/pan
+- Video player with playback controls
+- Thumbnail generation
+- EXIF data preservation (date, location, camera)
+- Bulk download (ZIP archives)
+- Slideshow mode
+
+**Technical Specifications:**
+```yaml
+Storage:
+  Provider: S3-compatible (Cloudflare R2)
+  Max_File_Size: 100MB per file
+  Supported_Formats:
+    Images: JPG, PNG, HEIC, WebP, RAW
+    Videos: MP4, MOV, AVI, WebM
+    Documents: PDF, DOC, XLS, DWG
+
+Processing:
+  Thumbnails: Auto-generated multiple sizes
+  Video_Transcoding: H.264 for web playback
+  Compression: Smart compression for storage optimization
+
+Organization:
+  Structure: /projects/{project_id}/media/{vendor_id}/{date}/
+  Tagging: Multi-tag support with autocomplete
+  Search: Full-text search in metadata
+```
+
+#### **4.8.4 Financial Management & Tax Documentation**
+
+**Invoice & Receipt Storage:**
+- Upload invoices from all vendors
+- Scan/photo receipts via mobile
+- OCR extraction of key data (date, amount, vendor, tax ID)
+- Link invoices to proposals/contracts
+- Payment status tracking (pending, paid, overdue)
+
+**Tax Documentation (IRS/Receita Federal):**
+- NFe (Nota Fiscal Eletrônica) repository
+- Automatic organization by tax year
+- CPF/CNPJ validation and tracking
+- Deduction categories for tax filing
+- Export reports for accountant
+- Total spending by year/category
+
+**Payment Tracking:**
+- Payment schedule across all projects
+- Upcoming payments dashboard
+- Payment history with proof of payment
+- Overdue payment alerts
+- Payment method tracking (bank transfer, credit card, check)
+
+**Financial Reports:**
+- Total spending by project
+- Spending by vendor
+- Spending by category (labor, materials, services)
+- Monthly spending trends
+- Tax year summaries
+- Budget vs. actual comparisons
+
+**Technical Specifications:**
+```yaml
+Invoice_Management:
+  OCR_Engine: Google Vision API or Tesseract
+  Extracted_Fields: Date, total, vendor, tax_id, items
+  Validation: Cross-check with proposal amounts
+
+Tax_Compliance:
+  NFe_Storage: XML + PDF storage
+  Validation: Schema validation for NFe XML
+  Tax_Year_Export: CSV/Excel for accountants
+  Categories: Customizable tax deduction categories
+
+Financial_Analytics:
+  Charts: Spending over time, by category, by vendor
+  Alerts: Budget overruns, late payments
+  Export: PDF reports, Excel spreadsheets
+```
+
+#### **4.8.5 Contract Repository & Obligations Tracker**
+
+**Contract Management:**
+- Store all signed contracts
+- Link contracts to proposals
+- Version tracking for amendments
+- Contract expiration alerts
+- Renewal reminders
+- Warranty tracking
+
+**Obligations & Schedules:**
+- Extract obligations from contracts
+- Payment schedules with auto-reminders
+- Delivery/milestone schedules
+- Warranty periods
+- Service agreements (maintenance, support)
+- Penalties/late fees tracking
+
+**Schedule Dashboard:**
+- Calendar view of all obligations
+- Upcoming deadlines (7/30/90 days)
+- Overdue items
+- Vendor performance (on-time vs. late)
+- Payment schedule across all contracts
+
+**Technical Specifications:**
+```yaml
+Contract_Storage:
+  Formats: PDF (primary), DOCX (editable)
+  Versioning: Track amendments and addendums
+  E_Signature_Integration: Link to DocuSign/Clicksign records
+
+Obligation_Tracking:
+  Types: Payment, delivery, milestone, warranty
+  Reminders: Email/WhatsApp/Push notifications
+  Recurrence: One-time, monthly, quarterly, annual
+  Dependencies: Link related obligations
+
+Calendar_Integration:
+  Export: iCal/Google Calendar format
+  Sync: Two-way sync with external calendars (future)
+```
+
+#### **4.8.6 Project Memory & Audit Trail**
+
+**Complete Project History:**
+- Every proposal received
+- All communications (emails, messages)
+- All documents and media
+- Payment history
+- Status changes and approvals
+- Notes and decisions
+
+**Search & Discovery:**
+- Full-text search across all project data
+- Filter by date, vendor, category, amount
+- Timeline view of project events
+- Export complete project archive
+
+**Reporting:**
+- Final project report with all spending
+- Vendor performance summary
+- Lessons learned documentation
+- Project timeline visualization
+- Photo galleries (before/during/after)
+
+**Technical Specifications:**
+```yaml
+Audit_Trail:
+  Logging: Every action logged with timestamp
+  Immutability: Append-only audit log
+  Retention: Unlimited (configurable)
+
+Export_Options:
+  Full_Archive: ZIP with all files + metadata
+  Project_Report: PDF with summary + photos
+  Financial_Summary: Excel with all transactions
+  Timeline: Visual PDF timeline
+
+Search_Engine:
+  Technology: PostgreSQL full-text + Elasticsearch (future)
+  Indexing: All text content, OCR text from images
+  Speed: <500ms for complex queries
+```
+
+#### **4.8.7 Multi-User Access & Permissions**
+
+**Sharing Projects:**
+- Invite family members/partners
+- Role-based permissions (owner, editor, viewer)
+- Per-project access control
+- Activity notifications
+
+**Use Cases:**
+- Couple building home together
+- Family managing elderly parent's care services
+- Business partners on joint venture
+- Executor managing estate projects
+
+**Technical Specifications:**
+```yaml
+Access_Control:
+  Roles:
+    - Owner: Full control, can delete project
+    - Editor: Add/edit content, cannot delete
+    - Viewer: Read-only access
+    - Accountant: Financial data only
+
+Invitations:
+  Method: Email invitation with magic link
+  Expiration: 7 days for acceptance
+  Revocation: Instant access removal
+
+Activity_Feed:
+  Events: Uploads, edits, approvals, payments
+  Notifications: Real-time + daily digest
+```
+
+### 4.9 Subdomain Provisioning - AWS (Planned - Phase 25)
 
 **Pattern:** `proposal-<ULID>.infigital.net` (kebab-case)
 
@@ -1239,6 +1562,193 @@ CREATE TABLE campaign_analytics (
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );
+
+-- Client portal projects (Phase 44-45)
+CREATE TABLE client_projects (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  client_id UUID REFERENCES clients(id),
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  type VARCHAR(100),
+  -- Type: construction, renovation, event, general
+  status VARCHAR(50) DEFAULT 'active',
+  -- Status: planning, active, on_hold, completed, archived
+  start_date DATE,
+  target_end_date DATE,
+  actual_end_date DATE,
+  budget_total DECIMAL(15,2),
+  budget_spent DECIMAL(15,2) DEFAULT 0,
+  completion_percentage INTEGER DEFAULT 0,
+  -- 0-100
+  tags JSONB,
+  -- Array of custom tags
+  settings JSONB,
+  -- Project-specific settings
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Project proposals mapping (Phase 44-45)
+CREATE TABLE project_proposals (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  project_id UUID REFERENCES client_projects(id) ON DELETE CASCADE,
+  proposal_id UUID REFERENCES proposals(id) ON DELETE CASCADE,
+  category VARCHAR(100),
+  -- Category: architecture, engineering, construction, design, furniture, etc.
+  order_index INTEGER DEFAULT 0,
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT NOW(),
+  UNIQUE(project_id, proposal_id)
+);
+
+-- Project media library (Phase 44-45)
+CREATE TABLE project_media (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  project_id UUID REFERENCES client_projects(id) ON DELETE CASCADE,
+  uploaded_by UUID REFERENCES users(id),
+  -- Can be client or service provider
+  file_name VARCHAR(255) NOT NULL,
+  file_type VARCHAR(50),
+  -- Type: image, video, document
+  file_size BIGINT,
+  -- Size in bytes
+  mime_type VARCHAR(100),
+  storage_path VARCHAR(500),
+  thumbnail_path VARCHAR(500),
+  caption TEXT,
+  tags JSONB,
+  -- Array of tags
+  exif_data JSONB,
+  -- EXIF metadata for images
+  uploaded_date DATE,
+  phase VARCHAR(100),
+  -- Project phase: foundation, framing, finishing, etc.
+  vendor_id UUID REFERENCES users(id),
+  -- Service provider who uploaded
+  is_public BOOLEAN DEFAULT false,
+  -- Share with project collaborators
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Financial documents (Phase 44-45)
+CREATE TABLE financial_documents (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  project_id UUID REFERENCES client_projects(id) ON DELETE CASCADE,
+  proposal_id UUID REFERENCES proposals(id),
+  -- Link to proposal if applicable
+  document_type VARCHAR(50) NOT NULL,
+  -- Type: invoice, receipt, nfe, payment_proof, contract
+  vendor_name VARCHAR(255),
+  vendor_tax_id VARCHAR(50),
+  -- CPF or CNPJ
+  document_number VARCHAR(100),
+  -- Invoice/NFe number
+  issue_date DATE,
+  due_date DATE,
+  payment_date DATE,
+  amount DECIMAL(15,2) NOT NULL,
+  tax_amount DECIMAL(15,2),
+  category VARCHAR(100),
+  -- Category: labor, materials, services, equipment
+  payment_status VARCHAR(50) DEFAULT 'pending',
+  -- Status: pending, paid, overdue, cancelled
+  payment_method VARCHAR(50),
+  -- Method: bank_transfer, credit_card, check, cash
+  nfe_xml_path VARCHAR(500),
+  -- NFe XML file path
+  pdf_path VARCHAR(500),
+  ocr_data JSONB,
+  -- Extracted OCR data
+  tax_year INTEGER,
+  is_tax_deductible BOOLEAN DEFAULT false,
+  deduction_category VARCHAR(100),
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Project obligations and schedules (Phase 44-45)
+CREATE TABLE project_obligations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  project_id UUID REFERENCES client_projects(id) ON DELETE CASCADE,
+  contract_id UUID REFERENCES contracts(id),
+  -- Link to contract if exists
+  proposal_id UUID REFERENCES proposals(id),
+  obligation_type VARCHAR(50) NOT NULL,
+  -- Type: payment, delivery, milestone, warranty, service
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  vendor_name VARCHAR(255),
+  due_date DATE,
+  completion_date DATE,
+  amount DECIMAL(15,2),
+  status VARCHAR(50) DEFAULT 'pending',
+  -- Status: pending, completed, overdue, cancelled
+  recurrence VARCHAR(50),
+  -- Recurrence: none, monthly, quarterly, annual
+  reminder_days_before INTEGER DEFAULT 7,
+  -- Days before to send reminder
+  priority VARCHAR(50) DEFAULT 'medium',
+  -- Priority: low, medium, high, critical
+  dependencies JSONB,
+  -- Array of obligation IDs this depends on
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Project collaborators (Phase 44-45)
+CREATE TABLE project_collaborators (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  project_id UUID REFERENCES client_projects(id) ON DELETE CASCADE,
+  user_email VARCHAR(255) NOT NULL,
+  -- Email of invited collaborator
+  user_name VARCHAR(255),
+  role VARCHAR(50) NOT NULL,
+  -- Role: owner, editor, viewer, accountant
+  invitation_token VARCHAR(255) UNIQUE,
+  invitation_status VARCHAR(50) DEFAULT 'pending',
+  -- Status: pending, accepted, expired, revoked
+  invited_at TIMESTAMP DEFAULT NOW(),
+  accepted_at TIMESTAMP,
+  expires_at TIMESTAMP,
+  last_access TIMESTAMP,
+  permissions JSONB,
+  -- Granular permissions
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Project activity log (Phase 44-45)
+CREATE TABLE project_activities (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  project_id UUID REFERENCES client_projects(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES users(id),
+  -- User or collaborator who performed action
+  activity_type VARCHAR(100) NOT NULL,
+  -- Type: proposal_added, media_uploaded, payment_made, milestone_completed, etc.
+  description TEXT,
+  entity_type VARCHAR(50),
+  -- Entity: proposal, media, document, obligation
+  entity_id UUID,
+  -- ID of related entity
+  metadata JSONB,
+  -- Additional activity data
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Project notes (Phase 44-45)
+CREATE TABLE project_notes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  project_id UUID REFERENCES client_projects(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES users(id),
+  title VARCHAR(255),
+  content TEXT NOT NULL,
+  note_type VARCHAR(50) DEFAULT 'general',
+  -- Type: general, decision, lesson_learned, issue
+  tags JSONB,
+  is_pinned BOOLEAN DEFAULT false,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
 ```
 
 ---
@@ -1363,6 +1873,71 @@ CREATE TABLE campaign_analytics (
 - `DELETE /api/v1/clients/:id/tags/:tag` - Remove client tag
 - `PUT /api/v1/clients/:id/consent` - Update marketing consent
 
+**Client Portal - Projects (Phase 44-45):**
+- `GET /api/v1/client-portal/projects` - List all client projects
+- `POST /api/v1/client-portal/projects` - Create new project
+- `GET /api/v1/client-portal/projects/:id` - Get project details
+- `PUT /api/v1/client-portal/projects/:id` - Update project
+- `DELETE /api/v1/client-portal/projects/:id` - Delete project
+- `GET /api/v1/client-portal/projects/:id/dashboard` - Get project dashboard
+- `POST /api/v1/client-portal/projects/:id/proposals` - Add proposal to project
+- `DELETE /api/v1/client-portal/projects/:id/proposals/:proposalId` - Remove proposal
+- `GET /api/v1/client-portal/projects/:id/budget` - Get budget details
+- `PUT /api/v1/client-portal/projects/:id/budget` - Update budget
+
+**Client Portal - Media Library (Phase 44-45):**
+- `GET /api/v1/client-portal/projects/:id/media` - List project media
+- `POST /api/v1/client-portal/projects/:id/media` - Upload media file
+- `GET /api/v1/client-portal/media/:mediaId` - Get media details
+- `PUT /api/v1/client-portal/media/:mediaId` - Update media metadata
+- `DELETE /api/v1/client-portal/media/:mediaId` - Delete media
+- `POST /api/v1/client-portal/media/:mediaId/tags` - Add tags to media
+- `GET /api/v1/client-portal/projects/:id/media/albums` - List albums
+- `POST /api/v1/client-portal/projects/:id/media/download` - Bulk download media
+
+**Client Portal - Financial Documents (Phase 44-45):**
+- `GET /api/v1/client-portal/projects/:id/finances` - List financial documents
+- `POST /api/v1/client-portal/projects/:id/finances` - Upload financial document
+- `GET /api/v1/client-portal/finances/:docId` - Get document details
+- `PUT /api/v1/client-portal/finances/:docId` - Update document
+- `DELETE /api/v1/client-portal/finances/:docId` - Delete document
+- `POST /api/v1/client-portal/finances/:docId/ocr` - Extract OCR data
+- `GET /api/v1/client-portal/projects/:id/finances/reports` - Financial reports
+- `GET /api/v1/client-portal/finances/tax-year/:year` - Tax year summary
+- `POST /api/v1/client-portal/finances/export` - Export for accountant
+
+**Client Portal - Obligations & Schedules (Phase 44-45):**
+- `GET /api/v1/client-portal/projects/:id/obligations` - List obligations
+- `POST /api/v1/client-portal/projects/:id/obligations` - Create obligation
+- `GET /api/v1/client-portal/obligations/:id` - Get obligation details
+- `PUT /api/v1/client-portal/obligations/:id` - Update obligation
+- `DELETE /api/v1/client-portal/obligations/:id` - Delete obligation
+- `POST /api/v1/client-portal/obligations/:id/complete` - Mark as completed
+- `GET /api/v1/client-portal/obligations/calendar` - Calendar view
+- `GET /api/v1/client-portal/obligations/upcoming` - Upcoming obligations
+
+**Client Portal - Collaborators (Phase 44-45):**
+- `GET /api/v1/client-portal/projects/:id/collaborators` - List collaborators
+- `POST /api/v1/client-portal/projects/:id/collaborators/invite` - Invite collaborator
+- `PUT /api/v1/client-portal/collaborators/:id` - Update collaborator role
+- `DELETE /api/v1/client-portal/collaborators/:id` - Remove collaborator
+- `POST /api/v1/client-portal/collaborators/accept/:token` - Accept invitation
+- `GET /api/v1/client-portal/collaborators/my-projects` - Projects I collaborate on
+
+**Client Portal - Activity & Notes (Phase 44-45):**
+- `GET /api/v1/client-portal/projects/:id/activity` - Project activity feed
+- `GET /api/v1/client-portal/projects/:id/notes` - List project notes
+- `POST /api/v1/client-portal/projects/:id/notes` - Create note
+- `PUT /api/v1/client-portal/notes/:id` - Update note
+- `DELETE /api/v1/client-portal/notes/:id` - Delete note
+- `POST /api/v1/client-portal/notes/:id/pin` - Pin/unpin note
+
+**Client Portal - Reports & Export (Phase 44-45):**
+- `GET /api/v1/client-portal/projects/:id/summary` - Project summary report
+- `POST /api/v1/client-portal/projects/:id/export` - Export project archive
+- `GET /api/v1/client-portal/projects/:id/timeline` - Project timeline
+- `GET /api/v1/client-portal/dashboard` - Client portal overview
+
 ---
 
 ## 9. Success Metrics & KPIs
@@ -1376,6 +1951,8 @@ CREATE TABLE campaign_analytics (
 - Comment-to-approval ratio
 - Reminder response rate (target: 25%+ respond after reminder)
 - Campaign conversion rate (target: 10%+ open proposals from campaigns)
+- Client portal adoption rate (target: 60%+ of clients use portal)
+- Multi-project client percentage (target: 30%+ manage multiple projects)
 
 **User Adoption:**
 - Active organizations (target: 100+ by Q2 2026)
@@ -1405,6 +1982,9 @@ CREATE TABLE campaign_analytics (
 - Report Generation: <5 seconds
 - Campaign Delivery: >98% success rate
 - Reminder Delivery: >95% success rate
+- Media Upload/Processing: <30 seconds for 100MB files
+- OCR Processing: <5 seconds per document
+- Project Dashboard Load: <3 seconds for 100+ items
 
 **Quality Metrics:**
 - Test Coverage: 80%+ (target)
@@ -1509,8 +2089,62 @@ CREATE TABLE campaign_analytics (
 - A/B testing capabilities
 - Cost: $500-1,500/month (WhatsApp API + messaging costs scale with usage)
 
-**Total Future Timeline:** 43 weeks (~11 months)
-**Total Future Operational Cost:** $3,500-7,900/month (scales with user growth)
+**Phase 44-45: Client Portal & Project Management Hub (Q4 2026 - Q1 2027 - 8 weeks)**
+
+**Phase 44: Core Portal (5 weeks)**
+- Project creation and management
+- Proposal organization and linking
+- Media library with upload/tagging
+- Financial document management
+- Basic reporting and dashboards
+- Cost: $200-500/month (storage + OCR)
+
+**Phase 45: Advanced Features (3 weeks)**
+- Multi-user collaboration and permissions
+- Obligations and schedule tracking
+- Complete project memory and audit trail
+- Advanced financial reports and tax documentation
+- Project export and archiving
+- Calendar integration
+- Cost: Additional $100-300/month
+
+**Detailed Implementation (Phase 44-45):**
+
+**Week 1-2: Foundation**
+- Database schema implementation (8 new tables)
+- Project CRUD APIs
+- Basic project dashboard UI
+- Proposal linking functionality
+
+**Week 3-4: Media & Documents**
+- Media upload system (S3/Cloudflare R2)
+- Thumbnail generation and processing
+- Financial document upload
+- OCR integration (Google Vision API/Tesseract)
+
+**Week 5-6: Financial Management**
+- Payment tracking system
+- Budget management
+- Financial reports and charts
+- Tax documentation (NFe support)
+- Export for accountants
+
+**Week 7: Collaboration**
+- Multi-user invitation system
+- Role-based permissions
+- Activity feed and notifications
+- Project notes and commenting
+
+**Week 8: Polish & Integration**
+- Obligations tracker with calendar view
+- Project timeline visualization
+- Complete project export (ZIP archive)
+- Mobile responsiveness
+- Performance optimization
+- Testing and QA
+
+**Total Future Timeline:** 51 weeks (~12.75 months)
+**Total Future Operational Cost:** $3,800-8,700/month (scales with user growth and storage)
 
 ---
 
@@ -1538,6 +2172,12 @@ CREATE TABLE campaign_analytics (
 - **Reminder Cadence:** Scheduled frequency of follow-up messages
 - **WhatsApp Business API:** Official Meta API for business messaging
 - **Opt-in/Opt-out:** User consent management for marketing communications
+- **Client Portal:** Client-facing project management and financial tracking system
+- **Project Folder:** Container for organizing multi-vendor proposals and contracts
+- **NFe:** Nota Fiscal Eletrônica (Brazilian electronic invoice)
+- **OCR:** Optical Character Recognition for extracting text from images
+- **Project Collaborator:** Family member or partner with shared project access
+- **Obligation:** Scheduled task or payment with due date and reminders
 
 ### 12.2 References
 
