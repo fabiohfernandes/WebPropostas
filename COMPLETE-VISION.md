@@ -36,7 +36,7 @@ Target: Families, couples, individuals, businesses managing complex projects
 
 ---
 
-## 📋 Complete Module Inventory (24 Modules Total)
+## 📋 Complete Module Inventory (25 Modules Total)
 
 ### 🔵 SERVICE PROVIDER SIDE (15 Modules)
 
@@ -58,19 +58,20 @@ Target: Families, couples, individuals, businesses managing complex projects
 | 14 | **Tax Module** | 📋 Planned | NFe generation, tax documentation for accounting |
 | 15 | **Registry/Settings** | ✅ Implemented | Company profile, team management, integrations |
 
-### 🟢 CLIENT SIDE (9 Modules)
+### 🟢 CLIENT SIDE (10 Modules)
 
 | # | Module Name | Status | Description |
 |---|-------------|--------|-------------|
 | 1 | **Client Dashboard** | 📋 Phase 44 | Overview of received proposals, active projects, payments |
-| 2 | **Vendor Directory** | 📋 Phase 44 | Save favorite service providers and companies |
-| 3 | **Proposals Inbox** | 📋 Phase 44 | All received proposals in one place |
-| 4 | **Quote Requests** | 📋 Phase 45 | Request quotes from multiple vendors simultaneously |
-| 5 | **Project Folders** | 📋 Phase 44 | Multi-vendor project organization (e.g., home construction) |
-| 6 | **Progress Gallery** | 📋 Phase 44 | Photos/videos from service providers showing work progress |
-| 7 | **Financial Manager** | 📋 Phase 44 | Invoices, receipts, NFe storage, payment tracking |
-| 8 | **Family Collaboration** | 📋 Phase 45 | Multi-user access with role-based permissions |
-| 9 | **Tax & Reports** | 📋 Phase 45 | Tax year summaries, export for accountants |
+| 2 | **Marketplace Search** | 🆕 Phase 46 | **NEW:** Search database of products, services, and sellers across all categories |
+| 3 | **Vendor Directory** | 📋 Phase 44 | Save favorite service providers and companies |
+| 4 | **Proposals Inbox** | 📋 Phase 44 | All received proposals in one place |
+| 5 | **Quote Requests** | 📋 Phase 45 | Request quotes from multiple vendors simultaneously |
+| 6 | **Project Folders** | 📋 Phase 44 | Multi-vendor project organization (e.g., home construction) |
+| 7 | **Progress Gallery** | 📋 Phase 44 | Photos/videos from service providers showing work progress |
+| 8 | **Financial Manager** | 📋 Phase 44 | Invoices, receipts, NFe storage, payment tracking |
+| 9 | **Family Collaboration** | 📋 Phase 45 | Multi-user access with role-based permissions |
+| 10 | **Tax & Reports** | 📋 Phase 45 | Tax year summaries, export for accountants |
 
 ---
 
@@ -263,6 +264,111 @@ Client Portal Project Folder: "Casa Nova - 2026"
 - Payment history
 - Complete audit trail
 - Export entire project archive (ZIP)
+
+#### **7. 🆕 Marketplace Search & Discovery**
+**Status:** Phase 46 (NEW Feature - Presentation Priority)
+
+**Purpose:** Transform WebPropostas from a "receive proposals" platform into an active "discover and request" marketplace where clients can search for products, services, sellers, and campaigns across all categories.
+
+**Search Categories:**
+
+**🏗️ Construction & Home Services:**
+- Contractors (home construction, renovation, remodeling)
+- Architects (residential, commercial, interior design)
+- Engineers (civil, structural, electrical)
+- Painters, electricians, plumbers, masons
+- Landscapers, gardeners
+- Interior designers, decorators
+
+**🏠 Real Estate:**
+- Apartments for sale (filter by: region, price range, size, new/used)
+- Houses for sale
+- Commercial properties
+- Land/lots
+- Rental properties
+- Real estate agents on platform
+
+**🚗 Vehicles:**
+- Cars for sale (filter by: brand, model, year, price, condition)
+- Motorcycles, trucks, boats
+- Car sellers/dealerships on platform
+- Vehicle inspection services
+- Financing options
+
+**👨‍🏫 Personal Services:**
+- Education: English teachers, music lessons, tutoring, swimming instructors
+- Home services: Cooks, cleaners, nannies, personal trainers
+- Professional services: Accountants, lawyers, consultants
+- Health/wellness: Nutritionists, therapists, massage
+
+**🎉 Event Services:**
+- Wedding planners
+- Event venues
+- Catering services
+- Photographers, videographers
+- DJs, musicians, entertainment
+
+**Search Functionality:**
+- Advanced filters (location, price range, rating, availability)
+- Map view (see nearby services)
+- Sort by: relevance, price, rating, distance
+- Save favorite listings
+- Compare multiple vendors
+- Request quotes directly from search results
+- View vendor profiles with past proposals and reviews
+
+**Listing Types:**
+1. **Service Listings:** Providers advertise their services (e.g., "Home Painting - Florianópolis")
+2. **Product Listings:** Physical products for sale (e.g., "3-bedroom apartment - R$ 450K")
+3. **Campaign Listings:** Active sales campaigns (e.g., "Summer discount - 20% off landscaping")
+
+**Client Journey:**
+```
+1. Client needs home renovation
+   ↓
+2. Goes to Client Portal → Marketplace Search
+   ↓
+3. Searches "contractor Florianópolis"
+   ↓
+4. Views 25 results with ratings, photos, price ranges
+   ↓
+5. Filters by: rating ≥ 4.5 stars, budget R$ 50K-150K
+   ↓
+6. Clicks 5 profiles, saves 3 favorites
+   ↓
+7. Clicks "Request Quote" on 3 contractors
+   ↓
+8. Fills single form → sent to all 3 vendors
+   ↓
+9. Vendors send proposals → appear in Client Portal Inbox
+   ↓
+10. Client compares, accepts best one
+   ↓
+11. Project begins, tracked in Project Folder
+```
+
+**Business Model Impact:**
+- **Network Effect:** More listings = more clients searching = more value for providers
+- **Paid Listings:** Premium placement in search results (R$ 47/month per listing)
+- **Lead Generation Revenue:** Charge providers R$ 5-15 per quote request received
+- **Marketplace Commission:** 2-5% transaction fee on closed deals (future)
+
+**Database Requirements:**
+- New table: `marketplace_listings` (10,000+ records expected)
+- Fields: title, category, subcategory, description, price_range, location, provider_id, status, featured, created_at
+- Search index: Elasticsearch or PostgreSQL full-text search
+- Geolocation: lat/long for map view and proximity search
+
+**Competitive Advantage:**
+Unlike generic marketplaces (GetNinjas, Habitissimo), WebPropostas offers:
+1. **Integrated Workflow:** Search → Quote → Proposal → Project Management → Payment → Progress Tracking (all in one platform)
+2. **Trust & Transparency:** Every vendor has portfolio of proposals already sent through platform
+3. **Unified Project View:** Hire multiple vendors for same project, manage everything together
+4. **Proposal Quality:** Vendors using WebPropostas create professional proposals (better than competitors)
+
+**Implementation Priority:**
+- For presentation: Create placeholder marketplace search page with category cards, search bar, sample listings
+- Post-presentation: Build full search functionality, provider listing creation, quote request system
 
 ---
 

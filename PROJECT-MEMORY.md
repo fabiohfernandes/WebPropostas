@@ -22,11 +22,11 @@
 **Original Vision (Phases 1-19):**
 AI-driven commercial proposal platform for creating, sharing, and closing proposals.
 
-**Current Vision (Phases 20-45):**
-Complete lifecycle project management ecosystem that goes beyond proposals to become the single source of truth for multi-vendor projects.
+**Current Vision (Phases 20-46):**
+Complete lifecycle project management ecosystem + marketplace discovery platform. Beyond proposals to become the single source of truth for multi-vendor projects with built-in service discovery.
 
 **Value Proposition:**
-Transform how Brazilian businesses and families manage complex projects - from initial proposal to final delivery - with complete financial tracking, media documentation, and multi-user collaboration.
+Transform how Brazilian businesses and families discover services, receive proposals, and manage complex projects - from marketplace search to final delivery - with complete financial tracking, media documentation, and multi-user collaboration.
 
 ---
 
@@ -64,6 +64,7 @@ Transform how Brazilian businesses and families manage complex projects - from i
 📝 **Phase 42:** Automated follow-up system (3 weeks)
 📝 **Phase 43:** Distribution lists and campaigns (5 weeks)
 📝 **Phase 44-45:** Client Portal & Project Management Hub (8 weeks) ⭐ **MAJOR FEATURE**
+📝 **Phase 46:** 🆕 Marketplace Search & Discovery (4 weeks) ⭐ **REVOLUTIONARY FEATURE**
 
 ---
 
@@ -376,10 +377,65 @@ railway logs
 ✅ Cross-industry application matrix
 ✅ Database schema for portal features (8 new tables)
 ✅ API endpoint design (83 new endpoints)
+✅ 🆕 Marketplace Search & Discovery (Phase 46) - JANUARY 6, 2025
 
 ---
 
 ## Recent Updates & Changes
+
+### January 6, 2025 - 🚀 MARKETPLACE MODULE ADDED (MAJOR EXPANSION)
+
+**Decision:** Transform WebPropostas from "receive proposals" platform into full marketplace where clients can actively discover and request services.
+
+**What Changed:**
+1. **New Module:** Marketplace Search & Discovery (Phase 46)
+   - Product/service/campaign search across all categories
+   - Advanced filtering (location, price, rating, availability)
+   - Provider profiles with portfolios and reviews
+   - Quote request system (one form → multiple providers)
+   - Map view with geolocation
+   - Save/favorite listings
+   - Integrated workflow: Search → Quote → Proposal → Project → Payment
+
+2. **Database Schema:** 6 new tables designed
+   - `marketplace_categories` (hierarchical)
+   - `marketplace_listings` (core entity - 10,000+ expected)
+   - `marketplace_quote_requests` (lead generation)
+   - `marketplace_reviews` (trust & transparency)
+   - `marketplace_saved_listings` (user favorites)
+   - `marketplace_listing_views` (analytics)
+   - See: `MARKETPLACE-SCHEMA.md` for complete specification
+
+3. **Search Categories Defined:**
+   - 🏗️ Construction & Home Services (contractors, architects, engineers)
+   - 🏠 Real Estate (apartments, houses, commercial properties)
+   - 🚗 Vehicles (cars, motorcycles, dealerships)
+   - 👨‍🏫 Personal Services (teachers, cooks, trainers, professionals)
+   - 🎉 Event Services (weddings, catering, photographers)
+
+4. **Business Model Impact:**
+   - Premium listings: R$ 47/month
+   - Lead generation: R$ 5-15 per quote request
+   - Featured placement: R$ 97/month
+   - Future marketplace commission: 2-5%
+   - Strong network effects (more providers = more clients = more value)
+
+5. **Documentation Created:**
+   - `COMPLETE-VISION.md` updated (Module #2 on client side)
+   - `MARKETPLACE-SCHEMA.md` (complete database design, 600+ lines)
+   - `PRESENTATION-PLAN.md` updated (new marketplace demo section)
+   - Presentation page specifications with ASCII mockups
+   - Demo script updated (15 min client journey now includes marketplace)
+
+**Why This Is Revolutionary:**
+- Only platform offering: Search → Quote → Proposal → Project Management → Payment tracking (all in one)
+- Unlike GetNinjas/Habitissimo: Integrated proposal quality + project management
+- Network effect moat: More providers = better search = more clients = more value
+- Competitive advantage: Every provider has verified portfolio from platform proposals
+
+**Implementation Priority:**
+- For presentation (Jan 13): Placeholder page with sample listings
+- Post-presentation: Full search, filters, quote requests, reviews
 
 ### January 6, 2025 - Vision Document Translation
 - Translated visão_geral.md (Portuguese) to overview.md (English)

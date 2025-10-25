@@ -129,9 +129,12 @@ Enhance what exists:
 - Build Client Portal Dashboard
 - Build Project Folder View (HERO PAGE)
 - Build Proposals Inbox
+- Build Financial Manager
+- 🆕 Build Marketplace Search (NEW REVOLUTIONARY FEATURE)
 - Add demo data for "Casa Nova" project
+- Add demo marketplace listings (25+)
 
-**Deliverable:** Complete client-side flow working
+**Deliverable:** Complete client-side flow working with marketplace
 
 ### **Day 5 (Jan 10): Service Provider Enhancements**
 - Enhance service provider dashboard
@@ -385,6 +388,239 @@ Tax Year Summary:
 
 ---
 
+#### **5. 🆕 Marketplace Search (/client-portal/marketplace)** ⭐⭐⭐ NEW!
+
+**Purpose:** REVOLUTIONARY FEATURE - Discover and request services/products
+
+**This transforms WebPropostas from "receive proposals" to "actively discover and request"**
+
+**Layout:**
+```
+Hero Section:
+┌────────────────────────────────────────────────────────┐
+│ 🔍 Encontre o Profissional Perfeito                   │
+│                                                         │
+│ [Search: "procure por profissionais, serviços..."]    │
+│                                                         │
+│ Categorias Populares:                                  │
+│ [🏗️ Construção] [🏠 Imóveis] [🚗 Veículos]           │
+│ [👨‍🏫 Serviços] [🎉 Eventos]                           │
+└────────────────────────────────────────────────────────┘
+
+Featured Listings:
+┌──────────────────┬──────────────────┬──────────────────┐
+│ 🏗️ Construções   │ 🎨 Designer      │ 🪑 Móveis Custom │
+│ Silva            │ Maria Oliveira   │ Marcenaria XYZ   │
+│                  │                  │                  │
+│ Florianópolis    │ São Paulo        │ Curitiba         │
+│ R$ 50K - 500K    │ R$ 10K - 80K     │ R$ 5K - 50K      │
+│ ⭐ 4.8 (15)      │ ⭐ 4.9 (23)      │ ⭐ 4.7 (12)      │
+│                  │                  │                  │
+│ [Ver Perfil] →   │ [Ver Perfil] →   │ [Ver Perfil] →   │
+└──────────────────┴──────────────────┴──────────────────┘
+
+Search Results (after search):
+┌────────────────────────────────────────────────────────┐
+│ Search: "construtor florianópolis" (25 resultados)    │
+│                                                         │
+│ [Filter: ▼ Localização] [▼ Faixa de Preço]           │
+│          [▼ Avaliação] [▼ Disponibilidade]            │
+│                                                         │
+│ Sort: [Relevância] [Avaliação] [Preço] [Distância]   │
+└────────────────────────────────────────────────────────┘
+
+Listing Cards:
+┌────────────────────────────────────────────────────────┐
+│ 🏗️ Construções Silva - Especialistas em Reformas      │
+│ ⭐ 4.8 (15 avaliações) | Florianópolis, SC            │
+│                                                         │
+│ [📷 Photo Gallery: 3 images preview]                   │
+│                                                         │
+│ • CREA-SC Licenciado | • 15 anos experiência           │
+│ • Equipe própria de 12 profissionais                   │
+│ • Orçamento gratuito                                   │
+│                                                         │
+│ Faixa de preço: R$ 50.000 - R$ 500.000 por projeto    │
+│ Tempo médio de resposta: 2 horas                       │
+│                                                         │
+│ [Ver Perfil Completo] [💾 Salvar] [💬 Solicitar Orçamento] │
+├────────────────────────────────────────────────────────┤
+│ 🏗️ ABC Builders - Construção Residencial e Comercial  │
+│ ⭐ 4.9 (28 avaliações) | Florianópolis, SC            │
+│                                                         │
+│ [📷 Photo Gallery: 3 images preview]                   │
+│                                                         │
+│ • Especialistas em casas de luxo                        │
+│ • Projetos de R$ 100K até R$ 2M                        │
+│ • Garantia de 5 anos                                   │
+│                                                         │
+│ Faixa de preço: R$ 100.000 - R$ 2.000.000             │
+│ Tempo médio de resposta: 1 hora                        │
+│                                                         │
+│ [Ver Perfil Completo] [💾 Salvar] [💬 Solicitar Orçamento] │
+└────────────────────────────────────────────────────────┘
+
+Map View (toggle):
+┌────────────────────────────────────────────────────────┐
+│ 🗺️ [Map showing all 25 results with pins]            │
+│    - Click pin to see provider                         │
+│    - Adjust radius: [10km] [20km] [50km] [100km]      │
+└────────────────────────────────────────────────────────┘
+```
+
+**Listing Detail Page (/client-portal/marketplace/listings/[id]):**
+```
+Provider Profile:
+┌────────────────────────────────────────────────────────┐
+│ Construções Silva                                      │
+│ ⭐ 4.8 (15 avaliações) | Florianópolis, SC            │
+│                                                         │
+│ [Hero Image: Construction site photo]                  │
+│                                                         │
+│ Sobre:                                                 │
+│ Empresa especializada em construção civil, reformas    │
+│ residenciais e comerciais com mais de 15 anos de      │
+│ experiência. Equipe qualificada e projetos sob medida.│
+│                                                         │
+│ Características:                                       │
+│ • CREA-SC Licenciado                                   │
+│ • Equipe própria de 12 profissionais                   │
+│ • Garantia de 5 anos                                   │
+│ • Orçamento gratuito                                   │
+│ • Financiamento disponível                             │
+│                                                         │
+│ Serviços:                                              │
+│ ☑ Construção civil    ☑ Reformas residenciais         │
+│ ☑ Reformas comerciais ☑ Ampliações                    │
+│ ☑ Regularização       ☑ Manutenção                    │
+│                                                         │
+│ Área de atendimento: 50 km de Florianópolis           │
+│                                                         │
+│ [💬 Solicitar Orçamento] [💾 Salvar] [📤 Compartilhar] │
+└────────────────────────────────────────────────────────┘
+
+Portfolio:
+┌────────────────────────────────────────────────────────┐
+│ Projetos Anteriores (12 projetos)                     │
+│                                                         │
+│ [Photo Grid: 12 high-quality project photos]          │
+│ - Casa Jurerê Internacional (R$ 850K)                  │
+│ - Reforma Comercial Centro (R$ 120K)                  │
+│ - Construção Campeche (R$ 450K)                       │
+└────────────────────────────────────────────────────────┘
+
+Reviews Section:
+┌────────────────────────────────────────────────────────┐
+│ Avaliações (15)                                        │
+│                                                         │
+│ ⭐⭐⭐⭐⭐ João Fernandes | 2 meses atrás                │
+│ "Excelente trabalho! Reformaram minha casa com muita  │
+│ qualidade e dentro do prazo. Recomendo!"              │
+│ ───────────────────────────────────────────────────────│
+│ ⭐⭐⭐⭐⭐ Maria Santos | 4 meses atrás                  │
+│ "Profissionais sérios e dedicados. Construíram minha  │
+│ casa dos sonhos. Valeu cada centavo!"                 │
+│ ───────────────────────────────────────────────────────│
+│ ⭐⭐⭐⭐☆ Pedro Silva | 6 meses atrás                   │
+│ "Bom trabalho, pequeno atraso na entrega mas          │
+│ resolveram bem."                                       │
+│                                                         │
+│ [Ver todas as 15 avaliações →]                        │
+└────────────────────────────────────────────────────────┘
+
+Quote Request Form (Modal or Section):
+┌────────────────────────────────────────────────────────┐
+│ Solicitar Orçamento - Construções Silva               │
+│                                                         │
+│ Seu Nome: [João Silva]                                │
+│ Email: [joao@email.com]                               │
+│ Telefone: [(48) 99999-9999]                           │
+│                                                         │
+│ Tipo de Projeto:                                       │
+│ [▼ Selecione: Construção Nova / Reforma / Ampliação] │
+│                                                         │
+│ Localização do Projeto:                               │
+│ [Florianópolis, SC - Bairro Jurerê]                  │
+│                                                         │
+│ Descrição do Projeto:                                 │
+│ [Textarea: Descreva seu projeto em detalhes...]       │
+│                                                         │
+│ Orçamento Estimado:                                    │
+│ [R$ 100.000] até [R$ 200.000]                         │
+│                                                         │
+│ Data Desejada de Início:                              │
+│ [June 2025]                                           │
+│                                                         │
+│ Anexos (opcional):                                     │
+│ [Upload: plantas, fotos, documentos...]               │
+│                                                         │
+│ [✉️ Enviar Solicitação]                               │
+│                                                         │
+│ ✅ Você receberá uma proposta profissional via email  │
+│ ✅ Tempo médio de resposta: 2 horas                   │
+└────────────────────────────────────────────────────────┘
+```
+
+**Search Flow Journey:**
+```
+1. Client needs home renovation
+   ↓
+2. Goes to Client Portal → Marketplace Search
+   ↓
+3. Searches "construtor florianópolis"
+   ↓
+4. Sees 25 results with ratings, photos, prices
+   ↓
+5. Filters: rating ≥ 4.5, budget R$ 50K-150K
+   ↓
+6. Views 5 profiles, saves 3 favorites
+   ↓
+7. Clicks "Solicitar Orçamento" on 3 providers
+   ↓
+8. Fills quote request form once, sent to all 3
+   ↓
+9. Providers receive quote request in their dashboard
+   ↓
+10. Providers create and send professional proposals
+   ↓
+11. Client receives proposals in Proposals Inbox
+   ↓
+12. Client compares and accepts best proposal
+   ↓
+13. Proposal added to Project Folder
+```
+
+**Components Needed:**
+- SearchBar (with autocomplete)
+- CategoryCard (navigation cards)
+- ListingCard (search results)
+- ListingDetailView (full profile)
+- FilterPanel (advanced filters)
+- ReviewCard (individual review display)
+- QuoteRequestForm (modal/page)
+- MapView (with provider pins)
+- PhotoGallery (portfolio display)
+- SaveButton (favorite functionality)
+
+**Why This Is Revolutionary:**
+1. **Network Effect:** More providers listing = more clients searching = more value
+2. **Integrated Workflow:** Search → Quote → Proposal → Project → Payment (all in one platform)
+3. **Trust & Transparency:** Every provider has portfolio and reviews from actual clients
+4. **Revenue Opportunity:**
+   - Premium listings: R$ 47/month
+   - Lead generation: R$ 5-15 per quote request
+   - Featured placement: R$ 97/month
+   - Marketplace commission: 2-5% (future)
+
+**Demo Data Needed:**
+- 5 categories (Construction, Real Estate, Vehicles, Services, Events)
+- 25+ sample listings across categories
+- 15+ sample reviews with realistic Brazilian names
+- 50+ portfolio photos
+- Sample quote request flow
+
+---
+
 ### 🔵 **SERVICE PROVIDER SIDE - ENHANCEMENTS**
 
 #### **1. Enhanced Dashboard (/dashboard)**
@@ -443,6 +679,15 @@ All Modules:
 10. **ModuleCard** - Shows module icon + name + status
 11. **PlaceholderPage** - "EM DESENVOLVIMENTO" template
 12. **RoleSwitcher** - Toggle between provider/client view
+13. 🆕 **SearchBar** - Marketplace search with autocomplete
+14. 🆕 **CategoryCard** - Category navigation cards
+15. 🆕 **ListingCard** - Marketplace listing in search results
+16. 🆕 **ListingDetailView** - Full provider profile
+17. 🆕 **FilterPanel** - Advanced search filters
+18. 🆕 **ReviewCard** - Individual review display
+19. 🆕 **QuoteRequestForm** - Quote request modal/page
+20. 🆕 **MapView** - Map with provider location pins
+21. 🆕 **SaveButton** - Favorite/save listing functionality
 
 ### **Reuse Existing:**
 - StatCard
@@ -471,17 +716,21 @@ All Modules:
 6. **Track** - Real-time analytics
 7. **Client Accepts** - Notification appears
 
-### **Part 2: Client Journey (12 min)**
+### **Part 2: Client Journey (15 min)**
 
 1. **Client Receives Link** - Opens beautiful hosted proposal
 2. **Accepts Proposal** - Goes to client portal (GREEN THEME SWITCH!)
 3. **Client Portal Dashboard** - "Now the client sees all their projects"
-4. **Create Project Folder** - "Casa Nova - Florianópolis"
-5. **Add Multiple Vendors** - Show 12 vendors in one project
-6. **View Financials** - R$ 287K spent across all vendors
-7. **See Progress Photos** - Builder uploaded 150 photos
-8. **Invite Spouse** - Multi-user collaboration
-9. **Export Tax Summary** - For accountant
+4. 🆕 **Discover Marketplace** - "Need more vendors? Search our marketplace!"
+5. 🆕 **Search for Services** - "construtor florianópolis" → 25 results
+6. 🆕 **Filter & Compare** - Rating ≥ 4.5, R$ 50K-150K
+7. 🆕 **Request Quotes** - Send to 3 providers with one form
+8. **Create Project Folder** - "Casa Nova - Florianópolis"
+9. **Add Multiple Vendors** - Show 12 vendors in one project
+10. **View Financials** - R$ 287K spent across all vendors
+11. **See Progress Photos** - Builder uploaded 150 photos
+12. **Invite Spouse** - Multi-user collaboration
+13. **Export Tax Summary** - For accountant
 
 ### **Part 3: The Vision (6 min)**
 
