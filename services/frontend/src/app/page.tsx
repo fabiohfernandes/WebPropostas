@@ -141,34 +141,73 @@ export default function LandingPage() {
 
             {/* Headline */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              Transforme Propostas em{' '}
+              A Plataforma Completa que{' '}
               <span className="bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent">
-                Contratos
+                Conecta
               </span>
               <br />
-              com Inteligência Artificial
+              Profissionais e Clientes
             </h1>
 
             {/* Subheadline */}
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-              Plataforma completa para criar, enviar e gerenciar propostas comerciais.
-              Aumente sua taxa de conversão e feche mais negócios.
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
+              WebPropostas oferece dois portais integrados: para <strong>prestadores de serviço</strong> criarem
+              propostas profissionais com IA e para <strong>clientes</strong> encontrarem e gerenciarem fornecedores.
             </p>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-              <Link href="/auth/register">
-                <Button size="lg" leftIcon={<RocketLaunchIcon className="w-5 h-5" />}>
-                  Começar Gratuitamente
-                </Button>
-              </Link>
-              <Button
-                size="lg"
-                variant="outline"
-                leftIcon={<DocumentTextIcon className="w-5 h-5" />}
-              >
-                Ver Demonstração
-              </Button>
+            {/* Dual Portal CTAs */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-16">
+              {/* Provider Portal CTA */}
+              <Card variant="glass" className="border-2 border-blue-200 hover:border-blue-400 transition-colors">
+                <div className="text-center p-6">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl mb-4">
+                    <DocumentTextIcon className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Portal do Prestador</h3>
+                  <p className="text-gray-600 mb-6">
+                    Crie propostas profissionais com IA, gerencie clientes, contratos e financeiro em um só lugar.
+                  </p>
+                  <Link href="/dashboard">
+                    <Button
+                      size="lg"
+                      fullWidth
+                      leftIcon={<RocketLaunchIcon className="w-5 h-5" />}
+                    >
+                      Sou Prestador de Serviço
+                    </Button>
+                  </Link>
+                  <p className="text-sm text-gray-500 mt-3">
+                    15 módulos profissionais • Templates • CRM • Analytics
+                  </p>
+                </div>
+              </Card>
+
+              {/* Client Portal CTA */}
+              <Card variant="glass" className="border-2 border-green-200 hover:border-green-400 transition-colors">
+                <div className="text-center p-6">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl mb-4">
+                    <UserGroupIcon className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Portal do Cliente</h3>
+                  <p className="text-gray-600 mb-6">
+                    Encontre profissionais qualificados, compare propostas e gerencie seus projetos de forma eficiente.
+                  </p>
+                  <Link href="/marketplace">
+                    <Button
+                      size="lg"
+                      fullWidth
+                      variant="secondary"
+                      leftIcon={<ChartBarIcon className="w-5 h-5" />}
+                      className="bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700"
+                    >
+                      Quero Contratar um Serviço
+                    </Button>
+                  </Link>
+                  <p className="text-sm text-gray-500 mt-3">
+                    Marketplace • Gestão de Projetos • Área Financeira
+                  </p>
+                </div>
+              </Card>
             </div>
 
             {/* Hero Animation/Preview - Placeholder */}
@@ -183,15 +222,122 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Platform Overview - 25 Modules */}
+      <section className="py-20 bg-gradient-to-br from-blue-50 via-white to-green-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Ecossistema Completo em 25 Módulos
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Uma plataforma robusta com módulos integrados para cobrir todas as necessidades de prestadores e clientes
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Provider Modules */}
+            <Card variant="glass" className="border-l-4 border-blue-500">
+              <div className="p-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                    <DocumentTextIcon className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900">Portal do Prestador</h3>
+                    <p className="text-sm text-gray-600">15 Módulos Profissionais</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {[
+                    'Dashboard de Negócios',
+                    'CRM de Clientes',
+                    'Gestão de Propostas',
+                    'Editor de Templates',
+                    'Campanhas Automatizadas',
+                    'Marketplace Listings',
+                    'Contratos e E-Signature',
+                    'Financeiro e NFe',
+                    'Analytics Avançado',
+                    'Configurações da Empresa',
+                    'Branding Personalizado',
+                    'Integrações (APIs)',
+                    'Cobrança e Planos',
+                    'Central de Ajuda',
+                    'Relatórios Personalizados',
+                  ].map((module, index) => (
+                    <div key={index} className="flex items-start gap-2">
+                      <CheckCircleIcon className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-sm text-gray-700">{module}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Card>
+
+            {/* Client Modules */}
+            <Card variant="glass" className="border-l-4 border-green-500">
+              <div className="p-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                    <UserGroupIcon className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900">Portal do Cliente</h3>
+                    <p className="text-sm text-gray-600">10 Módulos Integrados</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {[
+                    'Dashboard de Projetos',
+                    'Marketplace de Serviços',
+                    'Caixa de Propostas',
+                    'Gestão de Projetos',
+                    'Fornecedores Favoritos',
+                    'Financeiro Pessoal',
+                    'Configurações de Perfil',
+                    'Colaboração em Família',
+                    'Notificações Personalizadas',
+                    'Suporte ao Cliente',
+                  ].map((module, index) => (
+                    <div key={index} className="flex items-start gap-2">
+                      <CheckCircleIcon className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-sm text-gray-700">{module}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-gray-600 mb-6">
+              Todos os módulos se integram perfeitamente para criar uma experiência completa
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link href="/dashboard">
+                <Button size="lg" variant="outline">
+                  Explorar Portal do Prestador
+                </Button>
+              </Link>
+              <Link href="/marketplace">
+                <Button size="lg" variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
+                  Explorar Portal do Cliente
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Feature Showcase */}
       <section className="py-20 bg-white/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Tudo que você precisa em um só lugar
+              Recursos Poderosos em Ambos os Portais
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Ferramentas poderosas para criar propostas profissionais em minutos
+              Tecnologia de ponta para criar propostas profissionais e gerenciar projetos
             </p>
           </div>
 
