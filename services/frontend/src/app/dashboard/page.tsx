@@ -20,6 +20,16 @@ import {
   CurrencyDollarIcon
 } from '@heroicons/react/24/outline';
 import { useAuthStore } from '../../store/auth';
+import {
+  Button,
+  Card,
+  StatCard,
+  Badge,
+  Table,
+  TableCell,
+  Modal,
+  Skeleton
+} from '@/components/UI';
 
 // Types
 interface DashboardStats {
@@ -242,9 +252,9 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="glass-card-provider border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div>
@@ -254,12 +264,14 @@ export default function DashboardPage() {
               </p>
             </div>
             <div className="flex items-center space-x-3">
-              <Link
-                href="/proposals/create"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center text-sm font-medium transition-colors"
-              >
-                <PlusIcon className="h-5 w-5 mr-2" />
-                Nova Proposta
+              <Link href="/proposals/create">
+                <Button
+                  variant="primary"
+                  theme="provider"
+                  leftIcon={<PlusIcon className="h-5 w-5" />}
+                >
+                  Nova Proposta
+                </Button>
               </Link>
             </div>
           </div>
@@ -267,114 +279,88 @@ export default function DashboardPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Cards */}
-        {stats && (
+        {/* Stats Cards with Glassmorphism */}
+        {loading ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-            <div className="bg-white rounded-lg shadow-sm border p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Total de Propostas</p>
-                  <p className="text-2xl font-semibold text-gray-900">{stats.proposals.total}</p>
-                </div>
-                <DocumentTextIcon className="h-8 w-8 text-blue-600" />
-              </div>
-              <div className="mt-4 flex items-center space-x-4">
-                <span className="text-xs text-gray-500">
-                  {stats.proposals.open} abertas • {stats.proposals.closed} fechadas
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm border p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Visualizações</p>
-                  <p className="text-2xl font-semibold text-gray-900">{stats.activity.views}</p>
-                </div>
-                <EyeIcon className="h-8 w-8 text-green-600" />
-              </div>
-              <div className="mt-4">
-                <span className="text-xs text-gray-500">
-                  {stats.activity.uniqueVisitors} visitantes únicos
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm border p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Receita Total</p>
-                  <p className="text-2xl font-semibold text-gray-900">
-                    {new Intl.NumberFormat('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL'
-                    }).format(stats.revenue.total)}
-                  </p>
-                </div>
-                <CurrencyDollarIcon className="h-8 w-8 text-purple-600" />
-              </div>
-              <div className="mt-4">
-                <span className="text-xs text-gray-500">
-                  {new Intl.NumberFormat('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL'
-                  }).format(stats.revenue.closed)} fechadas
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm border p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Taxa de Conversão</p>
-                  <p className="text-2xl font-semibold text-gray-900">
-                    {stats.activity.conversionRate.toFixed(1)}%
-                  </p>
-                </div>
-                <ChartBarIcon className="h-8 w-8 text-orange-600" />
-              </div>
-              <div className="mt-4">
-                <span className="text-xs text-gray-500">Últimos 30 dias</span>
-              </div>
-            </div>
+            {[1, 2, 3, 4].map((i) => (
+              <Skeleton key={i} variant="rectangular" width="100%" height={140} />
+            ))}
+          </div>
+        ) : stats && (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+            <StatCard
+              label="Total de Propostas"
+              value={stats.proposals.total}
+              icon={<DocumentTextIcon className="h-6 w-6" />}
+              variant="primary"
+            />
+            <StatCard
+              label="Visualizações"
+              value={stats.activity.views}
+              icon={<EyeIcon className="h-6 w-6" />}
+              variant="success"
+              trend={{
+                value: 12,
+                isPositive: true
+              }}
+            />
+            <StatCard
+              label="Receita Total"
+              value={new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+              }).format(stats.revenue.total)}
+              icon={<CurrencyDollarIcon className="h-6 w-6" />}
+              variant="warning"
+            />
+            <StatCard
+              label="Taxa de Conversão"
+              value={`${stats.activity.conversionRate.toFixed(1)}%`}
+              icon={<ChartBarIcon className="h-6 w-6" />}
+              variant="default"
+              trend={{
+                value: 5,
+                isPositive: true
+              }}
+            />
           </div>
         )}
 
         {/* Recent Comments */}
         {stats?.recentComments && stats.recentComments.length > 0 && (
-          <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
-            <div className="flex items-center mb-4">
-              <ChatBubbleLeftRightIcon className="h-5 w-5 text-gray-400 mr-2" />
-              <h2 className="text-lg font-semibold text-gray-900">Comentários Recentes</h2>
-            </div>
+          <Card
+            title="Comentários Recentes"
+            variant="glass-provider"
+            theme="provider"
+            className="mb-8"
+          >
             <div className="space-y-3">
               {stats.recentComments.slice(0, 3).map((comment, index) => (
-                <div key={index} className="p-3 bg-gray-50 rounded-lg">
+                <div key={index} className="p-3 glass-provider rounded-lg">
                   <p className="text-sm text-gray-800">{comment.comment_text}</p>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-600 mt-1">
                     <span className="font-medium">{comment.client_name}</span> em {comment.proposal_name} •{' '}
                     {new Date(comment.created_at).toLocaleString('pt-BR')}
                   </p>
                 </div>
               ))}
             </div>
-          </div>
+          </Card>
         )}
 
         {/* Proposals Table */}
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="px-6 py-4 border-b">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Propostas Recentes</h2>
-              <Link
-                href="/proposals"
-                className="text-sm text-blue-600 hover:text-blue-700 font-medium"
-              >
+        <Card
+          title="Propostas Recentes"
+          variant="glass-provider"
+          theme="provider"
+          headerAction={
+            <Link href="/proposals">
+              <Button variant="ghost" theme="provider" size="sm">
                 Ver todas
-              </Link>
-            </div>
-          </div>
-
+              </Button>
+            </Link>
+          }
+        >
           {proposals.length === 0 ? (
             <div className="p-12 text-center">
               <DocumentTextIcon className="mx-auto h-12 w-12 text-gray-400" />
@@ -383,230 +369,203 @@ export default function DashboardPage() {
                 Comece criando sua primeira proposta.
               </p>
               <div className="mt-6">
-                <Link
-                  href="/proposals/create"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors inline-flex items-center"
-                >
-                  <PlusIcon className="h-4 w-4 mr-2" />
-                  Criar Primeira Proposta
+                <Link href="/proposals/create">
+                  <Button variant="primary" theme="provider" leftIcon={<PlusIcon className="h-4 w-4" />}>
+                    Criar Primeira Proposta
+                  </Button>
                 </Link>
               </div>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Proposta
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Cliente
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Valor
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Data
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Ações
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {proposals.map((proposal) => (
-                    <tr
-                      key={proposal.id}
-                      className="hover:bg-gray-50 transition-colors cursor-pointer"
-                      onClick={() => router.push(`/proposals/${proposal.id}/edit`)}
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          {getStatusIcon(proposal.status)}
-                          <div className="ml-3">
-                            <div className="text-sm font-medium text-gray-900">
-                              {proposal.proposal_name}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              {proposal.job_name}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{proposal.client_name}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-semibold text-gray-900">
-                          {proposal.proposal_value > 0 ? (
-                            new Intl.NumberFormat('pt-BR', {
-                              style: 'currency',
-                              currency: 'BRL'
-                            }).format(proposal.proposal_value)
-                          ) : (
-                            '-'
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {getStatusBadge(proposal.status)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(proposal.created_at).toLocaleDateString('pt-BR')}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex items-center space-x-2" onClick={(e) => e.stopPropagation()}>
-                          <button
-                            onClick={() => copyProposalLink(proposal.public_token)}
-                            className="text-blue-600 hover:text-blue-900 transition-colors"
-                            title="Copiar link"
-                          >
-                            <ShareIcon className="h-4 w-4" />
-                          </button>
-
-                          <Link
-                            href={`/proposals/${proposal.id}/edit`}
-                            className="text-gray-600 hover:text-gray-900 transition-colors"
-                            title="Editar"
-                          >
-                            <PencilIcon className="h-4 w-4" />
-                          </Link>
-
-                          <button
-                            onClick={() => {
-                              setSelectedProposal(selectedProposal === proposal.id ? null : proposal.id);
-                              if (selectedProposal !== proposal.id) {
-                                loadProposalAnalytics(proposal.id);
-                              }
-                            }}
-                            className="text-green-600 hover:text-green-900 transition-colors"
-                            title="Ver analytics"
-                          >
-                            <ChartBarIcon className="h-4 w-4" />
-                          </button>
-
-                          <button
-                            onClick={() => deleteProposal(proposal.id)}
-                            className="text-red-600 hover:text-red-900 transition-colors"
-                            title="Excluir"
-                          >
-                            <TrashIcon className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-
-        {/* Proposal Analytics Modal */}
-        {selectedProposal && proposalAnalytics && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto">
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-medium text-gray-900">Analytics da Proposta</h3>
-                  <button
-                    onClick={() => {
-                      setSelectedProposal(null);
-                      setProposalAnalytics(null);
-                    }}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    ✕
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-3 gap-4 mb-6">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600">{proposalAnalytics.summary.totalViews}</div>
-                    <div className="text-sm text-gray-500">Total de Visualizações</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600">{proposalAnalytics.summary.uniqueSessions}</div>
-                    <div className="text-sm text-gray-500">Sessões Únicas</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-purple-600">{proposalAnalytics.commentCount}</div>
-                    <div className="text-sm text-gray-500">Comentários</div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="font-medium text-gray-900">Visualizações por Página:</h4>
-                  {proposalAnalytics.pageAnalytics.map((page) => (
-                    <div key={page.page_name} className="flex justify-between items-center p-3 bg-gray-50 rounded">
-                      <span className="capitalize">{page.page_name}</span>
-                      <div className="text-right">
-                        <div className="font-medium">{page.views} visualizações</div>
-                        <div className="text-sm text-gray-500">
-                          {Math.floor(parseInt(String(page.avg_time)) / 60)}:{String(parseInt(String(page.avg_time)) % 60).padStart(2, '0')} tempo médio
-                        </div>
+            <Table
+              columns={[
+                {
+                  key: 'proposal_name',
+                  header: 'Proposta',
+                  render: (value, row) => (
+                    <div className="flex items-center">
+                      {getStatusIcon(row.status)}
+                      <div className="ml-3">
+                        <div className="text-sm font-medium text-gray-900">{row.proposal_name}</div>
+                        <div className="text-sm text-gray-500">{row.job_name}</div>
                       </div>
                     </div>
-                  ))}
+                  )
+                },
+                {
+                  key: 'client_name',
+                  header: 'Cliente'
+                },
+                {
+                  key: 'proposal_value',
+                  header: 'Valor',
+                  align: 'right',
+                  render: (value) => (
+                    <TableCell.Currency value={value > 0 ? value : null} />
+                  )
+                },
+                {
+                  key: 'status',
+                  header: 'Status',
+                  render: (value) => getStatusBadge(value)
+                },
+                {
+                  key: 'created_at',
+                  header: 'Data',
+                  render: (value) => <TableCell.Date value={value} />
+                },
+                {
+                  key: 'actions',
+                  header: 'Ações',
+                  render: (_, row) => (
+                    <TableCell.Actions>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          copyProposalLink(row.public_token);
+                        }}
+                        className="text-blue-600 hover:text-blue-900 transition-colors"
+                        title="Copiar link"
+                      >
+                        <ShareIcon className="h-4 w-4" />
+                      </button>
+                      <Link
+                        href={`/proposals/${row.id}/edit`}
+                        className="text-gray-600 hover:text-gray-900 transition-colors"
+                        title="Editar"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <PencilIcon className="h-4 w-4" />
+                      </Link>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedProposal(selectedProposal === row.id ? null : row.id);
+                          if (selectedProposal !== row.id) {
+                            loadProposalAnalytics(row.id);
+                          }
+                        }}
+                        className="text-green-600 hover:text-green-900 transition-colors"
+                        title="Ver analytics"
+                      >
+                        <ChartBarIcon className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteProposal(row.id);
+                        }}
+                        className="text-red-600 hover:text-red-900 transition-colors"
+                        title="Excluir"
+                      >
+                        <TrashIcon className="h-4 w-4" />
+                      </button>
+                    </TableCell.Actions>
+                  )
+                }
+              ]}
+              data={proposals}
+              variant="striped"
+              hoverable
+              onRowClick={(row) => router.push(`/proposals/${row.id}/edit`)}
+            />
+          )}
+        </Card>
+
+        {/* Proposal Analytics Modal */}
+        <Modal
+          isOpen={!!(selectedProposal && proposalAnalytics)}
+          onClose={() => {
+            setSelectedProposal(null);
+            setProposalAnalytics(null);
+          }}
+          title="Analytics da Proposta"
+          size="lg"
+        >
+          {proposalAnalytics && (
+            <>
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-provider-600">{proposalAnalytics.summary.totalViews}</div>
+                  <div className="text-sm text-gray-500">Total de Visualizações</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-600">{proposalAnalytics.summary.uniqueSessions}</div>
+                  <div className="text-sm text-gray-500">Sessões Únicas</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-purple-600">{proposalAnalytics.commentCount}</div>
+                  <div className="text-sm text-gray-500">Comentários</div>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
+
+              <div className="space-y-3">
+                <h4 className="font-medium text-gray-900">Visualizações por Página:</h4>
+                {proposalAnalytics.pageAnalytics.map((page) => (
+                  <div key={page.page_name} className="flex justify-between items-center p-3 glass-provider rounded-lg">
+                    <span className="capitalize font-medium text-gray-900">{page.page_name}</span>
+                    <div className="text-right">
+                      <div className="font-medium text-gray-900">{page.views} visualizações</div>
+                      <div className="text-sm text-gray-600">
+                        {Math.floor(parseInt(String(page.avg_time)) / 60)}:{String(parseInt(String(page.avg_time)) % 60).padStart(2, '0')} tempo médio
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </Modal>
 
         {/* Quick Actions */}
         <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <Link
-            href="/proposals/create"
-            className="bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow cursor-pointer group"
-          >
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <PlusIcon className="h-8 w-8 text-blue-600 group-hover:text-blue-700" />
+          <Link href="/proposals/create">
+            <Card variant="glass-provider" hoverable onClick={() => {}}>
+              <div className="flex items-center">
+                <div className="flex-shrink-0 p-3 bg-provider-100 rounded-lg">
+                  <PlusIcon className="h-8 w-8 text-provider-600" />
+                </div>
+                <div className="ml-4">
+                  <h3 className="text-lg font-medium text-gray-900">Criar Proposta</h3>
+                  <p className="text-sm text-gray-600">
+                    Comece uma nova proposta do zero
+                  </p>
+                </div>
               </div>
-              <div className="ml-4">
-                <h3 className="text-lg font-medium text-gray-900">Criar Proposta</h3>
-                <p className="text-sm text-gray-600">
-                  Comece uma nova proposta do zero
-                </p>
-              </div>
-            </div>
+            </Card>
           </Link>
 
-          <Link
-            href="/proposals"
-            className="bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow cursor-pointer group"
-          >
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <DocumentTextIcon className="h-8 w-8 text-blue-600 group-hover:text-blue-700" />
+          <Link href="/proposals">
+            <Card variant="glass-provider" hoverable onClick={() => {}}>
+              <div className="flex items-center">
+                <div className="flex-shrink-0 p-3 bg-provider-100 rounded-lg">
+                  <DocumentTextIcon className="h-8 w-8 text-provider-600" />
+                </div>
+                <div className="ml-4">
+                  <h3 className="text-lg font-medium text-gray-900">Ver Todas as Propostas</h3>
+                  <p className="text-sm text-gray-600">
+                    Gerencie todas as suas propostas
+                  </p>
+                </div>
               </div>
-              <div className="ml-4">
-                <h3 className="text-lg font-medium text-gray-900">Ver Todas as Propostas</h3>
-                <p className="text-sm text-gray-600">
-                  Gerencie todas as suas propostas
-                </p>
-              </div>
-            </div>
+            </Card>
           </Link>
 
-          <div className="bg-white rounded-lg shadow-sm border p-6 group">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <ChartBarIcon className="h-8 w-8 text-blue-600" />
+          <Link href="/reports">
+            <Card variant="glass-provider" hoverable onClick={() => {}}>
+              <div className="flex items-center">
+                <div className="flex-shrink-0 p-3 bg-provider-100 rounded-lg">
+                  <ChartBarIcon className="h-8 w-8 text-provider-600" />
+                </div>
+                <div className="ml-4">
+                  <h3 className="text-lg font-medium text-gray-900">Relatórios</h3>
+                  <p className="text-sm text-gray-600">
+                    Visualize o desempenho das propostas
+                  </p>
+                </div>
               </div>
-              <div className="ml-4">
-                <h3 className="text-lg font-medium text-gray-900">Analytics</h3>
-                <p className="text-sm text-gray-600">
-                  Visualize o desempenho das propostas
-                </p>
-              </div>
-            </div>
-          </div>
+            </Card>
+          </Link>
         </div>
       </div>
     </div>
