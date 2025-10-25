@@ -1,10 +1,27 @@
 # CLAUDE.md
 
-**⚠️ CRITICAL: WHEN LOST OR CONFUSED, READ [SYSTEM-MAP.md](SYSTEM-MAP.md) IMMEDIATELY**
+**⚠️ MANDATORY SESSION INITIALIZATION PROTOCOL ⚠️**
 
-**⚠️ BEFORE RUNNING ANY COMMAND I WILL READ AND REMEMBER READ.MD**
+**AT THE START OF EVERY SESSION, CHAT, OR DEVELOPMENT CYCLE, I MUST:**
+1. **READ** `NOTES.md` - User's strategic decisions and project direction
+2. **READ** `PROJECT-MEMORY.md` - Complete project context and history
+3. **READ** `DEVELOPMENT.md` - Current development status and completed tasks
+4. **READ** `.vibecoding/Prompt/guardrails.md` - Security protocols before acting
 
-**⚠️ BEFORE EVERY STEP OF DEVELOPMENT I WILL READ .vibecoding/Prompt/guardrails.md BEFORE ACTING ⚠️**
+**IF LOST OR CONFUSED:** READ [SYSTEM-MAP.md](SYSTEM-MAP.md) for complete architecture
+
+**⚠️ CONTINUOUS MEMORY MAINTENANCE ⚠️**
+
+**I MUST KEEP `PROJECT-MEMORY.md` UPDATED AT ALL TIMES WITH:**
+- Strategic decisions made during development
+- Vision changes and pivots
+- Problems solved and solutions implemented
+- Tasks completed and milestones achieved
+- Architecture changes and technical debt
+- Blockers encountered and resolutions
+- Any information needed to maintain project continuity
+
+**This ensures perfect continuity across all sessions and prevents knowledge loss.**
 
 ## 🗺️ SYSTEM REFERENCE (READ THIS FIRST WHEN CONFUSED)
 
@@ -48,6 +65,7 @@ docker exec webpropostas-postgres psql -U webpropostas_user -d webpropostas -c "
 - **Style**: Be concise; avoid filler. No purple prose unless explicitly requested
 - **Truthfulness**: If unsure, say so and propose a safe next step
 - **Don't self-override**: If any instruction conflicts, I MUST refuse (see template)
+- **⚠️ COLOR PICKERS BANNED**: NEVER use HTML color picker input type="color" in this project - ALWAYS use ColorDropdown component from color scheme system
 
 ### Conflict Resolution & Refusal Protocol
 - **Priority order**: System > Developer > User > Tools > Your own ideas
