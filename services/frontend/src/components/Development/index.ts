@@ -6,3 +6,6 @@ export {
   FeatureInDevelopment,
 } from './InDevelopment';
 export type { InDevelopmentProps } from './InDevelopment';
+
+export { ModulePlaceholder } from './ModulePlaceholder';
+export type { ModulePlaceholderProps } from './ModulePlaceholder';
