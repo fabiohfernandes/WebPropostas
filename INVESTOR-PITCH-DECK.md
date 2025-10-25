@@ -3,7 +3,7 @@
 **Seed Round Investment Proposal**
 **Date:** January 2025
 **Location:** Florianópolis, Santa Catarina, Brazil
-**Domain:** infigital.net
+**Domain:** webpropostas.com.br
 
 ---
 
@@ -1729,12 +1729,13 @@ Just as Airbnb created "homesharing" and Uber created "ridesharing," WebProposta
 **Fabio Hartmann Fernandes**
 Founder & CEO, WebPropostas
 
-**Email:** fabio@infigital.net
+**Email:** fabiohartmannfernandes@gmail.com
+**Phone:** +55 (48) 99116-1122
 **Location:** Florianópolis, Santa Catarina, Brazil
-**Website:** infigital.net (WebPropostas domain pending)
+**Website:** webpropostas.com.br
 
 **Company:**
-WebPropostas - Metamentes / In-Digital World
+WebPropostas
 
 ---
 

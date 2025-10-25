@@ -132,7 +132,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a documentation and configuration repository for **WebPropostas** - an AI-driven commercial proposal platform that streamlines the entire proposal lifecycle from creation to contract signature. The platform features a **proprietary visual template builder** (main platform attraction), AI-powered content generation, client collaboration, and automated contract generation.
 
-**Domain:** infigital.net
+**Domain:** webpropostas.com.br (deployed on Railway)
 **Environment:** Florianópolis - SC - Brazil
 **Architecture:** Multi-agent AI system using "Vibe Coding" methodology
 

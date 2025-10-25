@@ -9,8 +9,8 @@
 ## Project Identity
 
 **Name:** WebPropostas
-**Domain:** infigital.net
-**Owner:** Fabio Hartmann Fernandes (Metamentes / In-Digital World)
+**Domain:** webpropostas.com.br
+**Owner:** Fabio Hartmann Fernandes
 **Location:** Florianópolis - SC - Brazil
 **Type:** Multi-tier SaaS Platform
 **Market:** Brazilian B2B/B2C commercial proposal and project management
