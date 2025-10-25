@@ -18,7 +18,9 @@ export interface CardProps {
   /** Footer content */
   footer?: ReactNode;
   /** Visual variant */
-  variant?: 'default' | 'glass' | 'bordered' | 'elevated' | 'flat';
+  variant?: 'default' | 'glass' | 'glass-provider' | 'glass-client' | 'bordered' | 'elevated' | 'flat';
+  /** Theme (provider blue or client green) */
+  theme?: 'default' | 'provider' | 'client';
   /** Padding size */
   padding?: 'none' | 'sm' | 'md' | 'lg';
   /** Hover effect */
@@ -36,6 +38,7 @@ export const Card: FC<CardProps> = ({
   headerAction,
   footer,
   variant = 'default',
+  theme = 'default',
   padding = 'md',
   hoverable = false,
   onClick,
@@ -44,6 +47,8 @@ export const Card: FC<CardProps> = ({
   const variantClasses = {
     default: 'bg-white border border-gray-200 shadow-sm',
     glass: 'glass-card',
+    'glass-provider': 'glass-card-provider',
+    'glass-client': 'glass-card-client',
     bordered: 'bg-white border-2 border-gray-300',
     elevated: 'bg-white shadow-xl border border-gray-100',
     flat: 'bg-gray-50',

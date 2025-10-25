@@ -10,9 +10,11 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Button content */
   children: ReactNode;
   /** Visual variant */
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'success';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'success' | 'glass' | 'glass-provider' | 'glass-client';
   /** Size variant */
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  /** Theme (provider blue or client green) */
+  theme?: 'default' | 'provider' | 'client';
   /** Full width */
   fullWidth?: boolean;
   /** Loading state */
@@ -29,6 +31,7 @@ export const Button: FC<ButtonProps> = ({
   children,
   variant = 'primary',
   size = 'md',
+  theme = 'default',
   fullWidth = false,
   loading = false,
   leftIcon,
@@ -38,7 +41,8 @@ export const Button: FC<ButtonProps> = ({
   className,
   ...props
 }) => {
-  const variantClasses = {
+  // Base variant classes
+  const baseVariantClasses = {
     primary:
       'bg-gradient-to-r from-primary-600 to-primary-700 text-white hover:from-primary-700 hover:to-primary-800 shadow-lg shadow-primary-500/50',
     secondary:
@@ -51,7 +55,35 @@ export const Button: FC<ButtonProps> = ({
       'bg-gradient-to-r from-red-600 to-red-700 text-white hover:from-red-700 hover:to-red-800 shadow-lg shadow-red-500/50',
     success:
       'bg-gradient-to-r from-green-600 to-green-700 text-white hover:from-green-700 hover:to-green-800 shadow-lg shadow-green-500/50',
+    glass:
+      'glass-button',
+    'glass-provider':
+      'glass-button-provider',
+    'glass-client':
+      'glass-button-client',
   };
+
+  // Theme overrides for primary and outline
+  const themeClasses = {
+    provider: {
+      primary: 'bg-gradient-to-r from-provider-600 to-provider-700 hover:from-provider-700 hover:to-provider-800 shadow-lg shadow-provider-500/50',
+      outline: 'border-2 border-provider-600 text-provider-600 hover:bg-provider-50',
+    },
+    client: {
+      primary: 'bg-gradient-to-r from-client-600 to-client-700 hover:from-client-700 hover:to-client-800 shadow-lg shadow-client-500/50',
+      outline: 'border-2 border-client-600 text-client-600 hover:bg-client-50',
+    },
+  };
+
+  // Determine final variant class
+  const getVariantClass = () => {
+    if (theme !== 'default' && (variant === 'primary' || variant === 'outline')) {
+      return themeClasses[theme][variant];
+    }
+    return baseVariantClasses[variant];
+  };
+
+  const variantClasses = getVariantClass();
 
   const sizeClasses = {
     xs: iconOnly ? 'p-1' : 'px-2 py-1 text-xs',
@@ -74,11 +106,11 @@ export const Button: FC<ButtonProps> = ({
       disabled={disabled || loading}
       className={cn(
         'inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-        variantClasses[variant],
+        variantClasses,
         sizeClasses[size],
         fullWidth && 'w-full',
         (disabled || loading) && 'opacity-50 cursor-not-allowed',
-        !disabled && !loading && 'hover:scale-105 active:scale-95',
+        !disabled && !loading && !variant.startsWith('glass') && 'hover:scale-105 active:scale-95',
         className
       )}
       {...props}
