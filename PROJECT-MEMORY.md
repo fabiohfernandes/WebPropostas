@@ -379,6 +379,17 @@ railway logs
 
 ---
 
+## Recent Updates & Changes
+
+### January 6, 2025 - Vision Document Translation
+- Translated visão_geral.md (Portuguese) to overview.md (English)
+- Original vision document outlines comprehensive platform modules
+- Document shows initial vision before current roadmap development
+- Notable differences from current implementation:
+  - Original vision included extensive client-side portal features
+  - Many modules align with current Phase 44-45 (Client Portal) plans
+  - Template builder concept matches current Phase 26-39 implementation
+
 ## Open Questions & Decisions Needed
 
 *None currently - awaiting user direction for Phase 20 implementation*
