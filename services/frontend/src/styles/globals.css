@@ -2,6 +2,9 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+/* Import glassmorphism utilities */
+@import './glassmorphism.css';
+
 /* Global styles */
 html {
   scroll-behavior: smooth;
