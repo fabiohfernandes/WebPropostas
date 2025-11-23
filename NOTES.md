@@ -1,67 +1,102 @@
 # WebPropostas - Complete Platform Vision
 
-**Last Updated:** January 6, 2025
-**Status:** Phase 19 Complete → Phase 46 Planned (Marketplace)
-**Presentation:** Week of January 13, 2025
+**Last Updated:** November 23, 2025
+**Status:** Phase 31 Complete → Four Portals Vision Approved
+**Architecture:** Four-Portal Offer & Demand Marketplace
 
 ---
 
 ## 🎯 Executive Summary
 
-**WebPropostas** is a **dual-sided ecosystem** that revolutionizes the entire service lifecycle in Brazil - from discovery to delivery. Unlike competitors, we integrate three critical functions into one seamless platform:
+**WebPropostas** is a **Four-Portal Marketplace** that connects **OFFER with DEMAND** across all types of market transactions in Brazil. Unlike competitors who specialize in only one vertical, we integrate all commerce and talent interactions into one unified ecosystem.
 
-1. **🔍 Marketplace Discovery** - Clients search and request services across all categories
-2. **📝 Professional Proposals** - Providers create stunning proposals with AI + visual builder
-3. **📊 Project Management** - Multi-vendor project coordination with financial tracking
+### The Four Portals
 
-**Competitive Moat:** No other platform offers Discovery + Proposals + Project Management in one integrated workflow.
+| Portal | Side | Purpose |
+|--------|------|---------|
+| **Portal de Vendas** | OFFER (Commerce) | Create and host proposals, products, services |
+| **Portal de Compras** | DEMAND (Commerce) | Search, compare, quote, and purchase |
+| **Portal de Vagas** | OFFER (Talent) | Build CVs, portfolios, find jobs |
+| **Portal de Contratos** | DEMAND (Talent) | Post jobs, search candidates, hire |
 
----
+**Competitive Moat:** ONLY platform in Brazil offering all four portals in one integrated ecosystem.
 
-## 🌟 Dual-Sided Platform Architecture
-
-### **🔵 SERVICE PROVIDER SIDE** (B2B - Blue Theme)
-**Target:** Freelancers, agencies, consultants, contractors, service businesses
-
-**Value Proposition:**
-"Create stunning proposals with AI-powered content and professional templates, list your services in our marketplace, track engagement in real-time, and close deals faster - all in one platform."
-
-**15 Modules:**
-1. General Dashboard - ✅ Implemented
-2. Client Management (CRM) - ✅ Implemented
-3. Proposal Builder (Text) - 🚧 In Progress
-4. Campaign Manager - 📋 Phase 43
-5. Template Builder (Visual "Canva for Proposals") - 🎨 Phase 26-39
-6. AI Content Studio (GPT-4) - 🤖 Phase 20
-7. Send & Schedule (Email/WhatsApp/Telegram) - 📋 Phase 42
-8. Proposal Hosting (Unique URLs) - 📋 Phase 25
-9. Lead Tracking - ✅ Implemented
-10. Progress Sharing (Photos/Videos) - 📋 Planned
-11. Contract Generator (AI + E-Signature) - 📋 Phase 23
-12. Analytics - ✅ Implemented
-13. Reports (Client/Sector/Product) - ✅ Implemented
-14. Tax Module (NFe) - 📋 Planned
-15. Registry/Settings - ✅ Implemented
+**Core Philosophy:**
+> "Whether you're selling products, offering services, renting property, seeking employment, buying goods, hiring contractors, or recruiting talent - **WebPropostas connects offer with demand.**"
 
 ---
 
-### **🟢 CLIENT SIDE** (B2C - Green Theme)
-**Target:** Families, couples, individuals, businesses managing complex projects
+## 🌟 Four-Portal Architecture
+
+### **🔵 PORTAL DE VENDAS** (OFFER - Commerce)
+**Target:** Service providers, vendors, stores, freelancers, construction companies, architects
 
 **Value Proposition:**
-"Discover the perfect professionals, receive beautiful proposals, and manage all your projects in one place - from home construction to wedding planning - with complete financial tracking, progress photos, and family collaboration."
+"Create stunning proposals, list your services and products, build your vendor profile, and close deals - all with AI assistance and beautiful templates."
 
-**10 Modules:**
-1. Client Dashboard - 📋 Phase 44
-2. **🆕 Marketplace Search** - 🚀 Phase 46 (REVOLUTIONARY!)
-3. Vendor Directory (Favorites) - 📋 Phase 44
-4. Proposals Inbox - 📋 Phase 44
-5. Quote Requests - 📋 Phase 45
-6. Project Folders (Multi-Vendor) - 📋 Phase 44
-7. Progress Gallery - 📋 Phase 44
-8. Financial Manager (NFe, Payments) - 📋 Phase 44
-9. Family Collaboration (Multi-User) - 📋 Phase 45
-10. Tax & Reports - 📋 Phase 45
+**Key Modules:**
+- Proposal Builder (existing) - ✅ Implemented
+- Service/Product Catalog - 📋 Planned
+- Campaign Manager - ✅ Implemented
+- Contract Generator - ✅ Implemented
+- Template Builder ("Canva for Proposals") - ✅ ~70% Complete
+- Quote Management - 📋 Planned
+- Vendor Storefront - 📋 Planned
+- Deal Closing - 📋 Planned
+
+---
+
+### **🟢 PORTAL DE COMPRAS** (DEMAND - Commerce)
+**Target:** Individual buyers, families, industries, government, corporations, construction procurement
+
+**Value Proposition:**
+"Search suppliers, compare quotes, send RFQs to multiple vendors, track orders, and manage all your procurement in one place."
+
+**Key Modules:**
+- RFQ Builder - 📋 Planned
+- Supplier Discovery - 📋 Planned
+- Quote Comparison - 📋 Planned
+- Purchase Order Management - 📋 Planned
+- Supplier Ratings & Reviews - 📋 Planned
+- Procurement Dashboard - 📋 Planned
+- Budget Tracking - 📋 Planned
+- Delivery Tracking - 📋 Planned
+
+---
+
+### **🟠 PORTAL DE VAGAS** (OFFER - Talent)
+**Target:** Job seekers, professionals, students, freelancers, career changers
+
+**Value Proposition:**
+"Build a professional CV with our visual editor, showcase your portfolio with videos and images, and discover job opportunities matched to your skills."
+
+**Key Modules:**
+- CV/Resume Builder (reuses Template Builder) - 📋 Phase 33
+- Portfolio Hosting - 📋 Phase 34
+- Video Presentation - 📋 Phase 34
+- Skills & Certifications - 📋 Phase 34
+- Job Search & Alerts - 📋 Phase 34
+- Application Tracker - 📋 Phase 34
+- Freelance Profile - 📋 Planned
+- Work History - 📋 Planned
+
+---
+
+### **🟣 PORTAL DE CONTRATOS** (DEMAND - Talent)
+**Target:** HR departments, recruiters, small businesses, project managers
+
+**Value Proposition:**
+"Post jobs, search candidates with AI matching, manage your hiring pipeline with ATS, and contract freelancers or permanent staff."
+
+**Key Modules:**
+- Job Posting Manager - 📋 Phase 35
+- Candidate Search Engine - 📋 Phase 36
+- ATS (Applicant Tracking) - 📋 Phase 36
+- Interview Management - 📋 Phase 36
+- Company Profiles - 📋 Phase 35
+- Contract/Gig Marketplace - 📋 Planned
+- Temporary Staff Management - 📋 Planned
+- Onboarding Integration - 📋 Planned
 
 ---
 

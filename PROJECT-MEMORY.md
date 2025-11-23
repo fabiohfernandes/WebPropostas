@@ -25,32 +25,88 @@ AI-driven commercial proposal platform for creating, sharing, and closing propos
 **Previous Vision (Phases 20-46) - DUAL-SIDED ECOSYSTEM:**
 Platform integrating: Marketplace Discovery + Professional Proposals + Project Management.
 
-**🚀 CURRENT UNIFIED VISION (Phases 32-60+) - COMPLETE SUPPLY, DEMAND & PROCUREMENT ECOSYSTEM:**
+**🚀 CURRENT UNIFIED VISION (November 2025) - THE FOUR PORTALS:**
 
-> "Whether you're selling products, offering services, seeking employment, buying goods, hiring contractors, recruiting employees, or procuring industrial supplies - **WebPropostas connects supply with demand** through intelligent matching, professional documentation, and end-to-end workflow management."
+> "Whether you're selling products, offering services, renting property, seeking employment, buying goods, hiring contractors, or recruiting talent - **WebPropostas connects OFFER with DEMAND** through four specialized portals that serve both sides of every market transaction."
 
-### The Four Pillars of WebPropostas 3.0
+### The Four Portals of WebPropostas
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           SUPPLY SIDE (OFFER)                                    │
+│                    THE FOUR PORTALS OF WEBPROPOSTAS                              │
+│              "Connecting Offer & Demand Across All Markets"                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│  🛒 SELLERS        │  🔧 SERVICE PROVIDERS  │  👤 JOB SEEKERS  │  🏭 SUPPLIERS  │
-│  Products & Goods  │  Services & Projects   │  Talent/Jobs     │  B2B Products  │
-│  E-commerce        │  Proposals             │  CV Builder      │  Catalogs      │
-│  Inventory         │  Contracts             │  Portfolio       │  RFQ Response  │
-│  Orders            │  Campaigns             │  Skills & Certs  │  Quotations    │
-└─────────────────────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           DEMAND SIDE (SEARCH)                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│  🛍️ BUYERS         │  📋 SERVICE HIRERS     │  🏢 EMPLOYERS     │  🏭 INDUSTRY   │
-│  Product Search    │  Provider Marketplace  │  Job Postings     │  BUYERS        │
-│  Comparison        │  RFQ System            │  Candidate Search │  RFQ Creation  │
-│  Orders            │  Project Tracking      │  ATS & Interviews │  Negotiations  │
+│                                                                                  │
+│   ╔══════════════════════════════════════════════════════════════════════════╗  │
+│   ║                         COMMERCE PILLAR                                   ║  │
+│   ╠══════════════════════════════════════════════════════════════════════════╣  │
+│   ║  ┌─────────────────────────┐       ┌─────────────────────────┐           ║  │
+│   ║  │   PORTAL DE VENDAS      │  ◄─►  │   PORTAL DE COMPRAS     │           ║  │
+│   ║  │   (Sales Portal)        │       │   (Buying Portal)       │           ║  │
+│   ║  │   ─────────────────     │       │   ─────────────────     │           ║  │
+│   ║  │   OFFER SIDE            │       │   DEMAND SIDE           │           ║  │
+│   ║  │   • Service Offers      │       │   • RFQ Creation        │           ║  │
+│   ║  │   • Product Catalog     │       │   • Supplier Search     │           ║  │
+│   ║  │   • Proposal Builder    │       │   • Quote Comparison    │           ║  │
+│   ║  │   • Vendor Profiles     │       │   • Purchase Orders     │           ║  │
+│   ║  │   • Contract Closing    │       │   • Supplier Management │           ║  │
+│   ║  └─────────────────────────┘       └─────────────────────────┘           ║  │
+│   ╚══════════════════════════════════════════════════════════════════════════╝  │
+│                                                                                  │
+│   ╔══════════════════════════════════════════════════════════════════════════╗  │
+│   ║                          TALENT PILLAR                                    ║  │
+│   ╠══════════════════════════════════════════════════════════════════════════╣  │
+│   ║  ┌─────────────────────────┐       ┌─────────────────────────┐           ║  │
+│   ║  │   PORTAL DE VAGAS       │  ◄─►  │  PORTAL DE CONTRATOS    │           ║  │
+│   ║  │   (CV/Resume Portal)    │       │  (Hiring Portal)        │           ║  │
+│   ║  │   ─────────────────     │       │   ─────────────────     │           ║  │
+│   ║  │   OFFER SIDE            │       │   DEMAND SIDE           │           ║  │
+│   ║  │   • CV Builder          │       │   • Job Posting         │           ║  │
+│   ║  │   • Portfolio Host      │       │   • Candidate Search    │           ║  │
+│   ║  │   • Skills Showcase     │       │   • Contract Jobs       │           ║  │
+│   ║  │   • Job Search          │       │   • Permanent Hire      │           ║  │
+│   ║  │   • Applications        │       │   • ATS System          │           ║  │
+│   ║  └─────────────────────────┘       └─────────────────────────┘           ║  │
+│   ╚══════════════════════════════════════════════════════════════════════════╝  │
+│                                                                                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
+
+### Portal Purpose Summary
+
+| Portal | Side | Portuguese Name | Purpose |
+|--------|------|-----------------|---------|
+| **Portal de Vendas** | OFFER | Portal de Vendas | Where proposals, products, services are created and hosted |
+| **Portal de Compras** | DEMAND | Portal de Compras | Where buyers search, compare, quote, and purchase |
+| **Portal de Vagas** | OFFER | Portal de Vagas | Where job seekers build CVs, portfolios, and find jobs |
+| **Portal de Contratos** | DEMAND | Portal de Contratos | Where employers post jobs, search candidates, and hire |
+
+### Target Users Per Portal
+
+**Portal de Vendas (OFFER - Commerce):**
+- Service providers, vendors, stores, freelancers
+- Construction companies, architects, engineers
+- Restaurants, event planners, photographers
+- Anyone who needs to CREATE and HOST offers
+
+**Portal de Compras (DEMAND - Commerce):**
+- Individual buyers, families, couples
+- Industries, enterprises, corporations
+- Government, institutions
+- Construction companies (procurement)
+- Anyone who needs to FIND and BUY products/services
+
+**Portal de Vagas (OFFER - Talent):**
+- Job seekers, professionals, students
+- Freelancers looking for opportunities
+- Career changers, recent graduates
+- Anyone who needs to SHOWCASE their skills
+
+**Portal de Contratos (DEMAND - Talent):**
+- HR departments, recruiters
+- Small businesses hiring staff
+- Project managers needing contractors
+- Anyone who needs to HIRE talent
 
 ### 🆕 QuotaHub B2B Procurement Module (Phases 47-52)
 
@@ -102,27 +158,40 @@ Platform integrating: Marketplace Discovery + Professional Proposals + Project M
 **Full Documentation:** `.vibecoding/Informations/PLATFORM-EXPANSION-PLAN.md`
 
 **Competitive Moat:**
-ONLY platform offering: Sell Products + Offer Services + Find Jobs + Buy Products + Hire Services + Recruit Talent - ALL IN ONE.
+ONLY platform in Brazil offering all four portals: Portal de Vendas + Portal de Compras + Portal de Vagas + Portal de Contratos - ALL IN ONE unified ecosystem.
 
-**Value Proposition (Expanded):**
+**Value Proposition by Portal:**
 
-🔵 **For Service Providers:**
-"List your services, create stunning AI-powered proposals, and track every engagement - all in one platform."
+🔵 **Portal de Vendas (OFFER - Commerce):**
+"Create stunning proposals, list your services and products, build your vendor profile, and close deals - all with AI assistance and beautiful templates."
 
-🟠 **For Job Seekers:**
-"Build a professional CV with our visual editor, showcase your portfolio, and find your next career opportunity."
+🟢 **Portal de Compras (DEMAND - Commerce):**
+"Search suppliers, compare quotes, send RFQs to multiple vendors, track orders, and manage all your procurement in one place."
 
-🟢 **For Buyers/Clients:**
-"Discover products and services, receive proposals, and manage all your projects with complete financial tracking."
+🟠 **Portal de Vagas (OFFER - Talent):**
+"Build a professional CV with our visual editor, showcase your portfolio with videos and images, and discover job opportunities matched to your skills."
 
-🟣 **For Employers:**
-"Post jobs, search candidates, and manage your entire hiring process with our integrated ATS."
+🟣 **Portal de Contratos (DEMAND - Talent):**
+"Post jobs, search candidates with AI matching, manage your hiring pipeline with ATS, and contract freelancers or permanent staff."
 
-**Network Effects (Enhanced):**
-More sellers → Better product selection → More buyers → More sales → More sellers join
-More providers → Better service options → More clients → More projects → More providers join
-More job seekers → Better talent pool → More employers → More jobs → More job seekers join
-Cross-platform engagement creates unmatched ecosystem lock-in.
+**Network Effects (Four-Portal Synergy):**
+```
+Portal de Vendas ←→ Portal de Compras
+    More vendors → Better selection → More buyers → More sales → More vendors
+
+Portal de Vagas ←→ Portal de Contratos
+    More talent → Better pool → More employers → More jobs → More talent
+
+Cross-Portal Synergy:
+    Company posts job (Contratos) → Hires employee → Needs supplies → Posts RFQ (Compras)
+    Freelancer creates portfolio (Vagas) → Gets hired → Offers services (Vendas)
+```
+
+**Why This Wins:**
+- LinkedIn = only jobs
+- Mercado Livre = only products
+- GetNinjas = only services
+- WebPropostas = **ALL integrated with professional documentation**
 
 ---
 
@@ -574,6 +643,42 @@ railway logs
 
 ## Recent Updates & Changes
 
+### November 23, 2025 - 🚀 FOUR PORTALS VISION APPROVED (STRATEGIC PIVOT)
+
+**Decision:** Transform WebPropostas from dual-sided ecosystem into a complete **Four-Portal Marketplace** that connects OFFER with DEMAND across all market types.
+
+**What Changed:**
+1. **Unified Vision:** All features now organized under four distinct portals
+2. **Portuguese Naming:**
+   - Portal de Vendas (Sales - OFFER side of commerce)
+   - Portal de Compras (Buying - DEMAND side of commerce)
+   - Portal de Vagas (CV/Resume - OFFER side of talent)
+   - Portal de Contratos (Hiring - DEMAND side of talent)
+3. **Two Pillars:** Commerce Pillar + Talent Pillar (each with offer/demand sides)
+4. **Documentation Updated:**
+   - PLATFORM-EXPANSION-PLAN.md → v2.0 with four-portal architecture
+   - PROJECT-MEMORY.md → Updated vision and value propositions
+   - NOTES.md → Updated executive summary and module structure
+
+**Why This Structure:**
+- **Commerce:**
+  - Sellers/Providers CREATE offers in Portal de Vendas
+  - Buyers SEARCH and PURCHASE in Portal de Compras
+  - Covers: products, services, rentals, contracts
+
+- **Talent:**
+  - Job seekers CREATE CVs/portfolios in Portal de Vagas
+  - Employers POST jobs and HIRE in Portal de Contratos
+  - Covers: permanent jobs, contracts, freelance, temporary staff
+
+**Strategic Advantage:**
+- Only platform in Brazil with ALL FOUR portals integrated
+- Network effects multiply across portals (company hires → needs supplies → buys)
+- Single template builder works for proposals AND CVs
+- Cross-portal analytics and recommendations
+
+---
+
 ### January 6, 2025 - 🚀 MARKETPLACE MODULE ADDED (MAJOR EXPANSION)
 
 **Decision:** Transform WebPropostas from "receive proposals" platform into full marketplace where clients can actively discover and request services.
@@ -709,7 +814,7 @@ railway logs
 
 ---
 
-**Last Updated:** 2025-01-06
-**Last Session:** Initial project memory creation
-**Next Action:** Awaiting user direction for Phase 20 (AI Integration) or other priority
-**Status:** ✅ Production stable, roadmap defined, ready for next phase
+**Last Updated:** 2025-11-23
+**Last Session:** Four Portals Vision Documentation Update
+**Next Action:** Awaiting user direction - Continue Portal de Vendas development or start new portal
+**Status:** ✅ Production stable, Four Portals vision documented, ready for implementation

@@ -1,10 +1,11 @@
 # WebPropostas Platform Expansion Plan
-## From Proposal Platform to Complete Supply & Demand Marketplace
+## The Four Portals: Complete Supply & Demand Marketplace
 
-**Document Version:** 1.0
+**Document Version:** 2.0
 **Created:** November 22, 2025
-**Branch:** New_Features
-**Status:** Strategic Planning Phase
+**Updated:** November 23, 2025
+**Branch:** master (merged from New_Features)
+**Status:** Strategic Vision Approved
 
 ---
 
@@ -14,13 +15,73 @@
 
 **Before:** WebPropostas - A platform for professionals to create and send commercial proposals to clients.
 
-**After:** WebPropostas - A comprehensive **Supply & Demand Marketplace** that connects:
-- Sellers with Buyers (Products & Goods)
-- Service Providers with Clients (Services & Projects)
-- Job Seekers with Employers (Talent & Recruitment)
+**After:** WebPropostas - A **Complete Offer & Demand Marketplace** built on **Four Portals** that connect:
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    THE FOUR PORTALS OF WEBPROPOSTAS                      │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   ┌─────────────────────────────────────────────────────────────┐      │
+│   │                    COMMERCE PILLAR                           │      │
+│   │  ┌─────────────────────┐     ┌─────────────────────┐        │      │
+│   │  │  PORTAL DE VENDAS   │ ◄─► │  PORTAL DE COMPRAS  │        │      │
+│   │  │  (Sales Portal)     │     │  (Buying Portal)    │        │      │
+│   │  │  ──────────────────│     │  ──────────────────  │        │      │
+│   │  │  OFFER SIDE         │     │  DEMAND SIDE        │        │      │
+│   │  │  • Service Offers   │     │  • RFQ Creation     │        │      │
+│   │  │  • Product Catalog  │     │  • Supplier Search  │        │      │
+│   │  │  • Proposal Builder │     │  • Quote Comparison │        │      │
+│   │  │  • Vendor Profiles  │     │  • Purchase Orders  │        │      │
+│   │  │  • Deal Closing     │     │  • Supplier Mgmt    │        │      │
+│   │  └─────────────────────┘     └─────────────────────┘        │      │
+│   └─────────────────────────────────────────────────────────────┘      │
+│                                                                         │
+│   ┌─────────────────────────────────────────────────────────────┐      │
+│   │                    TALENT PILLAR                             │      │
+│   │  ┌─────────────────────┐     ┌─────────────────────┐        │      │
+│   │  │  PORTAL DE VAGAS    │ ◄─► │ PORTAL DE CONTRATOS │        │      │
+│   │  │  (CV/Resume Portal) │     │  (Hiring Portal)    │        │      │
+│   │  │  ──────────────────│     │  ──────────────────  │        │      │
+│   │  │  OFFER SIDE         │     │  DEMAND SIDE        │        │      │
+│   │  │  • CV Builder       │     │  • Job Posting      │        │      │
+│   │  │  • Portfolio Host   │     │  • Candidate Search │        │      │
+│   │  │  • Skills Showcase  │     │  • Contract Jobs    │        │      │
+│   │  │  • Job Search       │     │  • Permanent Hire   │        │      │
+│   │  │  • Applications     │     │  • ATS System       │        │      │
+│   │  └─────────────────────┘     └─────────────────────┘        │      │
+│   └─────────────────────────────────────────────────────────────┘      │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
 
 ### Core Philosophy
-> "It doesn't matter if you're selling products, offering services, or seeking employment. It doesn't matter if you're buying goods, hiring contractors, or recruiting employees. **WebPropostas connects supply with demand.**"
+> "It doesn't matter if you're selling products, offering services, renting property, or seeking employment. It doesn't matter if you're buying goods, hiring contractors, recruiting employees, or finding service providers. **WebPropostas connects offer with demand.**"
+
+### The Four Portals Explained
+
+| Portal | Side | Purpose | Users |
+|--------|------|---------|-------|
+| **Portal de Vendas** | OFFER | Create, host, and close proposals/offers | Service providers, vendors, stores, freelancers |
+| **Portal de Compras** | DEMAND | Find, compare, quote, and purchase | Buyers, industries, government, enterprises |
+| **Portal de Vagas** | OFFER | Build CVs, host portfolios, find jobs | Job seekers, freelancers, professionals |
+| **Portal de Contratos** | DEMAND | Post jobs, find talent, manage hiring | Employers, companies, HR departments |
+
+### Use Cases
+
+**Commerce Pillar:**
+- Company needs supplies → Search Portal de Vendas → Send RFQ → Compare quotes → Close deal
+- Person wants to sell → Create listing in Portal de Vendas → Receive inquiries → Negotiate → Close
+- Business needs services → Browse Portal de Vendas → Request proposal → Review → Contract
+
+**Talent Pillar:**
+- Person needs a job → Build CV in Portal de Vagas → Search jobs → Apply → Interview
+- Company needs workers → Post in Portal de Contratos → Search candidates → Interview → Hire
+- Freelancer offers skills → Create portfolio in Portal de Vagas → Get discovered → Get contracted
+
+**Cross-Pillar:**
+- Rent equipment/space → List in Portal de Vendas ↔ Browse in Portal de Compras
+- Temporary staff → Available in Portal de Vagas ↔ Contract via Portal de Contratos
 
 ---
 
@@ -45,64 +106,63 @@
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Future State (40+ Modules)
+### Future State (70+ Modules across Four Portals)
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                        WEBPROPOSTAS v2.0                                    │
-│                   "Complete Supply & Demand Marketplace"                    │
+│              "Four Portals - Complete Offer & Demand Marketplace"           │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                      SUPPLY SIDE (OFFER)                            │   │
-│  ├─────────────────────────────────────────────────────────────────────┤   │
-│  │                                                                     │   │
-│  │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐     │   │
-│  │  │   SELLERS       │  │ SERVICE         │  │ JOB SEEKERS     │     │   │
-│  │  │   PORTAL        │  │ PROVIDERS       │  │ PORTAL          │     │   │
-│  │  ├─────────────────┤  ├─────────────────┤  ├─────────────────┤     │   │
-│  │  │ • Product       │  │ • Service       │  │ • CV/Resume     │     │   │
-│  │  │   Catalog       │  │   Proposals     │  │   Builder       │     │   │
-│  │  │ • E-Commerce    │  │ • Project       │  │ • Portfolio     │     │   │
-│  │  │   Integration   │  │   Management    │  │   Showcase      │     │   │
-│  │  │ • Inventory     │  │ • Contracts     │  │ • Video         │     │   │
-│  │  │ • Shipping      │  │ • Campaigns     │  │   Presentation  │     │   │
-│  │  │ • Orders        │  │ • Templates     │  │ • Skills &      │     │   │
-│  │  │                 │  │                 │  │   Certifications│     │   │
-│  │  └─────────────────┘  └─────────────────┘  └─────────────────┘     │   │
-│  │                                                                     │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ════════════════════════════════════════════════════════════════════════   │
+│                         COMMERCE PILLAR                                     │
+│  ════════════════════════════════════════════════════════════════════════   │
 │                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                      DEMAND SIDE (SEARCH)                           │   │
-│  ├─────────────────────────────────────────────────────────────────────┤   │
-│  │                                                                     │   │
-│  │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐     │   │
-│  │  │   BUYERS        │  │ SERVICE         │  │ EMPLOYERS       │     │   │
-│  │  │   PORTAL        │  │ HIRERS          │  │ PORTAL          │     │   │
-│  │  ├─────────────────┤  ├─────────────────┤  ├─────────────────┤     │   │
-│  │  │ • Product       │  │ • Provider      │  │ • Job           │     │   │
-│  │  │   Search        │  │   Marketplace   │  │   Postings      │     │   │
-│  │  │ • Comparison    │  │ • Request for   │  │ • Candidate     │     │   │
-│  │  │   Engine        │  │   Proposals     │  │   Search        │     │   │
-│  │  │ • Order         │  │ • Project       │  │ • ATS           │     │   │
-│  │  │   Management    │  │   Tracking      │  │   (Tracking)    │     │   │
-│  │  │ • Purchase      │  │ • Vendor        │  │ • Interview     │     │   │
-│  │  │   History       │  │   Management    │  │   Scheduling    │     │   │
-│  │  └─────────────────┘  └─────────────────┘  └─────────────────┘     │   │
-│  │                                                                     │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────┐ ┌─────────────────────────────────┐│
+│  │     PORTAL DE VENDAS (OFFER)        │ │    PORTAL DE COMPRAS (DEMAND)   ││
+│  │     "Where Offers Are Created"      │ │    "Where Buyers Search"        ││
+│  ├─────────────────────────────────────┤ ├─────────────────────────────────┤│
+│  │ • Proposal Builder (existing)       │ │ • RFQ Builder                   ││
+│  │ • Service Catalog                   │ │ • Supplier Discovery            ││
+│  │ • Product Listing                   │ │ • Quote Comparison              ││
+│  │ • Campaign Manager (existing)       │ │ • Purchase Order Management     ││
+│  │ • Contract Generator (existing)     │ │ • Supplier Ratings & Reviews    ││
+│  │ • Vendor Storefront                 │ │ • Procurement Dashboard         ││
+│  │ • Quote Management                  │ │ • Budget Tracking               ││
+│  │ • Deal Closing                      │ │ • Delivery Tracking             ││
+│  └─────────────────────────────────────┘ └─────────────────────────────────┘│
 │                                                                             │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                    SHARED INFRASTRUCTURE                            │   │
-│  ├─────────────────────────────────────────────────────────────────────┤   │
-│  │  • Unified Search Engine (Products, Services, Talent)               │   │
-│  │  • AI-Powered Matching Algorithm                                    │   │
-│  │  • Universal Document Builder (Proposals, CVs, Catalogs)            │   │
-│  │  • Integrated Payment System                                        │   │
-│  │  • Rating & Review System                                           │   │
-│  │  • Messaging & Communication Hub                                    │   │
-│  │  • Analytics & Reporting                                            │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ════════════════════════════════════════════════════════════════════════   │
+│                         TALENT PILLAR                                       │
+│  ════════════════════════════════════════════════════════════════════════   │
+│                                                                             │
+│  ┌─────────────────────────────────────┐ ┌─────────────────────────────────┐│
+│  │     PORTAL DE VAGAS (OFFER)         │ │   PORTAL DE CONTRATOS (DEMAND)  ││
+│  │     "Where Talent Showcases"        │ │   "Where Employers Hire"        ││
+│  ├─────────────────────────────────────┤ ├─────────────────────────────────┤│
+│  │ • CV/Resume Builder                 │ │ • Job Posting Manager           ││
+│  │ • Portfolio Hosting                 │ │ • Candidate Search Engine       ││
+│  │ • Video Presentation                │ │ • ATS (Applicant Tracking)      ││
+│  │ • Skills & Certifications           │ │ • Interview Management          ││
+│  │ • Job Search & Alerts               │ │ • Company Profiles              ││
+│  │ • Application Tracker               │ │ • Contract/Gig Marketplace      ││
+│  │ • Freelance Profile                 │ │ • Temporary Staff Management    ││
+│  │ • Work History                      │ │ • Onboarding Integration        ││
+│  └─────────────────────────────────────┘ └─────────────────────────────────┘│
+│                                                                             │
+│  ════════════════════════════════════════════════════════════════════════   │
+│                      SHARED INFRASTRUCTURE                                  │
+│  ════════════════════════════════════════════════════════════════════════   │
+│                                                                             │
+│  ┌─────────────────────────────────────────────────────────────────────────┐│
+│  │ • Unified Search Engine (Products, Services, Jobs, Talent)              ││
+│  │ • AI-Powered Matching (Job-Candidate, Service-Client, Product-Buyer)    ││
+│  │ • Universal Document Builder (Proposals, CVs, Catalogs, Contracts)      ││
+│  │ • Integrated Payment System (Mercado Pago, PIX, Boleto)                 ││
+│  │ • Rating & Review System (Cross-portal verified reviews)                ││
+│  │ • Messaging & Communication Hub (Chat, WhatsApp, Email)                 ││
+│  │ • Analytics & Reporting (Business Intelligence Dashboard)               ││
+│  │ • Template Library (Proposals, CVs, Job Posts, RFQs)                    ││
+│  └─────────────────────────────────────────────────────────────────────────┘│
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
