@@ -12,8 +12,8 @@
 **Domain:** webpropostas.com.br
 **Owner:** Fabio Hartmann Fernandes
 **Location:** Florianópolis - SC - Brazil
-**Type:** Multi-tier SaaS Platform
-**Market:** Brazilian B2B/B2C commercial proposal and project management
+**Type:** Complete Supply, Demand & Procurement Ecosystem
+**Market:** Brazilian B2B/B2C marketplace - proposals, talent, procurement
 
 ---
 
@@ -22,111 +22,178 @@
 **Original Vision (Phases 1-19):**
 AI-driven commercial proposal platform for creating, sharing, and closing proposals.
 
-**Current Vision (Phases 20-46) - DUAL-SIDED ECOSYSTEM:**
-Revolutionary platform integrating three critical functions that competitors keep separate:
+**Previous Vision (Phases 20-46) - DUAL-SIDED ECOSYSTEM:**
+Platform integrating: Marketplace Discovery + Professional Proposals + Project Management.
 
-1. **🔍 Marketplace Discovery** (Phase 46)
-   - 10,000+ service listings across 5 major categories
-   - Full-text search, geolocation, filters, reviews
-   - Quote requests to multiple providers with one form
+**🚀 CURRENT UNIFIED VISION (Phases 32-60+) - COMPLETE SUPPLY, DEMAND & PROCUREMENT ECOSYSTEM:**
 
-2. **📝 Professional Proposals** (Phases 20-39)
-   - AI-powered content creation (GPT-4)
-   - Visual template builder ("Canva for Proposals")
-   - Multi-channel sending (Email, WhatsApp, Telegram)
-   - Web hosting with unique URLs
+> "Whether you're selling products, offering services, seeking employment, buying goods, hiring contractors, recruiting employees, or procuring industrial supplies - **WebPropostas connects supply with demand** through intelligent matching, professional documentation, and end-to-end workflow management."
 
-3. **📊 Multi-Vendor Project Management** (Phases 44-45)
-   - Project folders organizing 12+ vendors
-   - Complete financial tracking across all vendors
-   - Progress photo/video gallery
-   - Family collaboration with role-based permissions
-   - NFe repository and tax summaries
+### The Four Pillars of WebPropostas 3.0
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                           SUPPLY SIDE (OFFER)                                    │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  🛒 SELLERS        │  🔧 SERVICE PROVIDERS  │  👤 JOB SEEKERS  │  🏭 SUPPLIERS  │
+│  Products & Goods  │  Services & Projects   │  Talent/Jobs     │  B2B Products  │
+│  E-commerce        │  Proposals             │  CV Builder      │  Catalogs      │
+│  Inventory         │  Contracts             │  Portfolio       │  RFQ Response  │
+│  Orders            │  Campaigns             │  Skills & Certs  │  Quotations    │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                           DEMAND SIDE (SEARCH)                                   │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│  🛍️ BUYERS         │  📋 SERVICE HIRERS     │  🏢 EMPLOYERS     │  🏭 INDUSTRY   │
+│  Product Search    │  Provider Marketplace  │  Job Postings     │  BUYERS        │
+│  Comparison        │  RFQ System            │  Candidate Search │  RFQ Creation  │
+│  Orders            │  Project Tracking      │  ATS & Interviews │  Negotiations  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 🆕 QuotaHub B2B Procurement Module (Phases 47-52)
+
+**NEW - Supplier Portal (SUPPLY):**
+- 📦 **Product Catalog Manager** - Products, variants, pricing tiers, inventory
+- 📊 **Supplier Dashboard** - Overview: RFQs, orders, deliveries, revenue
+- 📨 **RFQ Response Center** - Receive and respond to quotation requests
+- 📝 **Quotation Builder** - Professional quotations with terms and conditions
+- 💬 **Negotiation Hub** - Counter-offers, chat, document sharing
+- 🚚 **Order & Delivery Management** - Track orders, deliveries, confirmations
+- 📈 **Supplier Analytics** - Sales metrics, performance, forecasting
+
+**NEW - Buyer Portal (DEMAND):**
+- 🔍 **Product Search Engine** - Advanced filters (location, price, delivery)
+- 📋 **RFQ Builder** - Request quotations from multiple suppliers
+- ⚖️ **Quotation Comparison** - Side-by-side comparison, scoring matrix
+- 📄 **Purchase Orders** - Auto-generate POs from accepted quotes
+- ✍️ **Contract Management** - Auto-fill contracts, e-signatures
+- ⭐ **Supplier Evaluation** - Ratings, reviews, performance tracking
+
+**Why QuotaHub:**
+- Carlos (procurement worker) scenario: Search ciment → Compare suppliers → Send RFQ → Negotiate → Close deal → Track delivery → Review supplier
+- All in real-time, automated documentation, legal contracts, delivery tracking
+- Target market: Industries, corporations, construction, cleaning, food suppliers
+
+### Key Expansion: Talent & Employment Marketplace
+
+**NEW - Job Seekers Portal (SUPPLY):**
+- 📄 **CV/Resume Builder** - Same powerful Template Builder for stunning CVs
+- 🎨 **Professional Portfolio** - Showcase projects with rich media
+- 📊 **Application Tracker** - Monitor all job applications
+- 🎯 **Skills & Certifications** - Verified professional credentials
+- 🔔 **Job Alerts** - Notifications for matching opportunities
+
+**NEW - Employers Portal (DEMAND):**
+- 📝 **Job Posting Manager** - Create and publish job listings
+- 🔍 **Candidate Search Engine** - Find talent with AI matching
+- 📈 **Applicant Tracking System (ATS)** - Manage hiring pipeline
+- 📅 **Interview Management** - Schedule and track interviews
+- 🏢 **Company Profiles** - Employer branding pages
+
+**WHY THIS EXPANSION MATTERS:**
+- Same user base, expanded utility
+- Freelancers can both offer services AND seek employment
+- Companies can both hire services AND recruit employees
+- CV Builder reuses existing Template Builder (minimal dev effort)
+- Creates a true "everything marketplace"
+
+**Full Documentation:** `.vibecoding/Informations/PLATFORM-EXPANSION-PLAN.md`
 
 **Competitive Moat:**
-Only platform offering: Discovery → Proposal → Project → Payment in one integrated workflow.
+ONLY platform offering: Sell Products + Offer Services + Find Jobs + Buy Products + Hire Services + Recruit Talent - ALL IN ONE.
 
-**Value Proposition:**
+**Value Proposition (Expanded):**
 
 🔵 **For Service Providers:**
-"List your services in our marketplace, create stunning AI-powered proposals, and track every engagement - all in one platform. Close more deals faster."
+"List your services, create stunning AI-powered proposals, and track every engagement - all in one platform."
 
-🟢 **For Clients:**
-"Discover the perfect professionals, receive beautiful proposals, and manage all your projects - from home construction to wedding planning - with complete financial tracking and family collaboration."
+🟠 **For Job Seekers:**
+"Build a professional CV with our visual editor, showcase your portfolio, and find your next career opportunity."
 
-**Network Effects:**
-More providers listing → Better search results → More clients → More leads for providers → More providers join (self-reinforcing growth loop)
+🟢 **For Buyers/Clients:**
+"Discover products and services, receive proposals, and manage all your projects with complete financial tracking."
+
+🟣 **For Employers:**
+"Post jobs, search candidates, and manage your entire hiring process with our integrated ATS."
+
+**Network Effects (Enhanced):**
+More sellers → Better product selection → More buyers → More sales → More sellers join
+More providers → Better service options → More clients → More projects → More providers join
+More job seekers → Better talent pool → More employers → More jobs → More job seekers join
+Cross-platform engagement creates unmatched ecosystem lock-in.
 
 ---
 
 ## Current Status Snapshot
 
-**Last Updated:** 2025-01-06
+**Last Updated:** 2025-11-23
 
 ### Production Status
 - **Environment:** Railway (production), Docker Compose (development)
 - **Frontend:** Live at Railway URL (Next.js 14)
 - **Backend:** Live at Railway URL (Node.js/Express)
 - **Database:** PostgreSQL 15 on Railway
-- **Current Phase:** Phase 19 Complete, Phase 20-45 Planned
+- **Current Phase:** Phase 31 Complete (100% Base Platform), Phases 32-60 Planned
 
-### What's Working (Production Ready)
+### What's Working (Production Ready) - 25 Modules ✅
 ✅ **Authentication:** JWT with access/refresh tokens, Zustand state management
 ✅ **Multi-tenancy:** Organization-scoped data isolation
-✅ **Proposals:** Full CRUD with 4-state workflow (Aberta, Alterações Solicitadas, Fechada, Rejeitada)
+✅ **Proposals:** Full CRUD with 4-state workflow
 ✅ **Client Collaboration:** Comments, change requests, approvals
 ✅ **Dashboard:** Real-time statistics, conversion tracking
 ✅ **Reports:** Month-over-month analysis with growth metrics
-✅ **Glassmorphism UI:** Modern design system throughout
-✅ **Docker Containerization:** Full stack (Nginx, API, Frontend, PostgreSQL, Redis)
-✅ **LGPD Compliance:** Audit logs, consent tracking, data minimization
+✅ **Template Builder:** Konva.js visual editor (~70% complete)
+✅ **Financial Module:** NFe, invoicing, payments
+✅ **Contract Generator:** Templates + e-signature workflow
+✅ **Campaign Manager:** Multi-client campaigns, segmentation
+✅ **Settings Suite:** Company, Users, Billing, Integrations, Security (5 modules)
+✅ **Client Portal Base:** Dashboard, Marketplace, Vendors, Inbox
+✅ **Glassmorphism UI:** 18 production-ready React components
+✅ **Docker Containerization:** Full stack operational
+✅ **LGPD Compliance:** Complete framework
 
-### What's In Development
-🚧 **Railway Frontend Deployment:** Frontend service Railway configuration
-🚧 **AI Integration:** OpenAI GPT-4 for content assistance (Phase 20)
-🚧 **Design Import:** Canva/Gamma import pipeline (Phase 21)
-
-### What's Planned (Roadmap)
-📝 **Phase 20-25:** AI features, design import, contracts, notifications, subdomains
-📝 **Phase 26-39:** Multi-tier SaaS transformation (Freemium/Standard/Professional)
-📝 **Phase 40-41:** Advanced reporting and analytics (4 weeks)
-📝 **Phase 42:** Automated follow-up system (3 weeks)
-📝 **Phase 43:** Distribution lists and campaigns (5 weeks)
-📝 **Phase 44-45:** Client Portal & Project Management Hub (8 weeks) ⭐ **MAJOR FEATURE**
-📝 **Phase 46:** 🆕 Marketplace Search & Discovery (4 weeks) ⭐ **REVOLUTIONARY FEATURE**
+### What's Planned (Roadmap - 69 weeks total)
+📝 **Phase 32-38:** Talent Marketplace (17 weeks) - CV Builder, Job Search, ATS
+📝 **Phase 39-46:** Advanced Features (20 weeks) - AI Studio, Reports, Campaigns, Client Portal
+📝 **Phase 47-52:** 🆕 QuotaHub B2B Procurement (16 weeks) - RFQ, Quotations, Orders ⭐ **NEW**
+📝 **Phase 53-56:** Mobile Apps & Integrations (12 weeks)
+📝 **Phase 57-60:** AI Automation & Enterprise (8 weeks)
 
 ---
 
-## Platform Modules Overview (25 Total)
+## Platform Modules Overview (65+ Total - UNIFIED ECOSYSTEM)
 
-### 🔵 SERVICE PROVIDER SIDE (15 Modules)
-
-| # | Module | Status | Phase | Description |
-|---|--------|--------|-------|-------------|
-| 1 | General Dashboard | ✅ | Phase 19 | Overview: proposals, clients, campaigns, financials |
-| 2 | Client Management | ✅ | Phase 19 | CRM with profiles, contacts, interaction history |
-| 3 | Proposal Builder (Text) | 🚧 | Phase 19 | Text-based creation with AI assistance |
-| 4 | Campaign Manager | 📋 | Phase 43 | Multi-client campaigns, segmentation |
-| 5 | Template Builder (Visual) | 🎨 | Phase 26-39 | "Canva for Proposals" - drag & drop editor |
-| 6 | AI Content Studio | 🤖 | Phase 20 | GPT-4: writing, rewriting, translation |
-| 7 | Send & Schedule | 📋 | Phase 42 | Email/WhatsApp/Telegram + automated reminders |
-| 8 | Proposal Hosting | 📋 | Phase 25 | Web pages with unique URLs |
-| 9 | Lead Tracking | ✅ | Phase 19 | Status, engagement, conversion funnel |
-| 10 | Progress Sharing | 📋 | Planned | Post photos/videos of work progress |
-| 11 | Contract Generator | 📋 | Phase 23 | AI-powered contracts + e-signature |
-| 12 | Analytics | ✅ | Phase 19 | Performance metrics, conversion rates |
-| 13 | Reports | ✅ | Phase 19 | Client/sector/product analysis |
-| 14 | Tax Module | 📋 | Planned | NFe generation, tax documentation |
-| 15 | Registry/Settings | ✅ | Phase 19 | Company profile, team, integrations |
-
-### 🟢 CLIENT SIDE (10 Modules)
+### 🔵 SERVICE PROVIDER SIDE (16 Modules) - ✅ COMPLETE
 
 | # | Module | Status | Phase | Description |
 |---|--------|--------|-------|-------------|
-| 1 | Client Dashboard | 📋 | Phase 44 | Overview: proposals, projects, payments |
-| 2 | **Marketplace Search** | 🆕 | **Phase 46** | **Search 10K+ listings across 5 categories** |
-| 3 | Vendor Directory | 📋 | Phase 44 | Save favorite providers |
-| 4 | Proposals Inbox | 📋 | Phase 44 | All received proposals |
+| 1 | General Dashboard | ✅ | 31 | Overview: proposals, clients, campaigns, financials |
+| 2 | Client Management | ✅ | 31 | CRM with profiles, contacts, interaction history |
+| 3 | Proposal Builder | ✅ | 31 | Text-based creation with AI assistance |
+| 4 | Campaign Manager | ✅ | 30 | Multi-client campaigns, segmentation |
+| 5 | Template Builder | ✅ | 26-27 | Visual drag & drop editor (~70%) |
+| 6 | AI Content Studio | 📋 | 39 | GPT-4: writing, rewriting, translation |
+| 7 | Send & Schedule | 📋 | 42 | Email/WhatsApp/Telegram + automated reminders |
+| 8 | Proposal Hosting | 📋 | 25 | Web pages with unique URLs |
+| 9 | Lead Tracking | ✅ | 31 | Status, engagement, conversion funnel |
+| 10 | Progress Sharing | 📋 | 44 | Post photos/videos of work progress |
+| 11 | Contract Generator | ✅ | 30 | Contracts + e-signature workflow |
+| 12 | Analytics | ✅ | 31 | Performance metrics, conversion rates |
+| 13 | Reports | ✅ | 31 | Client/sector/product analysis |
+| 14 | Financial Module | ✅ | 29 | NFe, invoicing, payments |
+| 15 | Projects | ✅ | 29 | Project management |
+| 16 | Settings | ✅ | 31 | Company, Users, Billing, Integrations, Security |
+
+### 🟢 CLIENT/BUYER SIDE (10 Modules) - Existing
+
+| # | Module | Status | Phase | Description |
+|---|--------|--------|-------|-------------|
+| 1 | Client Dashboard | ✅ | Phase 29 | Overview: proposals, projects, payments |
+| 2 | Marketplace Search | ✅ | Phase 30 | Provider marketplace search |
+| 3 | Vendor Directory | ✅ | Phase 30 | Save favorite providers |
+| 4 | Proposals Inbox | ✅ | Phase 30 | All received proposals |
 | 5 | Quote Requests | 📋 | Phase 45 | Request quotes from multiple vendors |
 | 6 | Project Folders | 📋 | Phase 44 | Multi-vendor organization (12+ vendors) |
 | 7 | Progress Gallery | 📋 | Phase 44 | Photos/videos from providers |
@@ -134,7 +201,61 @@ More providers listing → Better search results → More clients → More leads
 | 9 | Family Collaboration | 📋 | Phase 45 | Multi-user with role-based permissions |
 | 10 | Tax & Reports | 📋 | Phase 45 | Tax year summaries for accountants |
 
-**Total Modules:** 25 (15 provider + 10 client)
+### 🟠 JOB SEEKERS SIDE (5 Modules) - NEW
+
+| # | Module | Status | Phase | Description |
+|---|--------|--------|-------|-------------|
+| 1 | **CV/Resume Builder** | 🆕 | **Phase 33** | Visual CV editor using Template Builder |
+| 2 | **Professional Portfolio** | 🆕 | **Phase 34** | Project showcase with rich media |
+| 3 | **Application Tracker** | 🆕 | **Phase 34** | Track all job applications |
+| 4 | **Skills & Certifications** | 🆕 | **Phase 34** | Verified professional credentials |
+| 5 | **Job Search & Alerts** | 🆕 | **Phase 34** | Search jobs + notifications |
+
+### 🟣 EMPLOYERS SIDE (5 Modules) - NEW
+
+| # | Module | Status | Phase | Description |
+|---|--------|--------|-------|-------------|
+| 1 | **Job Posting Manager** | 🆕 | **Phase 35** | Create and manage job listings |
+| 2 | **Candidate Search Engine** | 🆕 | **Phase 36** | Search candidates with AI matching |
+| 3 | **ATS (Applicant Tracking)** | 🆕 | **Phase 36** | Kanban pipeline for hiring |
+| 4 | **Interview Management** | 🆕 | **Phase 36** | Schedule and track interviews |
+| 5 | **Company Profiles** | 🆕 | **Phase 35** | Employer branding pages |
+
+### 🏭 QUOTAHUB B2B PROCUREMENT (15 Modules) - 🆕 NEW
+
+**Supplier Portal (SUPPLY):**
+| # | Module | Status | Phase | Description |
+|---|--------|--------|-------|-------------|
+| 1 | **Product Catalog Manager** | 🆕 | **47** | Products, variants, pricing tiers, inventory |
+| 2 | **Supplier Dashboard** | 🆕 | **47** | Overview: RFQs, orders, deliveries, revenue |
+| 3 | **RFQ Response Center** | 🆕 | **48** | Receive and respond to quotation requests |
+| 4 | **Quotation Builder** | 🆕 | **48** | Professional quotations with terms |
+| 5 | **Negotiation Hub** | 🆕 | **48** | Counter-offers, chat, documents |
+| 6 | **Order Management** | 🆕 | **49** | Process orders, track deliveries |
+| 7 | **Delivery Dashboard** | 🆕 | **49** | Scheduled deliveries, tracking, carriers |
+| 8 | **Supplier Analytics** | 🆕 | **50** | Sales metrics, performance, forecasting |
+
+**Buyer Portal (DEMAND):**
+| # | Module | Status | Phase | Description |
+|---|--------|--------|-------|-------------|
+| 9 | **Procurement Dashboard** | 🆕 | **47** | Overview: RFQs, orders, spend, suppliers |
+| 10 | **Product Search Engine** | 🆕 | **47** | Search with filters (location, price, delivery) |
+| 11 | **RFQ Builder** | 🆕 | **48** | Create RFQs, select suppliers, set terms |
+| 12 | **Quotation Comparison** | 🆕 | **48** | Side-by-side comparison, scoring matrix |
+| 13 | **Purchase Orders** | 🆕 | **49** | Auto-generate POs from accepted quotes |
+| 14 | **Contract Management** | 🆕 | **49** | Auto-fill contracts, e-signatures |
+| 15 | **Supplier Evaluation** | 🆕 | **50** | Ratings, reviews, performance tracking |
+
+### 🔍 SHARED INFRASTRUCTURE (4 Modules)
+
+| # | Module | Status | Phase | Description |
+|---|--------|--------|-------|-------------|
+| 1 | **Unified Search Engine** | 🆕 | **37/51** | Search products, services, jobs, talent, suppliers |
+| 2 | **AI Matching Engine** | 🆕 | **37/51** | Smart recommendations across all marketplaces |
+| 3 | **Universal Document Builder** | 🎨 | 39 | Proposals, CVs, Catalogs, RFQs, Contracts |
+| 4 | **Rating & Review System** | 🆕 | **38/50** | Cross-platform verified reviews |
+
+**Total Modules:** 65+ (16 provider + 10 client + 5 job seeker + 5 employer + 15 QuotaHub + 4 shared)
 
 ---
 
