@@ -339,6 +339,100 @@ Module for generating data that can be used to generate tax invoices and financi
 
 ## Decisions Log
 
+### 2025-11-23 - 🏭 QuotaHub B2B Procurement Integration (MAJOR EXPANSION)
+
+**Context:** User requested a comprehensive B2B procurement platform to facilitate price quotations, negotiations, and closed deals. This connects companies with high-volume purchasing needs (industries, corporations) with product suppliers (construction, cleaning, food, etc.).
+
+**Decision:** Added QuotaHub as Phases 47-52 (16 weeks) - a complete B2B Procurement & Quotation Platform integrated into WebPropostas.
+
+**Key User Scenario (Carlos from Tigre):**
+1. Carlos (procurement worker) needs cement for construction repair
+2. Logs into platform, searches: "cimento Votorantim CPV3 50kg"
+3. Applies filters: delivery time, neighborhood proximity, best sellers
+4. Platform returns ranked list of matching suppliers
+5. Carlos selects suppliers and sends pre-made RFQ letter (with company logo)
+6. Suppliers receive notification, respond with conditions/prices
+7. Carlos compares quotations side-by-side with scoring matrix
+8. Negotiates counter-offers via real-time chat
+9. Accepts best offer → Auto-generates PO with company legal templates
+10. Supplier signs → Delivery tracking begins
+11. Upon delivery, Carlos reviews and rates supplier
+12. Supplier reputation updates for future searches
+
+**New Modules Added (15 total):**
+
+*Supplier Portal:*
+- Product Catalog Manager (products, variants, pricing tiers, inventory)
+- Supplier Dashboard (RFQs, orders, deliveries, revenue)
+- RFQ Response Center
+- Quotation Builder
+- Negotiation Hub (chat, counter-offers, documents)
+- Order Management
+- Delivery Dashboard
+- Supplier Analytics
+
+*Buyer Portal:*
+- Procurement Dashboard
+- Product Search Engine (geolocation, filters)
+- RFQ Builder (single/multi-product)
+- Quotation Comparison (scoring matrix)
+- Purchase Orders (auto-generated)
+- Contract Management (e-signatures)
+- Supplier Evaluation (ratings, reviews)
+
+**Database Schema:** 15+ new tables
+- companies (type: buyer/supplier/both)
+- products, product_variants, price_tiers
+- categories (hierarchical LTREE)
+- rfqs, rfq_items, rfq_suppliers
+- quotations, quotation_items
+- negotiations
+- purchase_orders, purchase_order_items
+- contracts, deliveries, delivery_items
+- reviews, audit_logs
+
+**Business Model Impact:**
+- Supplier subscription fees: R$ 0 - R$ 1,499/month
+- Transaction fees: 0.5% - 2% of deal value
+- Target GMV Year 1: R$ 50M
+- Target transaction revenue: R$ 750K/year
+
+**Revenue Projections (Full Platform Year 1):**
+- Subscriptions: R$ 1,265,880
+- Transactions: R$ 750,000
+- Marketplace: R$ 771,000
+- **Total ARR: R$ 2,786,880**
+
+**Timeline:**
+- Phase 47: Foundation (3 weeks) - Database, API routes, company types
+- Phase 48: RFQ & Quotation System (4 weeks) - Complete workflow
+- Phase 49: Orders & Contracts (4 weeks) - POs, e-signatures, delivery
+- Phase 50: Supplier Evaluation (3 weeks) - Ratings, reputation
+- Phase 51: Search & Matching Engine (2 weeks) - Elasticsearch, AI
+- Phase 52: Integration & Launch (3 weeks) - Polish, beta launch
+
+**Competitive Advantages:**
+1. **Only platform** offering: Proposals + Talent + Procurement + Project Management
+2. **Brazilian market focus:** LGPD, NF-e, CPF/CNPJ, BRL, Portuguese
+3. **Unified user profiles** across all marketplaces
+4. **Verified supplier reputation** from actual transactions
+5. **End-to-end workflow:** Search → RFQ → Quote → PO → Delivery → Review
+
+**Documentation Created:**
+- Full PRD: `APRESENTACAO-INVESTIDORES.md` (complete QuotaHub specification)
+- Updated roadmap: `.vibecoding/Informations/roadmap.md` (v3.0 - Unified Vision)
+- Updated PROJECT-MEMORY.md with 4 pillars architecture
+
+**Impact:**
+- Platform now serves 4 market segments: Services, Talent, B2C, B2B
+- Total modules expanded from 40+ to 65+
+- Total roadmap extended to 60+ phases (~17 months)
+- ARR potential increased from R$ 645K to R$ 2.8M Year 1
+
+**Status:** Approved - Planning Complete - Awaiting Phase 32 initiation
+
+---
+
 ### 2025-01-06 - Client Portal Real-World Use Cases
 **Context:** Need to demonstrate platform versatility across different industries beyond construction
 **Decision:** Added 7 comprehensive use case examples:
