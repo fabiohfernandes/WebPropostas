@@ -8,6 +8,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth';
+import { constants } from '@/config';
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -17,36 +18,27 @@ interface AuthGuardProps {
 export function AuthGuard({ children, redirectTo = '/auth/login' }: AuthGuardProps) {
   const router = useRouter();
   const { isAuthenticated, tokens, isLoading } = useAuthStore();
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
+  // Wait for Zustand to hydrate from localStorage
   useEffect(() => {
-    // Check if we already have tokens in localStorage without triggering API calls
-    const authData = localStorage.getItem('auth-tokens');
-    if (authData) {
-      try {
-        const { state } = JSON.parse(authData);
-        if (state?.tokens && state?.isAuthenticated) {
-          setIsInitialized(true);
-          return;
-        }
-      } catch (error) {
-        console.warn('Failed to parse auth data from localStorage:', error);
-      }
-    }
-
-    // If no valid auth data in localStorage, we're not authenticated
-    setIsInitialized(true);
+    // Give Zustand persist middleware time to hydrate from localStorage
+    const timer = setTimeout(() => {
+      setIsHydrated(true);
+    }, 150);
+    return () => clearTimeout(timer);
   }, []);
 
-  // Redirect if not authenticated after initialization
+  // Redirect if not authenticated after hydration
   useEffect(() => {
-    if (isInitialized && !isLoading && !isAuthenticated && !tokens) {
+    if (isHydrated && !isLoading && !isAuthenticated && !tokens) {
+      console.log('🔒 AuthGuard: Not authenticated, redirecting to login');
       router.push(redirectTo);
     }
-  }, [isInitialized, isLoading, isAuthenticated, tokens, router, redirectTo]);
+  }, [isHydrated, isLoading, isAuthenticated, tokens, router, redirectTo]);
 
-  // Show loading while initializing or checking auth
-  if (!isInitialized || isLoading || (!isAuthenticated && !tokens)) {
+  // Show loading while hydrating or checking auth
+  if (!isHydrated || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -58,7 +50,7 @@ export function AuthGuard({ children, redirectTo = '/auth/login' }: AuthGuardPro
   }
 
   // Don't render anything if not authenticated (redirect will happen)
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !tokens) {
     return null;
   }
 

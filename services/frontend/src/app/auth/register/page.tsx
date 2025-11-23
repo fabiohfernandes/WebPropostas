@@ -93,44 +93,27 @@ export default function RegisterPage() {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/v1/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-          password: data.password,
-        }),
+      // Use the auth store's register function to properly store tokens
+      await registerUser({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        password: data.password,
       });
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.errors?.[0] || result.message || 'Erro ao criar conta');
-      }
-
-      // Success - user registered and received tokens
+      // Success - user registered and tokens stored in auth store
       toast.success('Conta criada com sucesso!');
       toast('🎉 Você já está logado e pode começar a usar a plataforma!', {
         duration: 4000,
         icon: '✨',
       });
 
-      // Store the tokens (you might want to use a proper auth store)
-      if (result.data?.tokens) {
-        localStorage.setItem('access_token', result.data.tokens.accessToken);
-        localStorage.setItem('refresh_token', result.data.tokens.refreshToken);
-      }
-
-      // Redirect to dashboard or main area
+      // Redirect to dashboard
       router.push('/dashboard');
 
     } catch (error: any) {
       console.error('Registration error:', error);
-      toast.error(error.message || 'Erro ao criar conta');
+      toast.error(error.response?.data?.message || error.message || 'Erro ao criar conta');
     }
   };
 

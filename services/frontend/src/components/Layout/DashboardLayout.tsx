@@ -43,16 +43,26 @@ const navigation = [
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { logout, user, isAuthenticated, tokens, isLoading } = useAuthStore();
 
-  // Redirect to login if not authenticated after loading
+  // Wait for Zustand to hydrate from localStorage before checking auth
   useEffect(() => {
-    if (!isLoading && !isAuthenticated && !tokens) {
+    // Small delay to allow Zustand persist to hydrate
+    const timer = setTimeout(() => {
+      setIsHydrated(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Redirect to login if not authenticated after hydration
+  useEffect(() => {
+    if (isHydrated && !isLoading && !isAuthenticated && !tokens) {
       router.push('/auth/login');
     }
-  }, [isLoading, isAuthenticated, tokens, router]);
+  }, [isHydrated, isLoading, isAuthenticated, tokens, router]);
 
   const handleLogout = () => {
     logout();
@@ -66,8 +76,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     return pathname.startsWith(href);
   };
 
-  // Show loading while checking authentication
-  if (isLoading || (!isAuthenticated && !tokens)) {
+  // Show loading while checking authentication (wait for hydration first)
+  if (!isHydrated || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-secondary-50">
         <div className="text-center">
@@ -78,8 +88,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     );
   }
 
-  // Don't render if not authenticated
-  if (!isAuthenticated) {
+  // Don't render if not authenticated (after hydration completed)
+  if (!isAuthenticated && !tokens) {
     return null;
   }
 
@@ -90,14 +100,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)} />
         <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-white shadow-xl">
           <div className="flex h-16 items-center justify-between px-6 bg-primary-600">
-            <div className="flex items-center space-x-2">
+            <Link href="/dashboard" className="flex items-center space-x-2 hover:opacity-90 transition-opacity">
               <div className="h-8 w-8 rounded-lg flex items-center justify-center">
                 <img src="/favicon-16x16.png" alt="WebPropostas" className="h-8 w-8" />
               </div>
               <span className="text-white font-semibold text-lg">
                 {appConfig.appName}
               </span>
-            </div>
+            </Link>
             <button
               onClick={() => setSidebarOpen(false)}
               className="text-white hover:text-primary-200"
@@ -161,14 +171,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="flex flex-col flex-1 bg-white border-r border-secondary-200">
           {/* Logo */}
           <div className="flex items-center h-16 px-6 bg-primary-600">
-            <div className="flex items-center space-x-2">
+            <Link href="/dashboard" className="flex items-center space-x-2 hover:opacity-90 transition-opacity">
               <div className="h-8 w-8 rounded-lg flex items-center justify-center">
                 <img src="/favicon-16x16.png" alt="WebPropostas" className="h-8 w-8" />
               </div>
               <span className="text-white font-semibold text-lg">
                 {appConfig.appName}
               </span>
-            </div>
+            </Link>
           </div>
 
           {/* Navigation */}

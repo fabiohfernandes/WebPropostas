@@ -1,13 +1,16 @@
 // Authentication Debug Utility
 // Helper functions to debug and fix authentication issues
 
+// Storage key must match the one used by auth store
+const AUTH_STORAGE_KEY = 'webpropostas_auth_tokens';
+
 export const debugAuth = () => {
   if (typeof window === 'undefined') return;
 
   console.log('🔍 Authentication Debug:');
 
-  // Check localStorage for auth tokens
-  const authTokens = localStorage.getItem('auth-tokens');
+  // Check localStorage for auth tokens (using correct key)
+  const authTokens = localStorage.getItem(AUTH_STORAGE_KEY);
   console.log('📦 Auth tokens in localStorage:', authTokens);
 
   if (authTokens) {
@@ -43,8 +46,8 @@ export const clearAllAuth = () => {
 
   console.log('🧹 Clearing all authentication data...');
 
-  // Clear auth store data
-  localStorage.removeItem('auth-tokens');
+  // Clear auth store data (using correct key)
+  localStorage.removeItem(AUTH_STORAGE_KEY);
 
   // Clear legacy tokens
   localStorage.removeItem('access_token');
@@ -62,7 +65,7 @@ export const setValidToken = (tokenData: any) => {
 
   console.log('💾 Setting valid token data...');
 
-  // Set in auth store format
+  // Set in auth store format (using correct key)
   const authStoreData = {
     state: {
       isAuthenticated: true,
@@ -72,7 +75,7 @@ export const setValidToken = (tokenData: any) => {
     version: 0
   };
 
-  localStorage.setItem('auth-tokens', JSON.stringify(authStoreData));
+  localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authStoreData));
 
   // Also set legacy format for compatibility
   localStorage.setItem('access_token', tokenData.tokens.accessToken);
@@ -84,7 +87,7 @@ export const setValidToken = (tokenData: any) => {
 export const getFreshToken = async () => {
   try {
     console.log('🔄 Getting fresh token...');
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/v1/auth/login`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

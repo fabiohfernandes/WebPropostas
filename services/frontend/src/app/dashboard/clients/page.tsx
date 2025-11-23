@@ -7,10 +7,11 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { PlusIcon, MagnifyingGlassIcon, EnvelopeIcon, PhoneIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, MagnifyingGlassIcon, EnvelopeIcon, PhoneIcon, BuildingOfficeIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Button, Card, Badge, EmptyState } from '@/components/UI';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/store/auth';
+import toast from 'react-hot-toast';
 
 interface Client {
   id: string;
@@ -33,6 +34,8 @@ export default function ClientsPage() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { user } = useAuthStore();
 
   useEffect(() => {
@@ -110,6 +113,38 @@ export default function ClientsPage() {
     return `${Math.floor(diffInDays / 30)} meses atrás`;
   };
 
+  const handleDeleteClient = async () => {
+    if (!deleteConfirm) return;
+
+    setIsDeleting(true);
+    try {
+      const response = await api.clients.delete(deleteConfirm.id);
+      // Check for success - API returns 200 with success: true
+      if (response.status === 200 || response.data.success) {
+        toast.success('Cliente excluído com sucesso!');
+        setClients(clients.filter(c => c.id !== deleteConfirm.id));
+        setStats(prev => ({ ...prev, total: prev.total - 1 }));
+        return;
+      } else {
+        throw new Error(response.data.error || 'Erro ao excluir cliente');
+      }
+    } catch (err: any) {
+      // If delete was actually successful (200 status), update the UI anyway
+      if (err.response?.status === 200) {
+        toast.success('Cliente excluído com sucesso!');
+        setClients(clients.filter(c => c.id !== deleteConfirm.id));
+        setStats(prev => ({ ...prev, total: prev.total - 1 }));
+        return;
+      }
+      console.error('Error deleting client:', err);
+      const message = err.response?.data?.error || err.message || 'Erro ao excluir cliente';
+      toast.error(message);
+    } finally {
+      setIsDeleting(false);
+      setDeleteConfirm(null);
+    }
+  };
+
   const statsData = [
     { label: 'Total de Clientes', value: stats.total.toString(), trend: { value: 12, isPositive: true } },
     { label: 'Clientes Ativos', value: stats.active.toString(), trend: { value: 8, isPositive: true } },
@@ -125,9 +160,11 @@ export default function ClientsPage() {
           <h1 className="text-3xl font-bold text-gray-900">Clientes</h1>
           <p className="text-gray-600 mt-1">Gerencie seus clientes e relacionamentos</p>
         </div>
-        <Button leftIcon={<PlusIcon className="w-5 h-5" />}>
-          Novo Cliente
-        </Button>
+        <Link href="/dashboard/clients/new">
+          <Button leftIcon={<PlusIcon className="w-5 h-5" />}>
+            Novo Cliente
+          </Button>
+        </Link>
       </div>
 
       {/* Stats */}
@@ -260,9 +297,46 @@ export default function ClientsPage() {
                 <Link href={`/dashboard/proposals/new?client=${client.id}`}>
                   <Button size="sm">Nova Proposta</Button>
                 </Link>
+                <button
+                  onClick={() => setDeleteConfirm({ id: client.id, name: client.name })}
+                  className="p-2 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-300 rounded-lg transition-all duration-200"
+                  title="Excluir cliente"
+                >
+                  <TrashIcon className="w-5 h-5" />
+                </button>
               </div>
             </Card>
           ))}
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Excluir Cliente</h3>
+            <p className="text-gray-600 mb-6">
+              Tem certeza que deseja excluir <strong>{deleteConfirm.name}</strong>? Esta ação não pode ser desfeita.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setDeleteConfirm(null)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+                disabled={isDeleting}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteClient}
+                disabled={isDeleting}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50"
+              >
+                {isDeleting ? 'Excluindo...' : 'Excluir'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

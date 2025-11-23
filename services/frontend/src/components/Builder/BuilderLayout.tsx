@@ -6,7 +6,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { DndContext, DragEndEvent, useDndMonitor, DragOverlay } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, useDndMonitor, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { useBuilderStore } from '@/store/builder';
 import { SessionNav } from './SessionNav';
 import { ElementsPanelNew } from './ElementsPanelNew';
@@ -218,6 +218,16 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeDragData, setActiveDragData] = useState<any>(null);
   const lastMousePosRef = useRef<{ x: number; y: number } | null>(null);
+
+  // Configure sensors with activation constraint to prevent accidental drags
+  // This requires moving 8 pixels before drag starts, preventing click/drag confusion
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Only start drag after moving 8 pixels
+      },
+    })
+  );
 
   // Auto-fit zoom to screen on initial load
   useEffect(() => {
@@ -525,7 +535,7 @@ export function BuilderLayout({ templateId }: BuilderLayoutProps) {
 
 
   return (
-    <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="flex flex-col h-screen bg-gray-50">
         <BuilderLayoutInner
           templateId={templateId}

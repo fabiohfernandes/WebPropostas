@@ -34,13 +34,14 @@ const getAuthToken = () => {
 };
 
 // API Configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+// Note: NEXT_PUBLIC_API_URL from next.config.js already includes /api/v1
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1';
 const API_TIMEOUT = 30000; // 30 seconds
 
 // Create axios instance with default configuration
-// Note: API_BASE_URL should NOT include /api/v1 - it will be added by the route handlers
+// Note: API_BASE_URL already includes /api/v1 from next.config.js
 const apiClient: AxiosInstance = axios.create({
-  baseURL: `${API_BASE_URL}/api/v1`,
+  baseURL: API_BASE_URL,
   timeout: API_TIMEOUT,
   headers: {
     'Content-Type': 'application/json',
